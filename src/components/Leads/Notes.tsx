@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import chevronRight from '../../../../../assets/chevron-right.svg';
-import messageIcon from '../../../../../assets/message-text-02.svg';
+import chevronRight from '../../assets/chevron-right.svg';
+import messageIcon from '../../assets/message-text-02.svg';
 
 const Notes = () => {
   return (

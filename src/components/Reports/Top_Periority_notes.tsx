@@ -1,5 +1,5 @@
 import React from "react";
-import closeIcon from "../../../../assets/Icon (2).svg";
+import closeIcon from "../../assets/x-02.svg";
 
 interface TopPriorityNotesProps {
   onClose?: () => void;

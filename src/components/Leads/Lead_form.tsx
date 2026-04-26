@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import filePlusIcon from "../../../../assets/file-plus-01.svg";
-import closeIcon from "../../../../assets/Icon (2).svg";
+import filePlusIcon from "../../assets/file-plus-01.svg";
+import closeIcon from "../../assets/x-02.svg";
 
 interface LeadFormProps {
   leadsName?: string;
@@ -40,16 +40,16 @@ const Lead_form: React.FC<LeadFormProps> = ({
   };
 
   const defaultTextareaStyle: React.CSSProperties = {
-    width: "100%",
-    height: 120,
+    width: 422,
+    height: 85,
     resize: "none",
-    border: "1px solid rgba(212, 213, 216, 1)",
+    border: "1px solid rgba(0, 35, 111, 1)",
     borderRadius: 8,
-    padding: "10px 12px",
+    padding: "12px",
     fontFamily: "Inter, sans-serif",
     fontSize: 14,
     color: "#141414",
-    background: "#fff",
+    background: "transparent",
     outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s, background 0.25s, height 0.25s",
@@ -105,9 +105,9 @@ const Lead_form: React.FC<LeadFormProps> = ({
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: 19,
                 color: "#141414",
-                lineHeight: "24px",
+                lineHeight: "100%",
               }}
             >
               Lead Form
@@ -152,18 +152,27 @@ const Lead_form: React.FC<LeadFormProps> = ({
       <div
         style={{
           width: 462,
-          height: 516,
+          flex: 1,
           background: "rgba(245, 246, 250, 1)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
-          padding: "20px 20px 24px 20px",
+          paddingTop: 32,
+          paddingLeft: 20,
+          paddingRight: 20,
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
-          overflowY: "auto",
+          alignItems: "center",
         }}
       >
+        <div
+          style={{
+            width: 422,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
         {/* Q1 */}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <label
@@ -174,7 +183,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
               color: "#141414",
             }}
           >
-            Q1<span style={{ color: "#EF4444" }}>*</span>
+            Q1<span style={{ color: "rgba(0, 35, 111, 1)" }}>*</span>
           </label>
           <textarea
             value={q1}
@@ -183,7 +192,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
             placeholder="Input text"
             style={isSaved ? savedTextareaStyle : defaultTextareaStyle}
             onFocus={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "#3B5BDB"; }}
-            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)"; }}
+            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(0, 35, 111, 1)"; }}
           />
         </div>
 
@@ -197,7 +206,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
               color: "#141414",
             }}
           >
-            Q2<span style={{ color: "#EF4444" }}>*</span>
+            Q2<span style={{ color: "rgba(0, 35, 111, 1)" }}>*</span>
           </label>
           <textarea
             value={q2}
@@ -206,7 +215,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
             placeholder="Input text"
             style={isSaved ? savedTextareaStyle : defaultTextareaStyle}
             onFocus={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "#3B5BDB"; }}
-            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)"; }}
+            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(0, 35, 111, 1)"; }}
           />
         </div>
 
@@ -220,7 +229,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
               color: "#141414",
             }}
           >
-            Q3<span style={{ color: "#EF4444" }}>*</span>
+            Q3<span style={{ color: "rgba(0, 35, 111, 1)" }}>*</span>
           </label>
           <textarea
             value={q3}
@@ -229,9 +238,10 @@ const Lead_form: React.FC<LeadFormProps> = ({
             placeholder="Input text"
             style={isSaved ? savedTextareaStyle : defaultTextareaStyle}
             onFocus={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "#3B5BDB"; }}
-            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)"; }}
+            onBlur={(e) => { if (!isSaved) e.currentTarget.style.borderColor = "rgba(0, 35, 111, 1)"; }}
           />
         </div>
+      </div>
 
         {/* Save / Edit Button */}
         {!isSaved ? (
@@ -239,7 +249,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
             onClick={handleSave}
             disabled={!isSaveEnabled}
             style={{
-              marginTop: 8,
+              marginTop: 40,
               alignSelf: "center",
               width: 422,
               height: 48,
@@ -271,7 +281,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
           <button
             onClick={() => setIsSaved(false)}
             style={{
-              marginTop: 8,
+              marginTop: 40,
               alignSelf: "center",
               width: 422,
               height: 48,

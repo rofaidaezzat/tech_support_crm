@@ -1,15 +1,13 @@
-import React from 'react';
+
 import closeIcon from '../../assets/x-02.svg';
 import plusIcon from '../../assets/plus-02.svg';
 
-const Add_new_deal = () => {
+const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div
       style={{
         width: 462,
-        height: 796,
-        background: "#fff",
-        borderRadius: 12,
+        maxHeight: "90vh",
         display: "flex",
         flexDirection: "column",
         fontFamily: "Inter, sans-serif",
@@ -28,18 +26,29 @@ const Add_new_deal = () => {
           justifyContent: "space-between",
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
-          borderBottom: "1px solid rgba(237, 239, 242, 1)", // Standard border
+          borderBottom: "1px solid rgba(212, 213, 216, 1)",
           padding: 20,
           boxSizing: "border-box",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <img src={plusIcon} alt="add" width={20} height={20} />
-          <span style={{ fontSize: 18, fontWeight: 600, color: "#141414" }}>Add New Deal</span>
+          <span
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 700,
+              fontSize: 19,
+              color: "#141414",
+              lineHeight: "100%",
+            }}
+          >
+            Add New Deal
+          </span>
         </div>
 
         {/* Close Button */}
         <div
+          onClick={onClose}
           style={{
             boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
             background: "rgba(255, 255, 255, 1)",
@@ -56,15 +65,29 @@ const Add_new_deal = () => {
         </div>
       </div>
 
-      {/* ── Form Container ── */}
+      {/* ── Second Part (Body) ── */}
       <div
         style={{
+          background: "rgba(245, 246, 250, 1)",
+          width: 462,
+          flex: 1,
+          minHeight: 0,
+          borderBottomRightRadius: 12,
+          borderBottomLeftRadius: 12,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* ── Form Container ── */}
+        <div
+        style={{
           width: 422,
-          height: 567,
+          flex: 1,
+          minHeight: 0,
           display: "flex",
           flexDirection: "column",
           gap: 16,
-          marginTop: 24, // Adjusted for layout
+          marginTop: 32,
           marginLeft: 20, 
           boxSizing: "border-box",
           overflowY: "auto", // In case it overflows
@@ -154,7 +177,7 @@ const Add_new_deal = () => {
       </div>
 
       {/* ── Submit Button Container ── */}
-      <div style={{ marginTop: 8, marginLeft: 20, width: 422 }}>
+      <div style={{ marginTop: 48, marginLeft: 20, width: 422, paddingBottom: 32, flexShrink: 0 }}>
         <button
           style={{
             background: "rgba(0, 35, 111, 1)",
@@ -177,6 +200,7 @@ const Add_new_deal = () => {
         </button>
       </div>
 
+      </div>
     </div>
   );
 };

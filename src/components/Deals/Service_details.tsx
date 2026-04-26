@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import closeIcon from "../../../../assets/Icon (2).svg";
+import closeIcon from "../../assets/x-02.svg";
 
 interface ServiceDetailsProps {
   onClose?: () => void;
@@ -30,15 +30,19 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     resize: "none",
     border: "none",
     borderRadius: 8,
-    padding: "16px 14px",
+    padding: "12px 34px",
     fontFamily: "Inter, sans-serif",
-    fontSize: 14,
-    color: "#6B7280", // Slightly muted text in read-only state based on screenshot
-    background: "rgba(212, 213, 216, 0.4)", // Light grey background
+    fontSize: 13,
+    fontWeight: 400,
+    lineHeight: "140%",
+    color: "rgba(70, 70, 70, 1)",
+    background: "rgba(212, 213, 216, 1)",
+    gap: 8,
     outline: "none",
     boxSizing: "border-box",
     transition: "all 0.25s ease",
     cursor: "default",
+    overflow: "hidden",
   };
 
   const editTextareaStyle: React.CSSProperties = {
@@ -47,20 +51,25 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     resize: "none",
     border: "1px solid #3B5BDB", // Blue border in edit mode
     borderRadius: 8,
-    padding: "16px 14px",
+    padding: "12px 34px",
     fontFamily: "Inter, sans-serif",
-    fontSize: 14,
-    color: "#141414",
-    background: "#fff",
+    fontSize: 13,
+    fontWeight: 400,
+    lineHeight: "140%",
+    color: "rgba(70, 70, 70, 1)",
+    background: "rgba(212, 213, 216, 1)",
+    gap: 8,
     outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s, background 0.25s",
+    overflow: "hidden",
   };
 
   return (
     <div
       style={{
         width: 462,
+        height: 450,
         opacity: 1,
         display: "flex",
         flexDirection: "column",
@@ -74,7 +83,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
       <div
         style={{
           width: 462,
-          height: 91,
+          height: 90,
           background: "rgba(245, 246, 250, 1)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           borderTopLeftRadius: 12,
@@ -135,14 +144,14 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
       <div
         style={{
           width: 462,
+          height: 360,
           background: "rgba(245, 246, 250, 1)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
-          padding: "24px 20px",
+          padding: "32px 20px",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
         }}
       >
         {/* Text Area */}
@@ -154,7 +163,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
         />
 
         {/* Action Button */}
-        <div style={{ marginTop: 16 }}>
+        <div style={{ marginTop: 100 }}>
           {!isEditing ? (
             // Edit Button (Secondary)
             <button
@@ -163,8 +172,8 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
                 width: 422,
                 height: 48,
                 borderRadius: 12,
-                border: "1.5px solid rgba(0, 35, 111, 1)",
-                background: "#fff",
+                border: "1px solid rgba(0, 35, 111, 1)",
+                background: "rgba(212, 213, 216, 1)",
                 color: "rgba(0, 35, 111, 1)",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,

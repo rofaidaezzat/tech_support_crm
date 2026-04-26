@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import editIcon from "../../../../assets/edit-contained.svg";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import calendarPlusIcon from "../../../../assets/calendar-plus.svg";
+import editIcon from "../../assets/edit-contained.svg";
+import closeIcon from "../../assets/x-02.svg";
+import calendarPlusIcon from "../../assets/calendar-plus.svg";
 
 interface EditLeadInfoProps {
   leadsName?: string;
@@ -128,9 +128,9 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 700,
-                fontSize: 16,
+                fontSize: 19,
                 color: "#141414",
-                lineHeight: "24px",
+                lineHeight: "100%",
               }}
             >
               Edit Lead Info
@@ -179,14 +179,25 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           background: "rgba(245, 246, 250, 1)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
-          padding: "20px 20px 24px 20px",
+          paddingTop: 32,
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingBottom: 24,
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
-          overflowY: "auto",
+          alignItems: "center",
+          overflow: "hidden",
         }}
       >
+        <div
+          style={{
+            width: 422,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
         {/* Lead name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
@@ -285,12 +296,12 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           </div>
         </div>
 
-        {/* Save button */}
-        <button
-          onClick={handleSave}
-          disabled={!isSaveEnabled}
-          style={{
-            marginTop: 8,
+          {/* Save button */}
+          <button
+            onClick={handleSave}
+            disabled={!isSaveEnabled}
+            style={{
+              marginTop: 40,
             alignSelf: "center",
             width: 422,
             height: 48,
@@ -317,7 +328,8 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           }}
         >
           Save
-        </button>
+          </button>
+        </div>
       </div>
     </div>
   );

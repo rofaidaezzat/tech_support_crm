@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import eyeClosedIcon from "../../../../assets/eye-closed.svg";
+import closeIcon from "../../assets/x-02.svg";
+import eyeClosedIcon from "../../assets/eye-closed.svg";
 
 interface ChangePasswordProps {
   onClose?: () => void;

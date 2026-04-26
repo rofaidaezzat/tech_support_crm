@@ -1,12 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
-import whatsappIcon from '../../assets/ic_baseline-whatsapp.svg';
-import filePlusIcon from '../../assets/file-plus-01.svg';
-import editIcon from '../../assets/edit-contained.svg';
-import coinIcon from '../../assets/coin-unbroken.svg';
-import mailIcon from '../../assets/message-text-02 (1).svg';
-import starsIcon from '../../assets/stars.svg';
-import Pagination from '../../components/Pagination';
+import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
+import filePlusIcon from '../assets/file-plus-01.svg';
+import editIcon from '../assets/edit-contained.svg';
+import coinIcon from '../assets/coin-unbroken.svg';
+import mailIcon from '../assets/message-text-02 (1).svg';
+import mail04Icon from '../assets/mail-04.svg';
+import starsIcon from '../assets/stars.svg';
+import Pagination from '../components/Pagination';
+
+// Modals
+import Add_new_lead from '../components/Leads/Add_new_lead';
+import Edit_lead_info from '../components/Leads/Edit_lead_info';
+import Convert_to_deal from '../components/Leads/Convert_to_deal';
+import Lead_form from '../components/Leads/Lead_form';
+import Notes from '../components/Deals/Notes';
+import Leads_messages from '../components/Leads/Leads_messages';
+
+// Reusable overlay for modals
+const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
+  <div
+    style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 9999,
+      display: "flex", alignItems: "center", justifyContent: "center"
+    }}
+    onClick={onClose}
+  >
+    <div onClick={(e) => e.stopPropagation()}>{children}</div>
+  </div>
+);
 
 const STATUS_OPTIONS = [
   "Fresh",
@@ -37,6 +60,16 @@ const Leads = () => {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [filterStatusOpen, setFilterStatusOpen] = useState(false);
   const [filterDraftStatus, setFilterDraftStatus] = useState<string[]>([]);
+  const [sortStatus, setSortStatus] = useState<"asc" | "desc">("asc");
+
+  // Modal States
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+  const [isEditLeadOpen, setIsEditLeadOpen] = useState(false);
+  const [isConvertToDealOpen, setIsConvertToDealOpen] = useState(false);
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const filterStatusRef = useRef<HTMLDivElement>(null);
@@ -91,10 +124,11 @@ const Leads = () => {
         </div>
 
         <button
+          onClick={() => setIsAddLeadOpen(true)}
           style={{
             background: "rgba(0, 35, 111, 1)",
-            width: 149,
-            height: 56,
+            width: 154,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -625,7 +659,7 @@ const Leads = () => {
 
               {/* Message icon */}
               <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
-                <img src={mailIcon} alt="Message" width={24} height={24} style={{ cursor: "pointer" }} />
+                <img src={mail04Icon} alt="Message" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsMessagesOpen(true)} />
               </div>
               {/* Priority */}
               <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 6 }}>
@@ -690,10 +724,10 @@ const Leads = () => {
               {/* Actions */}
               <div style={{ flex: 1.8, display: "flex", alignItems: "center", gap: 10 }}>
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} />
+                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesOpen(true)} />
+                <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsLeadFormOpen(true)} />
+                <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsConvertToDealOpen(true)} />
+                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsEditLeadOpen(true)} />
                 
               </div>
             </div>
@@ -705,6 +739,38 @@ const Leads = () => {
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
         <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
       </div>
+
+      {/* ── Modals ── */}
+      {isAddLeadOpen && (
+        <ModalOverlay onClose={() => setIsAddLeadOpen(false)}>
+          <Add_new_lead onClose={() => setIsAddLeadOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isEditLeadOpen && (
+        <ModalOverlay onClose={() => setIsEditLeadOpen(false)}>
+          <Edit_lead_info onClose={() => setIsEditLeadOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isConvertToDealOpen && (
+        <ModalOverlay onClose={() => setIsConvertToDealOpen(false)}>
+          <Convert_to_deal onClose={() => setIsConvertToDealOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isLeadFormOpen && (
+        <ModalOverlay onClose={() => setIsLeadFormOpen(false)}>
+          <Lead_form onClose={() => setIsLeadFormOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isNotesOpen && (
+        <ModalOverlay onClose={() => setIsNotesOpen(false)}>
+          <Notes onClose={() => setIsNotesOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isMessagesOpen && (
+        <ModalOverlay onClose={() => setIsMessagesOpen(false)}>
+          <Leads_messages onClose={() => setIsMessagesOpen(false)} />
+        </ModalOverlay>
+      )}
     </div>
   );
 };

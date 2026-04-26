@@ -3,13 +3,13 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router";
-import Deals from "../pages/leads/Deals";
-import Leads from "../pages/leads/Leads";
-import Reports from "../pages/leads/Reports";
-import Search_Results from "../pages/leads/Search_Results";
-import Settings from "../pages/leads/Settings";
+import Deals from "../pages/Deals";
+import Leads from "../pages/Leads";
+import Reports from "../pages/Reports";
+import Search_Results from "../pages/Search_Results";
+import Settings from "../pages/Settings";
 import Layout from "../components/Layout";
-import Overview from "../pages/leads/Overview";
+import Overview from "../pages/Overview";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(

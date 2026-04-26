@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import checkSquareIcon from "../../../../assets/check-square-broken.svg";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import slotIcon from "../../../../assets/Slot.svg";
+import checkSquareIcon from "../../assets/check-square-broken.svg";
+import closeIcon from "../../assets/x-02.svg";
+
+import addressIcon from "../../assets/Address.svg";
+import searchIcon from "../../assets/search-01.svg";
 
 interface ConvertToDealProps {
   onClose?: () => void;
@@ -60,6 +62,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
   const [city, setCity] = useState("");
   const [serviceDetails, setServiceDetails] = useState("");
   const [isCityOpen, setIsCityOpen] = useState(false);
+  const [citySearch, setCitySearch] = useState("");
 
   const isConvertEnabled =
     value.trim() !== "" && city.trim() !== "" && serviceDetails.trim() !== "";
@@ -115,9 +118,9 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 700,
-              fontSize: 16,
+              fontSize: 19,
               color: "#141414",
-              lineHeight: "24px",
+              lineHeight: "100%",
             }}
           >
             Convert to Deal
@@ -147,12 +150,13 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
       <div
         style={{
           flex: 1,
-          padding: "24px",
+          padding: "24px 20px",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
           gap: 16,
           overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         {/* Info Box */}
@@ -243,16 +247,20 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
               }}
             >
               <span>{city || "Select a City"}</span>
-              <img
-                src={slotIcon}
-                alt="Arrow down"
-                width={20}
-                height={20}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
                 style={{
                   transform: isCityOpen ? "rotate(180deg)" : "rotate(0deg)",
                   transition: "transform 0.2s",
+                  flexShrink: 0,
                 }}
-              />
+              >
+                <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
 
             {isCityOpen && (
@@ -261,58 +269,88 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
                   position: "absolute",
                   top: "100%",
                   left: 0,
-                  right: 0,
+                  width: 422,
+                  height: 252,
                   marginTop: 8,
-                  background: "#fff",
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  borderRadius: 8,
-                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)",
+                  background: "rgba(255, 255, 255, 1)",
+                  borderRadius: 12,
+                  boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
                   zIndex: 10,
-                  padding: "8px 0",
+                  padding: 12,
                   display: "flex",
                   flexDirection: "column",
-                  maxHeight: 200,
-                  overflowY: "auto",
+                  gap: 4,
+                  boxSizing: "border-box",
                 }}
               >
-                {cities.map((option) => (
-                  <div
-                    key={option}
-                    onClick={() => {
-                      setCity(option);
-                      setIsCityOpen(false);
-                    }}
+                {/* Search Input */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    border: "1px solid rgba(212, 213, 216, 1)",
+                    borderRadius: 8,
+                    padding: "8px 12px",
+                    background: "#fff",
+                    marginBottom: 16,
+                  }}
+                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking search
+                >
+                  <img src={searchIcon} alt="Search" width={20} height={20} />
+                  <input
+                    type="text"
+                    placeholder="Search city"
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.target.value)}
                     style={{
-                      padding: "12px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      cursor: "pointer",
-                      background: city === option ? "rgba(245, 246, 250, 1)" : "#fff",
-                      transition: "background 0.2s",
+                      border: "none",
+                      outline: "none",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 14,
+                      color: "#141414",
+                      width: "100%",
+                      background: "transparent",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
-                    onMouseLeave={(e) => {
-                      if (city !== option) {
-                        e.currentTarget.style.background = "#fff";
-                      }
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        border: city === option ? "5px solid #00236F" : "2px solid #8B909A",
-                        boxSizing: "border-box",
-                        transition: "border 0.2s",
-                      }}
-                    />
-                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414" }}>
-                      {option}
-                    </span>
-                  </div>
-                ))}
+                  />
+                </div>
+
+                {/* City Options List */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, overflowY: "auto", flex: 1 }}>
+                  {cities
+                    .filter((c) => c.toLowerCase().includes(citySearch.toLowerCase()))
+                    .map((option) => (
+                      <div
+                        key={option}
+                        onClick={() => {
+                          setCity(option);
+                          setIsCityOpen(false);
+                          setCitySearch(""); // Reset search on select
+                        }}
+                        style={{
+                          padding: "10px 12px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          cursor: "pointer",
+                          background: city === option ? "rgba(245, 246, 250, 1)" : "#fff",
+                          borderRadius: 6,
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
+                        onMouseLeave={(e) => {
+                          if (city !== option) {
+                            e.currentTarget.style.background = "#fff";
+                          }
+                        }}
+                      >
+                        <img src={addressIcon} alt="Address" width={20} height={20} />
+                        <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414" }}>
+                          {option}
+                        </span>
+                      </div>
+                    ))}
+                </div>
               </div>
             )}
           </div>

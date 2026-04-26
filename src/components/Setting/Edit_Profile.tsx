@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import cameraIcon from "../../../../assets/carbon_camera.svg";
+import closeIcon from "../../assets/x-02.svg";
+import cameraIcon from "../../assets/carbon_camera.svg";
 
 interface EditProfileProps {
   onClose?: () => void;

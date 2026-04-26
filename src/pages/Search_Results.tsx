@@ -1,8 +1,8 @@
   import { Search } from 'lucide-react';
-import frameImage from '../../assets/Frame 1321318261.svg';
-import mailIcon from '../../assets/message-text-02 (1).svg';
-import whatsappIcon from '../../assets/ic_baseline-whatsapp.svg';
-import editPenIcon from '../../assets/edit-04.svg';
+import frameImage from '../assets/Frame 1321318261.svg';
+import mailIcon from '../assets/message-text-02 (1).svg';
+import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
+import editPenIcon from '../assets/edit-04.svg';
 
 const Search_Results = () => {
   return (

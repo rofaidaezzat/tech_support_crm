@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import plusIcon from "../../../../assets/plus-02.svg";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import calendarPlusIcon from "../../../../assets/calendar-plus.svg";
+import plusIcon from "../../assets/plus-02.svg";
+import closeIcon from "../../assets/x-02.svg";
+import calendarPlusIcon from "../../assets/calendar-plus.svg";
 
 interface AddNewTaskProps {
   onClose?: () => void;

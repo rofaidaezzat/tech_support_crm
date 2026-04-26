@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import plusIcon from "../../../../assets/plus-02.svg";
-import closeIcon from "../../../../assets/Icon (2).svg";
-import slotIcon from "../../../../assets/Slot.svg";
+import plusIcon from "../../assets/plus-02.svg";
+import closeIcon from "../../assets/x-02.svg";
+
 
 interface AddNewLeadProps {
   onClose?: () => void;
@@ -101,9 +101,9 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 700,
-              fontSize: 16,
+              fontSize: 19,
               color: "#141414",
-              lineHeight: "24px",
+              lineHeight: "100%",
             }}
           >
             Add New Lead
@@ -213,16 +213,20 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
               }}
             >
               <span>{leadSource || "Choose a lead source"}</span>
-              <img
-                src={slotIcon}
-                alt="Arrow down"
-                width={20}
-                height={20}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
                 style={{
                   transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
                   transition: "transform 0.2s",
+                  flexShrink: 0,
                 }}
-              />
+              >
+                <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
 
             {/* Dropdown Menu */}

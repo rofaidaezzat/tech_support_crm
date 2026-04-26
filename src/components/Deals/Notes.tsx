@@ -1,7 +1,7 @@
 import React from 'react';
 import closeIcon from '../../assets/x-02.svg';
 
-const Notes = () => {
+const Notes = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div
       style={{
@@ -30,10 +30,21 @@ const Notes = () => {
           boxSizing: "border-box",
         }}
       >
-        <span style={{ fontSize: 18, fontWeight: 600, color: "#141414" }}>Notes</span>
+        <span
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 700,
+            fontSize: 19,
+            color: "#141414",
+            lineHeight: "100%",
+          }}
+        >
+          Notes
+        </span>
 
         {/* Close Button */}
         <div
+          onClick={onClose}
           style={{
             boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
             background: "rgba(255, 255, 255, 1)",
@@ -58,11 +69,11 @@ const Notes = () => {
           height: 437,
           borderBottomLeftRadius: 12,
           borderBottomRightRadius: 12,
-          display: "flex",
           flexDirection: "column",
           boxSizing: "border-box",
           paddingTop: 32,
           paddingLeft: 20,
+          position: "relative",
         }}
       >
         {/* Message Card */}
@@ -80,6 +91,20 @@ const Notes = () => {
             boxSizing: "border-box",
           }}
         >
+            {/* Timestamp */}
+          <div
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 400,
+              fontSize: 13,
+              lineHeight: "140%",
+              color: "rgba(116, 116, 116, 1)",
+              width: 119,
+              height: 18,
+            }}
+          >
+            25/03/2026 , 07:22
+          </div>
           {/* Text Content */}
           <div
             style={{
@@ -94,6 +119,39 @@ const Notes = () => {
           >
             Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.
           </div>
+          
+        </div>
+
+        {/* ── Input Box ── */}
+        <div
+          style={{
+            position: "absolute",
+            top: 328,
+            left: 20,
+            width: 422,
+            height: 85,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            boxSizing: "border-box",
+          }}
+        >
+          <textarea
+            placeholder="Add note..."
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 12,
+              border: "1px solid rgba(212, 213, 216, 1)",
+              padding: "12px 16px",
+              outline: "none",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 14,
+              resize: "none",
+              boxSizing: "border-box",
+              background: "#fff",
+            }}
+          />
         </div>
       </div>
 

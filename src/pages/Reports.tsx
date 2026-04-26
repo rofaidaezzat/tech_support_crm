@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
-import { Plus, ChevronDown, ArrowDownUp } from 'lucide-react';
-import filterIcon from '../../assets/filter.svg';
-import starsIcon from '../../assets/stars.svg';
-import whatsappIcon from '../../assets/ic_baseline-whatsapp.svg';
-import mailIcon from '../../assets/message-text-02 (1).svg';
-import editPenIcon from '../../assets/edit-04.svg';
-import Pagination from '../../components/Pagination';
-
-const Deals = () => {
-  const [sortOpen, setSortOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-
+import { ArrowDownUp, ChevronDown, Plus } from 'lucide-react'
+import filterIcon from '../assets/filter.svg';
+import starsIcon from '../assets/stars.svg';
+import { useState } from 'react';
+import mailIcon from '../assets/message-text-02 (1).svg';
+import Pagination from '../components/Pagination';
+const Reports = () => {
+    const [sortOpen, setSortOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
   return (
-    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
+ <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
         style={{
@@ -36,13 +32,13 @@ const Deals = () => {
             alignItems: "center",
           }}
         >
-          Deals
+          Reports
         </div>
 
         <button
           style={{
             background: "rgba(0, 35, 111, 1)",
-            width: 149,
+            width: 167,
             height: 56,
             borderRadius: 12,
             padding: "8px 24px",
@@ -55,11 +51,14 @@ const Deals = () => {
             fontFamily: "Inter, sans-serif",
             fontSize: 16,
             fontWeight: 500,
+            lineHeight: "100%",
+            letterSpacing: "0%",
+            textAlign: "center",
             cursor: "pointer",
           }}
         >
-          <Plus size={20} color="#fff" />
-          Add Deal
+          <Plus size={20} color="#fff" style={{ opacity: 1 }} />
+          New Report
         </button>
       </div>
       {/* ── Filter Bar ── */}
@@ -162,7 +161,7 @@ const Deals = () => {
               flexShrink: 0,
             }}
           >
-            Value
+            Deals Value
             <ChevronDown size={16} color="#4B5563" />
           </button>
         </div>
@@ -193,7 +192,6 @@ const Deals = () => {
           <ArrowDownUp size={16} color="#4B5563" />
         </button>
       </div>
-
       {/* ── Table ── */}
       <div
         style={{
@@ -223,13 +221,14 @@ const Deals = () => {
           }}
         >
           {[
-            { label: "Date",          flex: 1   },
-            { label: "Customer Info", flex: 2   },
-            { label: "Phone number",  flex: 1.4 },
-            { label: "City",          flex: 1   },
-            { label: "Deal details",  flex: 1.4 },
-            { label: "Value (EGP)",   flex: 1.4 },
-            { label: "Actions",       flex: 1   },
+            { label: "Date",                 flex: 1 },
+            { label: "Calls",                flex: 1 },
+            { label: "Contacts",             flex: 1 },
+            { label: "Followups",            flex: 1 },
+            { label: "Meetings",             flex: 1 },
+            { label: "Deals",                flex: 1 },
+            { label: "Deals Value",          flex: 1.4 },
+            { label: "Top Priority & notes", flex: 1.4 },
           ].map(({ label, flex }) => (
             <div
               key={label}
@@ -251,18 +250,7 @@ const Deals = () => {
 
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
-          {[
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-            { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", phone: "+20112170891", city: "Alexandria", value: "120,000,000" },
-          ].map((deal, i, arr) => (
+          {[...Array(10)].map((_, i, arr) => (
             <div
               key={i}
               style={{
@@ -278,115 +266,42 @@ const Deals = () => {
               }}
             >
               {/* Date */}
-              <div
-                style={{
-                  flex: 1,
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 400,
-                  fontSize: 13,
-                  lineHeight: "140%",
-                  letterSpacing: 0,
-                  color: "#4B5563",
-                }}
-              >
-                {deal.date}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                04/11/2026
               </div>
 
-              {/* Customer Info */}
-              <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: "140%",
-                    letterSpacing: 0,
-                    color: "#141414",
-                  }}
-                >
-                  {deal.name}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: "140%",
-                    letterSpacing: 0,
-                    color: "#6B7280",
-                  }}
-                >
-                  {deal.company}
-                </span>
+              {/* Calls */}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                66666
               </div>
 
-              {/* Phone number */}
-              <div
-                style={{
-                  flex: 1.4,
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 400,
-                  fontSize: 13,
-                  lineHeight: "140%",
-                  letterSpacing: 0,
-                  color: "#4B5563",
-                }}
-              >
-                {deal.phone}
+              {/* Contacts */}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                888
               </div>
 
-              {/* City */}
-              <div
-                style={{
-                  flex: 1,
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 400,
-                  fontSize: 13,
-                  lineHeight: "140%",
-                  letterSpacing: 0,
-                  color: "#4B5563",
-                }}
-              >
-                {deal.city}
+              {/* Followups */}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                444
               </div>
 
-              {/* Deal details */}
-              <div style={{ flex: 1.4 }}>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: "140%",
-                    letterSpacing: 0,
-                    color: "rgba(0, 35, 111, 1)",
-                    cursor: "pointer",
-                  }}
-                >
-                  View Details
-                </span>
+              {/* Meetings */}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                888
               </div>
 
-              {/* Value (EGP) */}
-              <div style={{ flex: 1.4, display: "flex", alignItems: "center", gap: 8 }}>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: "140%",
-                    letterSpacing: 0,
-                    color: "#141414",
-                  }}
-                >
-                  {deal.value}
-                </span>
-                <img src={editPenIcon} alt="edit value" width={16} height={16} style={{ cursor: "pointer", opacity: 0.55 }} />
+              {/* Deals */}
+              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                888
               </div>
 
-              {/* Actions */}
-              <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 16 }}>
-                <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer" }} />
+              {/* Deals Value */}
+              <div style={{ flex: 1.4, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                120,000,000
+              </div>
+
+              {/* Top Priority & notes */}
+              <div style={{ flex: 1.4, display: "flex", alignItems: "center" }}>
                 <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} />
               </div>
             </div>
@@ -399,7 +314,7 @@ const Deals = () => {
         <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Deals;
+export default Reports
