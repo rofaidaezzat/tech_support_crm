@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
+import Edit_Profile from '../components/Setting/Edit_Profile';
+import Change_password from '../components/Setting/Change_password';
+
+// Reusable overlay for modals
+const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
+  <div
+    style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 9999,
+      display: "flex", alignItems: "center", justifyContent: "center"
+    }}
+    onClick={onClose}
+  >
+    <div onClick={(e) => e.stopPropagation()}>{children}</div>
+  </div>
+);
 
 const Settings = () => {
   const [taskReminder, setTaskReminder] = useState(true);
   const [followupReminder, setFollowupReminder] = useState(true);
   const [language, setLanguage] = useState<'English' | 'Arabic'>('English');
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   return (
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
@@ -119,6 +137,7 @@ const Settings = () => {
                   borderTop: "1px solid rgba(237, 239, 242, 1)",
                   cursor: "pointer",
                 }}
+                onClick={() => setIsEditProfileOpen(true)}
               >
                 <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 16, lineHeight: "100%", letterSpacing: "0%", color: "rgba(20, 20, 20, 1)" }}>Edit Profile</span>
                 <ChevronRight size={20} color="#6B7280" />
@@ -132,6 +151,7 @@ const Settings = () => {
                   borderTop: "1px solid rgba(237, 239, 242, 1)",
                   cursor: "pointer",
                 }}
+                onClick={() => setIsChangePasswordOpen(true)}
               >
                 <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 16, lineHeight: "100%", letterSpacing: "0%", color: "rgba(20, 20, 20, 1)" }}>Change Password</span>
                 <ChevronRight size={20} color="#6B7280" />
@@ -323,6 +343,17 @@ const Settings = () => {
           </div>
         </div>
 
+        {/* Modals */}
+        {isEditProfileOpen && (
+          <ModalOverlay onClose={() => setIsEditProfileOpen(false)}>
+            <Edit_Profile onClose={() => setIsEditProfileOpen(false)} />
+          </ModalOverlay>
+        )}
+        {isChangePasswordOpen && (
+          <ModalOverlay onClose={() => setIsChangePasswordOpen(false)}>
+            <Change_password onClose={() => setIsChangePasswordOpen(false)} />
+          </ModalOverlay>
+        )}
       </div>
     </div>
   );
