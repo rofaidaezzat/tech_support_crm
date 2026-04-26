@@ -4,7 +4,9 @@ import whatsappIcon from '../../assets/ic_baseline-whatsapp.svg';
 import filePlusIcon from '../../assets/file-plus-01.svg';
 import editIcon from '../../assets/edit-contained.svg';
 import coinIcon from '../../assets/coin-unbroken.svg';
-import mailIcon from '../../assets/mail-04.svg';
+import mailIcon from '../../assets/message-text-02 (1).svg';
+import starsIcon from '../../assets/stars.svg';
+import Pagination from '../../components/Pagination';
 
 const STATUS_OPTIONS = [
   "Fresh",
@@ -35,6 +37,7 @@ const Leads = () => {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [filterStatusOpen, setFilterStatusOpen] = useState(false);
   const [filterDraftStatus, setFilterDraftStatus] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const filterStatusRef = useRef<HTMLDivElement>(null);
 
@@ -155,7 +158,7 @@ const Leads = () => {
                 color: "#141414",
               }}
             />
-            <Sparkles size={16} color="#4B5563" />
+           <img src={starsIcon} alt="stars" width={24} height={24} />
           </div>
 
 
@@ -689,12 +692,18 @@ const Leads = () => {
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer" }} />
                 <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} />
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} />
                 <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer" }} />
+                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} />
+                
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Pagination ── */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+        <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
       </div>
     </div>
   );

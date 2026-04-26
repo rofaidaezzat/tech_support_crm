@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
   const location = useLocation();
 
   // Extract the current page from the pathname for the Sidebar active state
-  const currentPath = location.pathname.substring(1) || "leads";
+  const currentPath = location.pathname.substring(1) || "overview";
   
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>
@@ -19,6 +19,8 @@ const Layout: React.FC = () => {
           if (page === "logout") {
             // Handle logout if needed
             console.log("Logout clicked");
+          } else if (page === "overview") {
+            navigate("/");
           } else {
             navigate(`/${page}`);
           }

@@ -13,8 +13,8 @@ import Overview from "../pages/leads/Overview";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<Layout />}>
-      <Route path="/" element={<Overview />} />
+    <Route path="/" element={<Layout />}>
+      <Route index element={<Overview />} />
       <Route path="/leads" element={<Leads />} />
       <Route path="/deals" element={<Deals />} />
       <Route path="/reports" element={<Reports />} />
