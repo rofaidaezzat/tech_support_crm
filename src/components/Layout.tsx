@@ -40,8 +40,8 @@ const Layout: React.FC = () => {
             flex: 1,
             overflowY: "auto",
             marginTop: 88,
-            padding: "24px",
-            backgroundColor: "#F9FAFB",
+            padding: "32px 24px",
+            backgroundColor: "#F5F6FA",
           }}
         >
           <Outlet />

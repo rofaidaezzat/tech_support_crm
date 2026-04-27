@@ -74,10 +74,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage = "reports", onNavigate }
               <img
                 src={item.icon}
                 alt={item.label}
-                width={18}
-                height={14}
+                width={24}
+                height={24}
                 style={{
                   filter: isActive ? activeIconFilter : "none",
+                  opacity: 1,
+                  transform: "rotate(0deg)",
                   transition: "filter 0.2s",
                 }}
               />

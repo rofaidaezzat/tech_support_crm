@@ -319,16 +319,50 @@ const Navbar: React.FC<NavbarProps> = ({
             <div
               style={{
                 position: "fixed",
-                top: 76,
-                left: 953,
+                top: 62,
+                right: 74,
                 width: 432,
-                height: 324,
-                boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.11)",
-                borderRadius: 12,
-                overflow: "hidden",
                 zIndex: 1000,
               }}
             >
+              {/* ── Triangle pointer ── */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 354,
+                  width: 22,
+                  height: 19,
+                  opacity: 1,
+                  transform: "rotate(0deg)",
+                  filter: "drop-shadow(0px -3px 4px rgba(0, 0, 0, 0.06))",
+                  zIndex: 2,
+                }}
+              >
+                <div
+                  style={{
+                    width: 22,
+                    height: 19,
+                    background: "rgba(255, 255, 255, 1)",
+                    clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+                  }}
+                />
+              </div>
+
+              {/* ── Modal content box ── */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 14,
+                  left: 0,
+                  width: 432,
+                  height: 324,
+                  boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.11)",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  zIndex: 1,
+                }}
+              >
               {/* ── Part 1: Header ── */}
               <div
                 style={{
@@ -445,6 +479,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   </div>
                 ))}
+              </div>
               </div>
             </div>
           )}

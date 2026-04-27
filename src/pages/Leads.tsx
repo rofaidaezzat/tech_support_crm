@@ -8,7 +8,7 @@ import mailIcon from '../assets/message-text-02 (1).svg';
 import mail04Icon from '../assets/mail-04.svg';
 import starsIcon from '../assets/stars.svg';
 import Pagination from '../components/Pagination';
-
+import filterIcon from '../assets/filter.svg';
 // Modals
 import Add_new_lead from '../components/Leads/Add_new_lead';
 import Edit_lead_info from '../components/Leads/Edit_lead_info';
@@ -128,7 +128,7 @@ const Leads = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 154,
-            height: 48,
+            height: 56,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -163,22 +163,25 @@ const Leads = () => {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               border: "1px solid rgba(212, 213, 216, 1)",
               borderRadius: 12,
-              padding: "0 12px",
+              padding: "8px 12px",
               height: 40,
               gap: 8,
               background: "transparent",
-              width: 240,
+              width: 406,
               boxSizing: "border-box",
+              opacity: 1,
+              transform: "rotate(0deg)",
             }}
           >
-            <Filter size={16} color="#4B5563" />
+       <img src={filterIcon} alt="filter" width={24} height={24} />
             <input
               type="text"
               placeholder="Filter by date, name,..."
