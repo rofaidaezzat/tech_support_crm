@@ -30,7 +30,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     resize: "none",
     border: "none",
     borderRadius: 8,
-    padding: "12px 34px",
+    padding: "12px 16px",
     fontFamily: "Inter, sans-serif",
     fontSize: 13,
     fontWeight: 400,
@@ -43,6 +43,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     transition: "all 0.25s ease",
     cursor: "default",
     overflow: "hidden",
+    textAlign: "left",
   };
 
   const editTextareaStyle: React.CSSProperties = {
@@ -51,7 +52,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     resize: "none",
     border: "1px solid #3B5BDB", // Blue border in edit mode
     borderRadius: 8,
-    padding: "12px 34px",
+    padding: "12px 16px",
     fontFamily: "Inter, sans-serif",
     fontSize: 13,
     fontWeight: 400,
@@ -63,6 +64,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     boxSizing: "border-box",
     transition: "border-color 0.2s, background 0.25s",
     overflow: "hidden",
+    textAlign: "left",
   };
 
   return (

@@ -3,11 +3,13 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Task_drawer from "./Leads/Task_drawer";
+import Add_New_Task from "./Leads/Add_New_Task";
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
 
   // Extract the current page from the pathname for the Sidebar active state
   const currentPath = location.pathname.substring(1) || "overview";
@@ -29,7 +31,7 @@ const Layout: React.FC = () => {
       />
 
       {/* Main content area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", backgroundColor: "#F5F6FA" }}>
         <div style={{ position: "relative", zIndex: 10 }}>
           <Navbar onTasksClick={() => setIsTaskDrawerOpen(true)} />
         </div>
@@ -41,7 +43,6 @@ const Layout: React.FC = () => {
             overflowY: "auto",
             marginTop: 88,
             padding: "32px 24px",
-            backgroundColor: "#F5F6FA",
           }}
         >
           <Outlet />
@@ -77,10 +78,47 @@ const Layout: React.FC = () => {
         <Task_drawer
           onClose={() => setIsTaskDrawerOpen(false)}
           onNewTask={() => {
-            // Handle new task creation
+            setIsTaskDrawerOpen(false);
+            setShowAddTask(true);
           }}
         />
       </div>
+
+      {/* ── Add New Task Modal (centered) ── */}
+      {showAddTask && (
+        <>
+          <div
+            onClick={() => setShowAddTask(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0, 0, 0, 0.35)",
+              zIndex: 200,
+            }}
+          />
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 201,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <div style={{ pointerEvents: "auto", maxHeight: "90vh", overflowY: "auto", borderRadius: 12 }}>
+              <Add_New_Task
+                onClose={() => setShowAddTask(false)}
+                onSave={(data) => {
+                  console.log("New task saved:", data);
+                  setShowAddTask(false);
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

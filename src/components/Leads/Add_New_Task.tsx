@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
-
 interface AddNewTaskProps {
   onClose?: () => void;
-  onSave?: (data: { title: string; description: string; dueDate: string }) => void;
+  onSave?: (data: { title: string; description: string; dueDate: string; priority: string; assignedTo: string }) => void;
 }
-
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 48,
@@ -22,7 +20,6 @@ const inputStyle: React.CSSProperties = {
   boxSizing: "border-box",
   transition: "border-color 0.2s",
 };
-
 const textareaStyle: React.CSSProperties = {
   width: "100%",
   height: 120,
@@ -52,13 +49,15 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
 
   const isSaveEnabled = title.trim() !== "" && description.trim() !== "" && dueDate.trim() !== "";
 
   const handleSave = () => {
     if (!isSaveEnabled) return;
     if (onSave) {
-      onSave({ title, description, dueDate });
+      onSave({ title, description, dueDate, priority, assignedTo });
     }
   };
 
@@ -79,11 +78,12 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   return (
     <div
       style={{
-        width: 462,
-        height: 558,
-        opacity: 1,
         display: "flex",
+        width: 462,
         flexDirection: "column",
+        alignItems: "flex-start",
+        height: 824,
+        opacity: 1,
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
@@ -152,11 +152,12 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
+          alignItems: "flex-start",
           gap: 16,
         }}
       >
         {/* Title */}
-        <div>
+        <div style={{ display: "flex", width: 422, flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
           <label style={labelStyle}>
             Title<span style={{ color: "#00236F" }}>*</span>
           </label>
@@ -170,8 +171,49 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
           />
         </div>
 
+        {/* Row after title — Priority + Assigned To */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, alignSelf: "stretch" }}>
+          {/* Priority */}
+          <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 8 }}>
+            <label style={labelStyle}>Priority</label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              style={{
+                ...inputStyle,
+                cursor: "pointer",
+                appearance: "none",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 12px center",
+                paddingRight: 36,
+                color: priority ? "#141414" : "#9CA3AF",
+              }}
+            >
+              <option value="" disabled hidden>Select priority</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          {/* Assigned To */}
+          <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 8 }}>
+            <label style={labelStyle}>Assigned to</label>
+            <input
+              type="text"
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              placeholder="Enter name"
+              style={inputStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          </div>
+        </div>
+
         {/* Description */}
-        <div>
+        <div style={{ display: "flex", width: 422, flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
           <label style={labelStyle}>
             Description<span style={{ color: "#00236F" }}>*</span>
           </label>
@@ -185,7 +227,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
         </div>
 
         {/* Due date */}
-        <div>
+        <div style={{ display: "flex", width: 422, flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
           <label style={labelStyle}>
             Due date <span style={{ color: "#00236F" }}>*</span>
           </label>

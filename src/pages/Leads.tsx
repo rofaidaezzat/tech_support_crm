@@ -16,6 +16,7 @@ import Convert_to_deal from '../components/Leads/Convert_to_deal';
 import Lead_form from '../components/Leads/Lead_form';
 import Notes from '../components/Deals/Notes';
 import Leads_messages from '../components/Leads/Leads_messages';
+import StatusTimeline from '../components/Leads/StatusTimeline';
 
 // Reusable overlay for modals
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
@@ -69,6 +70,7 @@ const Leads = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
+  const [isStatusTimelineOpen, setIsStatusTimelineOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -339,15 +341,7 @@ const Leads = () => {
                         >
                           {option}
                         </span>
-                        <span
-                          style={{
-                            fontFamily: "Inter, sans-serif",
-                            fontSize: 13,
-                            color: "rgba(160, 160, 160, 1)",
-                          }}
-                        >
-                          (200)
-                        </span>
+                       
                       </div>
                     );
                   })}
@@ -726,12 +720,14 @@ const Leads = () => {
 
               {/* Actions */}
               <div style={{ flex: 1.8, display: "flex", alignItems: "center", gap: 10 }}>
-                <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer" }} />
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesOpen(true)} />
-                <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsLeadFormOpen(true)} />
-                <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsConvertToDealOpen(true)} />
-                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsEditLeadOpen(true)} />
-                
+                <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} />
+                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsNotesOpen(true)} />
+                <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
+                <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsConvertToDealOpen(true)} />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 16" fill="none" style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsStatusTimelineOpen(true)}>
+                  <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsEditLeadOpen(true)} />
               </div>
             </div>
           ))}
@@ -772,6 +768,11 @@ const Leads = () => {
       {isMessagesOpen && (
         <ModalOverlay onClose={() => setIsMessagesOpen(false)}>
           <Leads_messages onClose={() => setIsMessagesOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isStatusTimelineOpen && (
+        <ModalOverlay onClose={() => setIsStatusTimelineOpen(false)}>
+          <StatusTimeline onClose={() => setIsStatusTimelineOpen(false)} leadName="John Dorghamasadsad" />
         </ModalOverlay>
       )}
     </div>

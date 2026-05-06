@@ -6,43 +6,55 @@ interface NewReportModalProps {
   dateStr?: string;
 }
 
-const inputStyle: React.CSSProperties = {
+const getDynamicInputStyle = (value: string): React.CSSProperties => ({
   width: "100%",
   height: 48,
   border: "1px solid rgba(212, 213, 216, 1)",
   borderRadius: 8,
-  padding: "0 14px",
+  padding: "12px",
   fontFamily: "Inter, sans-serif",
   fontSize: 14,
   color: "#141414",
-  background: "#fff",
+  background: value ? "#D4D5D8" : "transparent",
   outline: "none",
   boxSizing: "border-box",
-  transition: "border-color 0.2s",
-};
+  transition: "border-color 0.2s, background 0.2s",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  alignSelf: "stretch",
+});
 
-const readOnlyInputStyle: React.CSSProperties = {
-  ...inputStyle,
-  background: "#D4D5D8", // Grey background for read-only based on screenshot
-  border: "none",
+const readOnlyBoxStyle: React.CSSProperties = {
+  borderRadius: 8,
+  background: "#D4D5D8",
+  display: "flex",
+  height: 48,
+  padding: "20px",
+  justifyContent: "space-between",
+  alignItems: "center",
+  alignSelf: "stretch",
   color: "#141414",
+  fontFamily: "Inter, sans-serif",
+  fontSize: 14,
+  boxSizing: "border-box",
 };
 
-const textareaStyle: React.CSSProperties = {
+const getDynamicTextareaStyle = (value: string): React.CSSProperties => ({
   width: "100%",
   height: 120,
   resize: "none",
   border: "1px solid rgba(212, 213, 216, 1)",
   borderRadius: 8,
-  padding: "10px 14px",
+  padding: "12px",
   fontFamily: "Inter, sans-serif",
   fontSize: 14,
   color: "#141414",
-  background: "#fff",
+  background: value ? "#D4D5D8" : "transparent",
   outline: "none",
   boxSizing: "border-box",
-  transition: "border-color 0.2s",
-};
+  transition: "border-color 0.2s, background 0.2s",
+});
 
 const labelStyle: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
@@ -64,9 +76,8 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
   const [meetings, setMeetings] = useState("");
   const [priority, setPriority] = useState("");
   const [notes, setNotes] = useState("");
-
-  const dealsClosed = "2";
-  const dealsValue = "15000 EGP";
+  const [dealsClosed, setDealsClosed] = useState("");
+  const [dealsValue, setDealsValue] = useState("");
 
   const handleSubmit = () => {
     if (onSubmit) {
@@ -92,7 +103,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
         height: 596,
         background: "rgba(245, 246, 250, 1)",
         borderRadius: 12,
-        padding: 24, // prompt said 20px, but 24px looks closer to screenshot margins. Let's stick to spec.
+        padding: 20,
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -143,7 +154,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="number"
             value={calls}
             onChange={(e) => setCalls(e.target.value)}
-            style={inputStyle}
+            style={getDynamicInputStyle(calls)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -156,7 +167,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="number"
             value={leads}
             onChange={(e) => setLeads(e.target.value)}
-            style={inputStyle}
+            style={getDynamicInputStyle(leads)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -171,7 +182,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="number"
             value={followups}
             onChange={(e) => setFollowups(e.target.value)}
-            style={inputStyle}
+            style={getDynamicInputStyle(followups)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -184,7 +195,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="number"
             value={meetings}
             onChange={(e) => setMeetings(e.target.value)}
-            style={inputStyle}
+            style={getDynamicInputStyle(meetings)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -195,13 +206,27 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <label style={labelStyle}>
             How many deals did you close today ?<span style={{ color: "#00236F" }}>*</span>
           </label>
-          <input type="text" value={dealsClosed} readOnly style={readOnlyInputStyle} />
+          <input
+            type="number"
+            value={dealsClosed}
+            onChange={(e) => setDealsClosed(e.target.value)}
+            style={getDynamicInputStyle(dealsClosed)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
         </div>
         <div>
           <label style={labelStyle}>
             Total value of deals closed today<span style={{ color: "#00236F" }}>*</span>
           </label>
-          <input type="text" value={dealsValue} readOnly style={readOnlyInputStyle} />
+          <input
+            type="text"
+            value={dealsValue}
+            onChange={(e) => setDealsValue(e.target.value)}
+            style={getDynamicInputStyle(dealsValue)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
         </div>
 
         {/* Row 4 */}
@@ -213,7 +238,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="text"
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            style={inputStyle}
+            style={getDynamicInputStyle(priority)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -223,7 +248,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            style={textareaStyle}
+            style={getDynamicTextareaStyle(notes)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />

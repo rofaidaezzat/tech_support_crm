@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import checkSquareIcon from "../assets/check-square-broken.svg";
 import notificationIcon from "../assets/icon btn.svg";
-import taskIcon from "../assets/notification icons.svg";
-import followUpIcon from "../assets/notification icons (1).svg";
-import dailyReportIcon from "../assets/notification icons (2).svg";
+import NotificationsDropdown from "./Navbar/NotificationsDropdown";
+import NotificationDrawer from "./Navbar/NotificationDrawer";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -12,29 +11,6 @@ interface NavbarProps {
   onProfileClick?: () => void;
 }
 
-const notifications = [
-  {
-    id: 1,
-    icon: taskIcon,
-    title: "Task",
-    description: "You have a new task assigned to you",
-    time: "2 min ago",
-  },
-  {
-    id: 2,
-    icon: followUpIcon,
-    title: "Follow Up Reminder",
-    description: "Don't forget to follow up with Ahmed Ali",
-    time: "15 min ago",
-  },
-  {
-    id: 3,
-    icon: dailyReportIcon,
-    title: "Daily Report",
-    description: "Your daily sales report is ready to view",
-    time: "1 hr ago",
-  },
-];
 
 const Navbar: React.FC<NavbarProps> = ({
   onSearch,
@@ -42,6 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onProfileClick,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const notifRef = useRef<HTMLDivElement>(null);
@@ -74,13 +51,14 @@ const Navbar: React.FC<NavbarProps> = ({
   }, [showSearch]);
 
   return (
+    <>
     <div
       style={{
         position: "absolute",
         left: 0,
         top: 0,
         width: "100%",
-        height: 88,
+        height: 72,
         background: "rgba(255, 255, 255, 1)",
         boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
         display: "flex",
@@ -91,19 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({
         zIndex: 10,
       }}
     >
-      {/* ── Left: Logo Placeholder ── */}
-      <div
-        style={{
-          width: 120,
-          height: 40,
-          background: "#823C3C",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {/* Placeholder for actual logo */}
-      </div>
+      
 
       {/* ── Center: Search Bar + Dropdown ── */}
       <div ref={searchRef} style={{ position: "relative", width: 406 }}>
@@ -356,130 +322,18 @@ const Navbar: React.FC<NavbarProps> = ({
                   top: 14,
                   left: 0,
                   width: 432,
-                  height: 324,
                   boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.11)",
                   borderRadius: 12,
                   overflow: "hidden",
                   zIndex: 1,
                 }}
               >
-              {/* ── Part 1: Header ── */}
-              <div
-                style={{
-                  width: "100%",
-                  height: 48,
-                  background: "rgba(255, 255, 255, 1)",
-                  borderTopLeftRadius: 12,
-                  borderTopRightRadius: 12,
-                  borderBottom: "1px solid rgba(212, 213, 216, 1)",
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 20,
-                  paddingRight: 20,
-                  boxSizing: "border-box",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    color: "#141414",
+                <NotificationsDropdown
+                  onViewAll={() => {
+                    setShowNotifications(false);
+                    setShowDrawer(true);
                   }}
-                >
-                  Notifications
-                </span>
-              </div>
-
-              {/* ── Part 2: Body ── */}
-              <div
-                style={{
-                  width: "100%",
-                  height: 276,
-                  background: "rgba(255, 255, 255, 1)",
-                  borderBottomRightRadius: 12,
-                  borderBottomLeftRadius: 12,
-                  overflowY: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {notifications.map((notif, index) => (
-                  <div
-                    key={notif.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      padding: "14px 20px",
-                      borderBottom:
-                        index < notifications.length - 1
-                          ? "1px solid rgba(212, 213, 216, 0.5)"
-                          : "none",
-                      cursor: "pointer",
-                      transition: "background 0.15s",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.background =
-                        "rgba(245, 246, 250, 1)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.background =
-                        "transparent";
-                    }}
-                  >
-                    {/* Icon */}
-                    <img
-                      src={notif.icon}
-                      alt={notif.title}
-                      width={40}
-                      height={40}
-                      style={{ flexShrink: 0, borderRadius: 99 }}
-                    />
-
-                    {/* Text */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: 600,
-                          fontSize: 13,
-                          color: "#141414",
-                          marginBottom: 3,
-                        }}
-                      >
-                        {notif.title}
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: 400,
-                          fontSize: 12,
-                          color: "#6B7280",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {notif.description}
-                      </div>
-                    </div>
-
-                    {/* Time */}
-                    <div
-                      style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 400,
-                        fontSize: 11,
-                        color: "#9CA3AF",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {notif.time}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                />
               </div>
             </div>
           )}
@@ -510,6 +364,13 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
     </div>
+
+    {/* ── Notification Drawer (portal-like, fixed) ── */}
+    <NotificationDrawer
+      open={showDrawer}
+      onClose={() => setShowDrawer(false)}
+    />
+    </>
   );
 };
 

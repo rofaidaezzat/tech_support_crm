@@ -16,16 +16,16 @@ interface AddNewLeadProps {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 48,
-  border: "1px solid rgba(212, 213, 216, 1)",
+  border: "1px solid var(--Foundation-brand-brand-500, #D4D5D8)",
   borderRadius: 8,
   padding: "0 14px",
   fontFamily: "Inter, sans-serif",
   fontSize: 14,
   color: "#141414",
-  background: "#fff",
+  background: "transparent",
   outline: "none",
   boxSizing: "border-box",
-  transition: "border-color 0.2s",
+  transition: "border-color 0.2s, background 0.2s",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -58,10 +58,12 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.currentTarget.style.borderColor = "#3B5BDB";
+    e.currentTarget.style.borderColor = "var(--Foundation-brand-brand-500, #00236F)";
+    e.currentTarget.style.background = "#fff";
   };
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)";
+    e.currentTarget.style.borderColor = "var(--Foundation-brand-brand-500, #00236F)";
+    e.currentTarget.style.background = "#fff";
   };
 
   return (
@@ -209,7 +211,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                 color: leadSource ? "#141414" : "#6B7280",
                 cursor: "pointer",
                 userSelect: "none",
-                borderColor: isDropdownOpen ? "#3B5BDB" : "rgba(212, 213, 216, 1)",
+                borderColor: "var(--Foundation-brand-brand-500, #00236F)",
               }}
             >
               <span>{leadSource || "Choose a lead source"}</span>

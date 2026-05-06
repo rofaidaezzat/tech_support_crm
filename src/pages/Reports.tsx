@@ -4,9 +4,13 @@ import starsIcon from '../assets/stars.svg';
 import { useState } from 'react';
 import mailIcon from '../assets/message-text-02 (1).svg';
 import Pagination from '../components/Pagination';
+import New_Report_Modal from '../components/Reports/New_Report_Modal';
+import Top_Periority_notes from '../components/Reports/Top_Periority_notes';
 const Reports = () => {
     const [sortOpen, setSortOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
+    const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   return (
  <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
@@ -36,6 +40,7 @@ const Reports = () => {
         </div>
 
         <button
+          onClick={() => setIsNewReportModalOpen(true)}
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 167,
@@ -115,7 +120,7 @@ const Reports = () => {
                 color: "#141414",
               }}
             />
-            <img src={starsIcon} alt="stars" width={24} height={24} />
+           
           </div>
 
           {/* Date dropdown */}
@@ -302,7 +307,7 @@ const Reports = () => {
 
               {/* Top Priority & notes */}
               <div style={{ flex: 1.4, display: "flex", alignItems: "center" }}>
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} />
+                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesModalOpen(true)} />
               </div>
             </div>
           ))}
@@ -313,6 +318,56 @@ const Reports = () => {
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
         <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
       </div>
+
+      {/* ── Modals ── */}
+      {isNewReportModalOpen && (
+        <div
+          onClick={() => setIsNewReportModalOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <New_Report_Modal
+              onClose={() => setIsNewReportModalOpen(false)}
+              onSubmit={() => {
+                setIsNewReportModalOpen(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {isNotesModalOpen && (
+        <div
+          onClick={() => setIsNotesModalOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <Top_Periority_notes onClose={() => setIsNotesModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -10,6 +10,7 @@ import Pagination from '../components/Pagination';
 import Add_new_deal from '../components/Deals/Add_new_deal';
 import Notes from '../components/Deals/Notes';
 import Service_details from '../components/Deals/Service_details';
+import EditDealValue from '../components/Deals/EditDealValue';
 
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
   <div
@@ -31,6 +32,7 @@ const Deals = () => {
   const [isAddDealOpen, setIsAddDealOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isServiceDetailsOpen, setIsServiceDetailsOpen] = useState(false);
+  const [isEditDealValueOpen, setIsEditDealValueOpen] = useState(false);
 
   return (
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
@@ -138,7 +140,7 @@ const Deals = () => {
                 color: "#141414",
               }}
             />
-            <img src={starsIcon} alt="stars" width={24} height={24} />
+           
           </div>
 
           {/* Date dropdown */}
@@ -404,7 +406,7 @@ const Deals = () => {
                 >
                   {deal.value}
                 </span>
-                <img src={editPenIcon} alt="edit value" width={16} height={16} style={{ cursor: "pointer", opacity: 0.55 }} />
+                <img onClick={() => setIsEditDealValueOpen(true)} src={editPenIcon} alt="edit value" width={16} height={16} style={{ cursor: "pointer", opacity: 0.55 }} />
               </div>
 
               {/* Actions */}
@@ -435,6 +437,11 @@ const Deals = () => {
       {isServiceDetailsOpen && (
         <ModalOverlay onClose={() => setIsServiceDetailsOpen(false)}>
           <Service_details onClose={() => setIsServiceDetailsOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isEditDealValueOpen && (
+        <ModalOverlay onClose={() => setIsEditDealValueOpen(false)}>
+          <EditDealValue onClose={() => setIsEditDealValueOpen(false)} />
         </ModalOverlay>
       )}
     </div>

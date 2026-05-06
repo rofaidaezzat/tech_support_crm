@@ -30,7 +30,7 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
   fontSize: 14,
   color: "#141414",
-  background: "#fff",
+  background: "transparent",
   outline: "none",
   boxSizing: "border-box",
   transition: "border-color 0.2s",

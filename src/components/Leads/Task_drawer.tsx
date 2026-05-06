@@ -128,8 +128,8 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask }) => {
   return (
     <div
       style={{
-        width: 521,
-        height: 955,
+        width: 650,
+        height: "100%",
         background: "rgba(255, 255, 255, 1)",
         boxShadow: "-1px 0px 4px 0px rgba(0, 0, 0, 0.1)",
         display: "flex",
@@ -213,27 +213,38 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask }) => {
       {/* ── Footer ── */}
       <div
         style={{
-          paddingTop: 24,
+          padding: "24px 8px",
           background: "#fff",
           borderTop: "1px solid rgba(212, 213, 216, 0.5)",
+          display: "flex",
+          justifyContent: "center", // Center the button horizontally
         }}
       >
         <button
-          onClick={onNewTask}
+          onClick={() => onNewTask?.()}
           style={{
-            background: "rgba(0, 35, 111, 1)",
+            background: "#00236F",
+            width: "100%",
+            height: 56,
             borderRadius: 12,
             border: "none",
             color: "#fff",
             fontFamily: "Inter, sans-serif",
             fontWeight: 600,
-            fontSize: 15,
-            padding: "12px 24px",
+            fontSize: 16,
+            paddingTop: 8,
+            paddingRight: 24,
+            paddingBottom: 8,
+            paddingLeft: 24,
             display: "flex",
             alignItems: "center",
+            justifyContent: "center", // Center text and icon within the button
             gap: 8,
             cursor: "pointer",
             transition: "background 0.2s",
+            opacity: 1,
+            transform: "rotate(0deg)",
+            boxSizing: "border-box",
           }}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
