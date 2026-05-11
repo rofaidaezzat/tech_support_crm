@@ -25,27 +25,27 @@ const Settings = () => {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   return (
-    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
-      {/* ── Header ── */}
-      <div
-        style={{
-          fontFamily: "Inter, sans-serif",
-          fontWeight: 700,
-          fontSize: 33,
-          lineHeight: "100%",
-          color: "rgba(0, 35, 111, 1)",
-          width: 136,
-          height: 40,
-          display: "flex",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
-        Settings
-      </div>
+    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ width: 678, display: "flex", flexDirection: "column" }}>
+        {/* ── Header ── */}
+        <div
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 700,
+            fontSize: 33,
+            fontStyle: "normal",
+            lineHeight: "normal",
+            color: "var(--Foundation-brand-brand-500, #00236F)",
+            display: "flex",
+            alignItems: "center",
+            marginBottom: 24,
+          }}
+        >
+          Settings
+        </div>
 
-      {/* Main Container */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 678, marginLeft: 271 /* (413 - 142) approximation for left alignment relative to header, or just let it sit where it is based on layout. Let's just follow the 678 width and flow naturally */ }}>
+        {/* Main Container */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%" }}>
         
         {/* ── Profile Section ── */}
         <div style={{ display: "flex", flexDirection: "column", width: 678 }}>
@@ -354,6 +354,7 @@ const Settings = () => {
             <Change_password onClose={() => setIsChangePasswordOpen(false)} />
           </ModalOverlay>
         )}
+      </div>
       </div>
     </div>
   );

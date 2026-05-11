@@ -67,7 +67,7 @@ const Deals = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 149,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -140,7 +140,7 @@ const Deals = () => {
                 color: "#141414",
               }}
             />
-           
+
           </div>
 
           {/* Date dropdown */}
@@ -247,13 +247,13 @@ const Deals = () => {
           }}
         >
           {[
-            { label: "Date",          flex: 1   },
-            { label: "Customer Info", flex: 2   },
-            { label: "Phone number",  flex: 1.4 },
-            { label: "City",          flex: 1   },
-            { label: "Deal details",  flex: 1.4 },
-            { label: "Value (EGP)",   flex: 1.4 },
-            { label: "Actions",       flex: 1   },
+            { label: "Date", flex: 1 },
+            { label: "Customer Info", flex: 2 },
+            { label: "Phone number", flex: 1.4 },
+            { label: "City", flex: 1 },
+            { label: "Deal details", flex: 1.4 },
+            { label: "Value (EGP)", flex: 1.4 },
+            { label: "Actions", flex: 1 },
           ].map(({ label, flex }) => (
             <div
               key={label}

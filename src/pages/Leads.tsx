@@ -130,7 +130,7 @@ const Leads = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 154,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -183,7 +183,7 @@ const Leads = () => {
               transform: "rotate(0deg)",
             }}
           >
-       <img src={filterIcon} alt="filter" width={24} height={24} />
+            <img src={filterIcon} alt="filter" width={24} height={24} />
             <input
               type="text"
               placeholder="Filter by date, name,..."
@@ -197,7 +197,7 @@ const Leads = () => {
                 color: "#141414",
               }}
             />
-           <img src={starsIcon} alt="stars" width={24} height={24} />
+            <img src={starsIcon} alt="stars" width={24} height={24} />
           </div>
 
 
@@ -341,7 +341,7 @@ const Leads = () => {
                         >
                           {option}
                         </span>
-                       
+
                       </div>
                     );
                   })}
@@ -725,7 +725,7 @@ const Leads = () => {
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
                 <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsConvertToDealOpen(true)} />
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 16" fill="none" style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsStatusTimelineOpen(true)}>
-                  <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsEditLeadOpen(true)} />
               </div>

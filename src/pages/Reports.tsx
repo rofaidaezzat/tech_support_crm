@@ -7,12 +7,12 @@ import Pagination from '../components/Pagination';
 import New_Report_Modal from '../components/Reports/New_Report_Modal';
 import Top_Periority_notes from '../components/Reports/Top_Periority_notes';
 const Reports = () => {
-    const [sortOpen, setSortOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
-    const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   return (
- <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
+    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
         style={{
@@ -44,7 +44,7 @@ const Reports = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 167,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -120,7 +120,7 @@ const Reports = () => {
                 color: "#141414",
               }}
             />
-           
+
           </div>
 
           {/* Date dropdown */}
@@ -226,13 +226,13 @@ const Reports = () => {
           }}
         >
           {[
-            { label: "Date",                 flex: 1 },
-            { label: "Calls",                flex: 1 },
-            { label: "Contacts",             flex: 1 },
-            { label: "Followups",            flex: 1 },
-            { label: "Meetings",             flex: 1 },
-            { label: "Deals",                flex: 1 },
-            { label: "Deals Value",          flex: 1.4 },
+            { label: "Date", flex: 1 },
+            { label: "Calls", flex: 1 },
+            { label: "Contacts", flex: 1 },
+            { label: "Followups", flex: 1 },
+            { label: "Meetings", flex: 1 },
+            { label: "Deals", flex: 1 },
+            { label: "Deals Value", flex: 1.4 },
             { label: "Top Priority & notes", flex: 1.4 },
           ].map(({ label, flex }) => (
             <div
