@@ -22,138 +22,358 @@ const followUpOptions = [
   { value: 'missed', label: 'Missed', count: 200 },
 ];
 
-export const FollowUp: React.FC<FollowUpProps> = ({
-  isOpen,
-  onClose,
-  onApply,
-  defaultFilter = 'today',
-  defaultStartDate = '',
-  defaultEndDate = '',
-}) => {
-  const [selectedFilter, setSelectedFilter] = useState(defaultFilter);
-  const [startDate, setStartDate] = useState(defaultStartDate);
-  const [endDate, setEndDate] = useState(defaultEndDate);
-
-  const handleApply = () => {
-    onApply({
-      filterType: selectedFilter,
-      startDate,
-      endDate,
-    });
-    onClose();
-  };
+export const FollowUp: React.FC<FollowUpProps> = ({ isOpen, onClose, onApply }) => {
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const handleClear = () => {
-    setSelectedFilter(defaultFilter);
-    setStartDate('');
-    setEndDate('');
+    setSelectedPreset(null);
+    setStartDate("");
+    setEndDate("");
   };
 
-  const clearStartDate = () => setStartDate('');
-  const clearEndDate = () => setEndDate('');
+  const handleApply = () => {
+    if (onApply) onApply({ filterType: selectedPreset || '', startDate, endDate });
+    if (onClose) onClose();
+  };
 
-  if (!isOpen) return null;
+  if (isOpen !== undefined && !isOpen) return null;
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: 48,
+    border: "1px solid rgba(212, 213, 216, 1)",
+    borderRadius: 8,
+    padding: "0 14px",
+    fontFamily: "Inter, sans-serif",
+    fontSize: 14,
+    color: "#141414",
+    background: "transparent",
+    outline: "none",
+    boxSizing: "border-box",
+    cursor: "pointer",
+    transition: "border-color 0.2s",
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div
+      style={{
+        width: 520,
+        height: 400,
+        background: "rgba(255, 255, 255, 1)",
+        borderRadius: 12,
+        boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+        padding: "12px 16px",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        fontFamily: "Inter, sans-serif",
+        opacity: 1,
+      }}
+    >
+      {/* ── Main content row ── */}
       <div
-        className="bg-white w-[525px] h-[376px] rounded-3xl shadow-[0_2px_4px_rgba(0,0,0,0.17)] 
-                   p-4 flex flex-col"
+        style={{
+          width: 488,
+          height: 304,
+          display: "flex",
+          gap: 12,
+          flexShrink: 0,
+        }}
       >
-        <div className="flex gap-4 flex-1">
-          {/* Left Side - Radio Options */}
-          <div className="w-[192px] flex flex-col">
-            {followUpOptions.map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-xl cursor-pointer"
+        {/* Left – preset radio list */}
+        <div
+          style={{
+            width: 187,
+            height: 304,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            flexShrink: 0,
+            borderRight: "1px solid rgba(212, 213, 216, 1)",
+            paddingRight: 8,
+            boxSizing: "border-box",
+          }}
+        >
+          {followUpOptions.map((preset) => {
+            const active = selectedPreset === preset.label;
+            return (
+              <div
+                key={preset.label}
+                onClick={() => setSelectedPreset(preset.label)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "8px",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  background: active
+                    ? "rgba(245, 246, 250, 1)"
+                    : "transparent",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  if (!active)
+                    e.currentTarget.style.background = "rgba(245,246,250,0.6)";
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) e.currentTarget.style.background = "transparent";
+                }}
               >
-                <input
-                  type="radio"
-                  name="followup"
-                  value={option.value}
-                  checked={selectedFilter === option.value}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="w-5 h-5 accent-[#00236f]"
-                />
-                <div className="flex-1 text-[16px]">
-                  {option.label}{' '}
-                  <span className="text-gray-500">({option.count})</span>
+                {/* Custom radio */}
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    border: `2px solid ${
+                      active
+                        ? "rgba(0, 35, 111, 1)"
+                        : "rgba(212, 213, 216, 1)"
+                    }`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    transition: "border-color 0.15s",
+                  }}
+                >
+                  {active && (
+                    <div
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: "rgba(0, 35, 111, 1)",
+                      }}
+                    />
+                  )}
                 </div>
+
+                <span
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 14,
+                    color: "#141414",
+                    fontWeight: 400,
+                  }}
+                >
+                  {preset.label}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 13,
+                    color: "#6B7280",
+                    fontWeight: 400,
+                  }}
+                >
+                  ({preset.count})
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right – date inputs */}
+        <div
+          style={{
+            width: 277,
+            height: 158,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            margin: "auto 0",
+            gap: 24,
+          }}
+        >
+          {/* Start Date */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <label
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#141414",
+                }}
+              >
+                Start date
               </label>
-            ))}
+              <button
+                onClick={() => setStartDate("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "rgba(0, 35, 111, 1)",
+                  padding: 0,
+                }}
+              >
+                Clear
+              </button>
+            </div>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                setSelectedPreset(null);
+              }}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(0, 35, 111, 1)")
+              }
+              onBlur={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)")
+              }
+              style={inputStyle}
+            />
           </div>
 
-          {/* Vertical Divider */}
-          <div className="w-px bg-gray-100 my-2" />
-
-          {/* Right Side - Date Filters */}
-          <div className="flex-1 flex flex-col gap-6 pt-1">
-            {/* Start Date */}
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="text-[15px] text-gray-700">Start date</label>
-                <button
-                  onClick={clearStartDate}
-                  className="text-[#00236f] text-sm font-medium hover:underline"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full h-11 px-4 border border-gray-300 rounded-2xl text-base focus:outline-none focus:border-[#00236f]"
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  📅
-                </div>
-              </div>
+          {/* End Date */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <label
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#141414",
+                }}
+              >
+                End date
+              </label>
+              <button
+                onClick={() => setEndDate("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "rgba(0, 35, 111, 1)",
+                  padding: 0,
+                }}
+              >
+                Clear
+              </button>
             </div>
-
-            {/* End Date */}
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <label className="text-[15px] text-gray-700">End date</label>
-                <button
-                  onClick={clearEndDate}
-                  className="text-[#00236f] text-sm font-medium hover:underline"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full h-11 px-4 border border-gray-300 rounded-2xl text-base focus:outline-none focus:border-[#00236f]"
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  📅
-                </div>
-              </div>
-            </div>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                setSelectedPreset(null);
+              }}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(0, 35, 111, 1)")
+              }
+              onBlur={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)")
+              }
+              style={inputStyle}
+            />
           </div>
         </div>
+      </div>
 
-        {/* Bottom Buttons */}
-        <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 mt-auto">
-          <button
-            onClick={handleClear}
-            className="w-[161px] h-12 text-[#00236f] font-medium rounded-3xl hover:bg-gray-100 transition-colors"
-          >
-            Clear
-          </button>
-          <button
-            onClick={handleApply}
-            className="w-[92px] h-12 bg-[#00236f] text-white font-medium rounded-3xl hover:bg-[#001d5c] transition-colors"
-          >
-            Apply
-          </button>
-        </div>
+      {/* ── Divider ── */}
+      <div
+        style={{
+          width: "100%",
+          height: 1,
+          background: "rgba(212, 213, 216, 1)",
+          flexShrink: 0,
+        }}
+      />
+
+      {/* ── Footer – Clear + Apply ── */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          gap: 12,
+          height: 48,
+          flexShrink: 0,
+        }}
+      >
+        {/* Clear button */}
+        <button
+          onClick={handleClear}
+          style={{
+            height: 48,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "Inter, sans-serif",
+            fontSize: 15,
+            fontWeight: 600,
+            color: "rgba(0, 35, 111, 1)",
+            padding: "8px 16px",
+            borderRadius: 12,
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "rgba(0,35,111,0.06)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "none")
+          }
+        >
+          Clear
+        </button>
+
+        {/* Apply button */}
+        <button
+          onClick={handleApply}
+          style={{
+            width: 92,
+            height: 48,
+            background: "rgba(0, 35, 111, 1)",
+            border: "none",
+            borderRadius: 12,
+            cursor: "pointer",
+            fontFamily: "Inter, sans-serif",
+            fontSize: 15,
+            fontWeight: 600,
+            color: "#ffffff",
+            padding: "8px 24px",
+            boxSizing: "border-box",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "rgba(0, 25, 85, 1)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "rgba(0, 35, 111, 1)")
+          }
+        >
+          Apply
+        </button>
       </div>
     </div>
   );

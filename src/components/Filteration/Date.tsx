@@ -190,6 +190,8 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
             height: 158,
             display: "flex",
             flexDirection: "column",
+            justifyContent: "center",
+            margin: "auto 0",
             gap: 24,
           }}
         >

@@ -39,49 +39,146 @@ export const Sort: React.FC<SortProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div
-        className="bg-white w-[322px] h-[268px] rounded-3xl shadow-[0_2px_4px_rgba(0,0,0,0.17)] 
-                   p-4 flex flex-col gap-3"
-      >
-        {/* Radio Options */}
-        <div className="flex flex-col gap-1 flex-1">
-          {sortOptions.map((option) => (
-            <label
-              key={option.value}
-              className="flex items-center gap-3 py-2.5 px-1 cursor-pointer hover:bg-gray-50 rounded-xl"
-            >
-              <input
-                type="radio"
-                name="sort"
-                value={option.value}
-                checked={selected === option.value}
-                onChange={(e) => setSelected(e.target.value)}
-                className="w-5 h-5 accent-[#00236f]"
-              />
-              <span className="text-[16px] text-gray-800">{option.label}</span>
-            </label>
-          ))}
-        </div>
+    <div style={styles.container}>
+      {/* Radio Options */}
+      <div style={styles.optionsList}>
+        {sortOptions.map((option) => (
+          <label key={option.value} style={styles.radioRow}>
+            <input
+              type="radio"
+              name="sort"
+              value={option.value}
+              checked={selected === option.value}
+              onChange={(e) => setSelected(e.target.value)}
+              style={styles.radio}
+            />
+            <span style={styles.optionText}>{option.label}</span>
+          </label>
+        ))}
+      </div>
 
-        {/* Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-          <button
-            onClick={handleClear}
-            className="w-[161px] h-12 text-[#00236f] font-medium rounded-3xl hover:bg-gray-100 transition-colors"
-          >
+      {/* Divider */}
+      <div style={styles.divider} />
+
+      {/* Buttons */}
+      <div style={styles.buttonsRowContainer}>
+        <div style={styles.buttonsRow}>
+          <button onClick={handleClear} style={styles.clearButton}>
             Clear
           </button>
-
-          <button
-            onClick={handleApply}
-            className="w-[92px] h-12 bg-[#00236f] text-white font-medium rounded-3xl 
-                     hover:bg-[#001d5c] transition-colors"
-          >
+          <button onClick={handleApply} style={styles.applyButton}>
             Apply
           </button>
         </div>
       </div>
     </div>
   );
+};
+
+const styles: Record<string, React.CSSProperties> = {
+  container: {
+    boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+    background: "rgba(255, 255, 255, 1)",
+    width: "322px",
+    height: "268px",
+    borderRadius: "12px",
+    paddingTop: "12px",
+    paddingRight: "16px",
+    paddingBottom: "12px",
+    paddingLeft: "16px",
+    gap: "12px",
+    opacity: 1,
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+  },
+  optionsList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+    width: "290px",
+    height: "172px",
+    minWidth: "290px",
+    opacity: 1,
+  },
+  radioRow: {
+    display: "flex",
+    alignItems: "center",
+    width: "290px",
+    height: "40px",
+    gap: "12px",
+    padding: "8px",
+    cursor: "pointer",
+    boxSizing: "border-box",
+  },
+  radio: {
+    width: "20px",
+    height: "20px",
+    accentColor: "#00236f",
+    cursor: "pointer",
+  },
+  optionText: {
+    fontSize: "16px",
+    color: "#374151",
+    fontFamily: "Inter, sans-serif",
+  },
+  divider: {
+    width: "100%",
+    height: "1px",
+    background: "#E8E8F0",
+  },
+  buttonsRowContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "100%",
+  },
+  buttonsRow: {
+    display: "flex",
+    width: "161px",
+    height: "48px",
+    gap: "12px",
+    opacity: 1,
+    alignItems: "center",
+  },
+  clearButton: {
+    width: "57px",
+    height: "48px",
+    borderRadius: "12px",
+    gap: "8px",
+    opacity: 1,
+    padding: "8px",
+    background: "transparent",
+    border: "none",
+    color: "rgba(0, 35, 111, 1)",
+    fontFamily: "Inter, sans-serif",
+    fontSize: "14px",
+    fontWeight: 600,
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxSizing: "border-box",
+  },
+  applyButton: {
+    background: "rgba(0, 35, 111, 1)",
+    width: "92px",
+    height: "48px",
+    borderRadius: "12px",
+    paddingTop: "8px",
+    paddingRight: "24px",
+    paddingBottom: "8px",
+    paddingLeft: "24px",
+    gap: "8px",
+    opacity: 1,
+    color: "#ffffff",
+    border: "none",
+    fontFamily: "Inter, sans-serif",
+    fontSize: "14px",
+    fontWeight: 600,
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxSizing: "border-box",
+  },
 };

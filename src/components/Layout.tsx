@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import Task_drawer from "./Leads/Task_drawer";
-import Add_New_Task from "./Leads/Add_New_Task";
+import Task_drawer from "./Navbar/Task_drawer";
+import Add_New_Task from "./Navbar/Add_New_Task";
+import Edit_Task from "./Navbar/Edit_Task";
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
+  const [showEditTask, setShowEditTask] = useState(false);
+  const [editingTaskData, setEditingTaskData] = useState<any>(null);
 
   // Extract the current page from the pathname for the Sidebar active state
   const currentPath = location.pathname.substring(1) || "overview";
@@ -81,6 +84,11 @@ const Layout: React.FC = () => {
             setIsTaskDrawerOpen(false);
             setShowAddTask(true);
           }}
+          onEditTask={(taskData) => {
+            setEditingTaskData(taskData);
+            setIsTaskDrawerOpen(false);
+            setShowEditTask(true);
+          }}
         />
       </div>
 
@@ -113,6 +121,43 @@ const Layout: React.FC = () => {
                 onSave={(data) => {
                   console.log("New task saved:", data);
                   setShowAddTask(false);
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── Edit Task Modal (centered) ── */}
+      {showEditTask && (
+        <>
+          <div
+            onClick={() => setShowEditTask(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0, 0, 0, 0.35)",
+              zIndex: 200,
+            }}
+          />
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 201,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <div style={{ pointerEvents: "auto", maxHeight: "90vh", overflowY: "auto", borderRadius: 12 }}>
+              <Edit_Task
+                initialData={editingTaskData}
+                onClose={() => setShowEditTask(false)}
+                onSave={(data) => {
+                  console.log("Task edited:", data);
+                  setShowEditTask(false);
                 }}
               />
             </div>

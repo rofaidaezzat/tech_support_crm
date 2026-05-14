@@ -6,8 +6,12 @@ import mailIcon from '../assets/message-text-02 (1).svg';
 import Pagination from '../components/Pagination';
 import New_Report_Modal from '../components/Reports/New_Report_Modal';
 import Top_Periority_notes from '../components/Reports/Top_Periority_notes';
+import DateFilter from '../components/Filteration/Date';
+import Value from '../components/Filteration/Value';
+import { Sort } from '../components/Filteration/Sort';
+
 const Reports = () => {
-    const [sortOpen, setSortOpen] = useState(false);
+    const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
     const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
@@ -119,43 +123,108 @@ const Reports = () => {
                 fontSize: 14,
                 color: "#141414",
               }}
-            />
-           
+            />       
           </div>
 
           {/* Date dropdown */}
-          <button
-            style={{
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              padding: "0 12px",
-              height: 40,
-              gap: 8,
-              background: "transparent",
-              cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
-              flexShrink: 0,
-              marginRight: 16,
-            }}
-          >
-            Date
-            <ChevronDown size={16} color="#4B5563" />
-          </button>
+          <div style={{ position: "relative", marginRight: 16 }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === "date" ? null : "date")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                width: 88,
+                gap: 8,
+                background: "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
+              }}
+            >
+              <span style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                fontSize: 16,
+                lineHeight: "100%",
+                color: "rgba(70, 70, 70, 1)",
+                verticalAlign: "middle"
+              }}>
+                Date
+              </span>
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === "date" && (
+              <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
+                <DateFilter onApply={(date) => { console.log(date); setActiveFilter(null); }} />
+              </div>
+            )}
+          </div>
 
           {/* Value dropdown */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === "value" ? null : "value")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                width: 139,
+                gap: 8,
+                background: "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
+              }}
+            >
+              <span style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                fontSize: 16,
+                lineHeight: "100%",
+                color: "rgba(70, 70, 70, 1)",
+                verticalAlign: "middle"
+              }}>
+                Deals value
+              </span>
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === "value" && (
+              <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
+                <Value onApply={(val) => { console.log(val); setActiveFilter(null); }} onClear={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sort by dropdown */}
+        <div style={{ position: "relative" }}>
           <button
+            onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               border: "1px solid rgba(212, 213, 216, 1)",
               borderRadius: 12,
-              padding: "0 12px",
+              paddingRight: 12,
+              paddingLeft: 12,
               height: 40,
+              width: 108,
               gap: 8,
               background: "transparent",
               cursor: "pointer",
@@ -163,39 +232,30 @@ const Reports = () => {
               fontSize: 14,
               color: "#4B5563",
               boxSizing: "border-box",
-              flexShrink: 0,
             }}
           >
-            Deals Value
-            <ChevronDown size={16} color="#4B5563" />
+            <span style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 400,
+              fontSize: 16,
+              lineHeight: "100%",
+              color: "rgba(70, 70, 70, 1)",
+              verticalAlign: "middle"
+            }}>
+              Sort by
+            </span>
+            <ArrowDownUp size={16} color="#4B5563" />
           </button>
+          {activeFilter === "sort" && (
+            <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, zIndex: 50 }}>
+              <Sort 
+                isOpen={true} 
+                onClose={() => setActiveFilter(null)} 
+                onApply={(sortData) => { console.log(sortData); setActiveFilter(null); }} 
+              />
+            </div>
+          )}
         </div>
-
-        {/* Sort by button */}
-        <button
-          onClick={() => setSortOpen((prev) => !prev)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid rgba(212, 213, 216, 1)",
-            borderRadius: 12,
-            paddingRight: 12,
-            paddingLeft: 12,
-            height: 40,
-            width: 108,
-            gap: 8,
-            background: "transparent",
-            cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
-            fontSize: 14,
-            color: "#4B5563",
-            boxSizing: "border-box",
-          }}
-        >
-          Sort by
-          <ArrowDownUp size={16} color="#4B5563" />
-        </button>
       </div>
       {/* ── Table ── */}
       <div

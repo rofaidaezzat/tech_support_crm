@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 
-const STATUS_OPTIONS = [
-  { label: "Fresh", count: 200 },
-  { label: "Deal", count: 200 },
-  { label: "Interested", count: 200 },
-  { label: "Not interested", count: 200 },
-  { label: "Meeting", count: 200 },
-  { label: "After meeting followup", count: 200 },
-  { label: "Wrong number", count: 200 },
-  { label: "No answer", count: 200 },
+const PRIORITY_OPTIONS = [
+  { label: "Low", count: 200 },
+  { label: "Medium", count: 200 },
+  { label: "High", count: 200 },
 ];
 
-interface StatusProps {
+interface PriorityProps {
   onApply?: (selected: string[]) => void;
   onClear?: () => void;
 }
 
-const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
+const Priority: React.FC<PriorityProps> = ({ onApply, onClear }) => {
   const [selected, setSelected] = useState<string[]>([]);
 
   const toggleOption = (label: string) => {
@@ -38,7 +33,7 @@ const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
     <div style={styles.container}>
       {/* Options list */}
       <div style={styles.optionsList}>
-        {STATUS_OPTIONS.map((option) => (
+        {PRIORITY_OPTIONS.map((option) => (
           <label key={option.label} style={styles.checkboxRow}>
             <input
               type="checkbox"
@@ -75,32 +70,26 @@ const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
-    background: "rgba(255, 255, 255, 1)",
-    width: "322px",
-    height: "444px",
     borderRadius: "12px",
-    paddingTop: "12px",
-    paddingRight: "16px",
-    paddingBottom: "12px",
-    paddingLeft: "16px",
-    gap: "12px",
-    opacity: 1,
-    display: "flex",
+    background: "rgba(255, 255, 255, 1)",
+    boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
+    display: "inline-flex",
+    padding: "12px 16px",
     flexDirection: "column",
-    alignItems: "flex-start",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    gap: "12px",
     boxSizing: "border-box",
   },
 
   optionsList: {
     width: "290px",
-    height: "348px",
+    height: "128px",
     minWidth: "290px",
     display: "flex",
     flexDirection: "column",
     gap: "4px",
     opacity: 1,
-    overflowY: "auto",
   },
 
   checkboxRow: {
@@ -111,7 +100,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     height: "40px",
     padding: "8px",
-    gap: "8px",
+    gap: "12px",
     cursor: "pointer",
     boxSizing: "border-box",
   },
@@ -153,7 +142,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   applyButton: {
     borderRadius: "12px",
-    background: "var(--Foundation-brand-brand-500, #00236F)",
+    background: "rgba(0, 35, 111, 1)",
     display: "flex",
     height: "48px",
     padding: "8px 24px",
@@ -166,26 +155,27 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     fontFamily: "Inter, sans-serif",
     cursor: "pointer",
-    transition: "opacity 0.2s ease",
+    boxSizing: "border-box",
   },
 
   clearButton: {
-    borderRadius: "12px",
-    display: "flex",
+    width: "57px",
     height: "48px",
+    borderRadius: "12px",
+    gap: "8px",
     padding: "8px",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    gap: "8px",
     border: "none",
     background: "transparent",
-    color: "var(--Foundation-brand-brand-500, #00236F)",
+    color: "rgba(0, 35, 111, 1)",
     fontSize: "14px",
     fontWeight: 600,
     fontFamily: "Inter, sans-serif",
     cursor: "pointer",
-    transition: "opacity 0.2s ease",
+    boxSizing: "border-box",
   },
 };
 
-export default Status;
+export default Priority;

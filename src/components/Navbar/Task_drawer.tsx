@@ -1,0 +1,274 @@
+import React, { useState } from "react";
+import checkSquareIcon from "../../assets/check-square-broken.svg";
+import checkIcon from "../../assets/check-02.svg";
+import starIcon from "../../assets/stars.svg";
+import editIcon from "../../assets/edit-03.svg";
+import bellIcon from "../../assets/bell-ringing-04.svg";
+import calendarIcon from "../../assets/calendar-03.svg";
+import infoIcon from "../../assets/information-circle-contained.svg";
+import userProfileIcon from "../../assets/user-profile-02.svg";
+
+interface TaskDrawerProps {
+  onClose?: () => void;
+  onNewTask?: () => void;
+  onEditTask?: (taskData: any) => void;
+}
+
+const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
+  const taskData = {
+    title: "Call Mohamed Yasser for followup",
+    relatedTo: "Lead",
+    selectedLead: "Mohammed Mahmoud",
+    description: "Lorem ipsum dolor sit amet consectetur. In lacus in odio faucibus pellentesque aliquam metus justo nulla. Sollicitudin est in eros ligula consectetur eu porttitor leo vel.",
+    priority: "Low",
+    dueDate: "2026-04-01",
+    reminderDate: "2026-04-02",
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        padding: 16,
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 16,
+        alignSelf: "stretch",
+        borderRadius: 12,
+        background: "rgba(245, 246, 250, 1)",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 19 18" fill="none" style={{ minWidth: 16.775, width: 16.775, height: 16 }}>
+            <path d="M8.80092 1.09497C8.97306 0.746177 9.47042 0.746177 9.64256 1.09497L11.8709 5.61007C11.9393 5.74857 12.0714 5.84457 12.2242 5.86678L17.2069 6.59081C17.5919 6.64674 17.7455 7.11976 17.467 7.39126L13.8615 10.9058C13.7509 11.0136 13.7004 11.1689 13.7265 11.3211L14.5777 16.2837C14.6434 16.6671 14.2411 16.9594 13.8968 16.7784L9.44011 14.4354C9.3034 14.3635 9.14008 14.3635 9.00337 14.4354L4.54669 16.7784C4.20242 16.9594 3.80004 16.6671 3.8658 16.2837L4.71694 11.3211C4.74305 11.1689 4.69258 11.0136 4.58198 10.9058L0.976457 7.39126C0.697934 7.11976 0.851627 6.64674 1.23654 6.59081L6.21925 5.86678C6.3721 5.84457 6.50423 5.74857 6.57259 5.61007L8.80092 1.09497Z" stroke="#464646" strokeWidth="1.66667" strokeLinejoin="round"/>
+          </svg>
+          <span
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 500,
+              fontSize: 16,
+              lineHeight: "100%",
+              color: "rgba(70, 70, 70, 1)",
+            }}
+          >
+            {taskData.title}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img onClick={() => onEdit?.(taskData)} src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} />
+          <img src={checkIcon} alt="Complete" width={24} height={24} style={{ cursor: "pointer" }} />
+        </div>
+      </div>
+
+      {/* Description */}
+      <p
+        style={{
+          fontFamily: "Inter, sans-serif",
+          fontWeight: 400,
+          fontSize: 13,
+          lineHeight: "140%",
+          color: "rgba(70, 70, 70, 1)",
+          margin: 0,
+        }}
+      >
+        Lorem ipsum dolor sit amet consectetur. In lacus in odio faucibus pellentesque aliquam metus justo nulla. Sollicitudin est in eros ligula consectetur eu porttitor leo vel.
+      </p>
+
+      {/* Details Container */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        borderTop: "1px solid rgba(212, 213, 216, 1)",
+        paddingTop: 12,
+        paddingBottom: 12,
+        width: "100%",
+        boxSizing: "border-box"
+      }}>
+        {/* The left */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 216 }}>
+          {/* Lead Name */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20, whiteSpace: "nowrap" }}>
+            <img src={userProfileIcon} alt="User" width={16} height={16} />
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Lead Name:</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>{taskData.selectedLead}</span>
+            </div>
+          </div>
+          {/* Assigned by */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20, whiteSpace: "nowrap" }}>
+            <img src={userProfileIcon} alt="User" width={16} height={16} />
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Assigned by:</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>Yasser Helmy</span>
+            </div>
+          </div>
+          {/* Reminder */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20, whiteSpace: "nowrap" }}>
+            <img src={bellIcon} alt="Bell" width={16} height={16} />
+            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>We will remind you at 2 Apr</span>
+          </div>
+        </div>
+
+        {/* The right */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 167 }}>
+          {/* Priority */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 20, width: "100%", whiteSpace: "nowrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <img src={infoIcon} alt="Info" width={16} height={16} />
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Priority:</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#141414" }} />
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>Low</span>
+            </div>
+          </div>
+          {/* Due date */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 20, width: "100%", whiteSpace: "nowrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <img src={calendarIcon} alt="Calendar" width={16} height={16} />
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Due date:</span>
+            </div>
+            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#EF4444", lineHeight: "140%" }}>Yesterday</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask }) => {
+  const [activeTab, setActiveTab] = useState("Today");
+  const tabs = ["All", "Today", "Overdue", "Completed"];
+
+  return (
+    <div
+      style={{
+        width: 521,
+        height: "100%",
+        background: "rgba(255, 255, 255, 1)",
+        boxShadow: "-1px 0px 4px 0px rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        flexDirection: "column",
+        padding: "16px 24px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* ── Header ── */}
+      <div style={{ padding: "16px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+          <img src={checkSquareIcon} alt="Tasks" width={24} height={24} />
+          <span
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 700,
+              fontSize: 20,
+              color: "#141414",
+            }}
+          >
+            Tasks
+          </span>
+        </div>
+
+        {/* Tabs */}
+        <div
+          style={{
+            display: "flex",
+            width: 473,
+            height: 35,
+            borderBottom: "1px solid rgba(212, 213, 216, 1)",
+          }}
+        >
+          {tabs.map((tab) => (
+            <div
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                width: 118.25,
+                height: 35,
+                padding: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: activeTab === tab ? 700 : 500,
+                fontSize: 16,
+                lineHeight: "100%",
+                color: activeTab === tab ? "rgba(0, 35, 111, 1)" : "#4B5563",
+                borderBottom: activeTab === tab ? "1px solid rgba(0, 35, 111, 1)" : "1px solid transparent",
+                marginBottom: -1, // Overlaps container border seamlessly
+                transition: "color 0.2s, border-color 0.2s",
+                boxSizing: "border-box",
+              }}
+            >
+              {tab}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Task List ── */}
+      <div
+        style={{
+          width: 470, // Includes space for scrollbar
+          flex: 1,
+          padding: "16px 0",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+      >
+        <TaskCard onEdit={(data) => onEditTask?.(data)} />
+        <TaskCard onEdit={(data) => onEditTask?.(data)} />
+        <TaskCard onEdit={(data) => onEditTask?.(data)} />
+      </div>
+
+      {/* ── Footer ── */}
+      <div
+        style={{
+          padding: "24px 8px",
+          background: "#fff",
+          borderTop: "1px solid rgba(212, 213, 216, 0.5)",
+          display: "flex",
+          justifyContent: "center", // Center the button horizontally
+        }}
+      >
+        <button
+          onClick={() => onNewTask?.()}
+          style={{
+            background: "rgba(0, 35, 111, 1)",
+            width: 505,
+            height: 48,
+            borderRadius: 12,
+            border: "none",
+            color: "#fff",
+            fontFamily: "Inter, sans-serif",
+            fontWeight: 600,
+            fontSize: 16,
+            padding: "8px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            cursor: "pointer",
+            transition: "background 0.2s",
+            boxSizing: "border-box",
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          New Task
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Task_drawer;

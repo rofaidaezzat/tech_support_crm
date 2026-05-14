@@ -6,11 +6,13 @@ import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import mailIcon from '../assets/message-text-02 (1).svg';
 import editPenIcon from '../assets/edit-04.svg';
 import Pagination from '../components/Pagination';
-
 import Add_new_deal from '../components/Deals/Add_new_deal';
 import Notes from '../components/Deals/Notes';
 import Service_details from '../components/Deals/Service_details';
 import EditDealValue from '../components/Deals/EditDealValue';
+import Value from '../components/Filteration/Value';
+import DateFilter from '../components/Filteration/Date';
+import { Sort } from '../components/Filteration/Sort';
 
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
   <div
@@ -26,7 +28,7 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
 );
 
 const Deals = () => {
-  const [sortOpen, setSortOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'date' | 'value' | 'sort' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isAddDealOpen, setIsAddDealOpen] = useState(false);
@@ -144,78 +146,100 @@ const Deals = () => {
           </div>
 
           {/* Date dropdown */}
-          <button
-            style={{
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              padding: "0 12px",
-              height: 40,
-              gap: 8,
-              background: "transparent",
-              cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
-              flexShrink: 0,
-              marginRight: 16,
-            }}
-          >
-            Date
-            <ChevronDown size={16} color="#4B5563" />
-          </button>
+          <div style={{ position: "relative", marginRight: 16 }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'date' ? null : 'date')}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                gap: 8,
+                background: activeFilter === 'date' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
+              }}
+            >
+              Date
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'date' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <DateFilter onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
 
           {/* Value dropdown */}
-          <button
-            style={{
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              padding: "0 12px",
-              height: 40,
-              gap: 8,
-              background: "transparent",
-              cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
-              flexShrink: 0,
-            }}
-          >
-            Value
-            <ChevronDown size={16} color="#4B5563" />
-          </button>
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'value' ? null : 'value')}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                gap: 8,
+                background: activeFilter === 'value' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
+              }}
+            >
+              Value
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'value' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <Value onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Sort by button */}
-        <button
-          onClick={() => setSortOpen((prev) => !prev)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid rgba(212, 213, 216, 1)",
-            borderRadius: 12,
-            paddingRight: 12,
-            paddingLeft: 12,
-            height: 40,
-            width: 108,
-            gap: 8,
-            background: "transparent",
-            cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
-            fontSize: 14,
-            color: "#4B5563",
-            boxSizing: "border-box",
-          }}
-        >
-          Sort by
-          <ArrowDownUp size={16} color="#4B5563" />
-        </button>
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(212, 213, 216, 1)",
+              borderRadius: 12,
+              paddingRight: 12,
+              paddingLeft: 12,
+              height: 40,
+              width: 108,
+              gap: 8,
+              background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+              cursor: "pointer",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 14,
+              color: "#4B5563",
+              boxSizing: "border-box",
+            }}
+          >
+            Sort by
+            <ArrowDownUp size={16} color="#4B5563" />
+          </button>
+          {activeFilter === 'sort' && (
+            <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}>
+              <Sort isOpen={true} onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Table ── */}

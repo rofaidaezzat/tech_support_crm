@@ -18,6 +18,14 @@ import Notes from '../components/Deals/Notes';
 import Leads_messages from '../components/Leads/Leads_messages';
 import StatusTimeline from '../components/Leads/StatusTimeline';
 
+// Filter Components
+import DateFilter from '../components/Filteration/Date';
+import { FollowUp } from '../components/Filteration/FollowUp';
+import { Sort } from '../components/Filteration/Sort';
+import Source from '../components/Filteration/Source';
+import Status from '../components/Filteration/Status';
+import Priority from '../components/Filteration/Priority';
+
 // Reusable overlay for modals
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
   <div
@@ -59,9 +67,10 @@ const COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "
 const Leads = () => {
   const [leads, setLeads] = useState(INITIAL_LEADS);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
-  const [filterStatusOpen, setFilterStatusOpen] = useState(false);
-  const [filterDraftStatus, setFilterDraftStatus] = useState<string[]>([]);
-  const [sortStatus, setSortStatus] = useState<"asc" | "desc">("asc");
+  
+  // Filter Dropdowns & Modals
+  type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | null;
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
 
   // Modal States
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
@@ -74,7 +83,6 @@ const Leads = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const filterStatusRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -201,264 +209,142 @@ const Leads = () => {
           </div>
 
 
-          {["Date"].map((label) => (
+          {/* Date */}
+          <div style={{ position: "relative" }}>
             <button
-              key={label}
+              onClick={() => setActiveFilter(activeFilter === 'date' ? null : 'date')}
               style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12,
-                padding: "0 12px",
-                height: 40,
-                gap: 8,
-                background: "transparent",
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#4B5563",
-                boxSizing: "border-box",
+                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
+                background: activeFilter === 'date' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
-              {label}
+              Date
               <ChevronDown size={16} color="#4B5563" />
             </button>
-          ))}
+            {activeFilter === 'date' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <DateFilter onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
 
-          {/* Status filter button + modal */}
-          <div ref={filterStatusRef} style={{ position: "relative" }}>
+          {/* Status */}
+          <div style={{ position: "relative" }}>
             <button
-              onClick={() => setFilterStatusOpen((prev) => !prev)}
+              onClick={() => setActiveFilter(activeFilter === 'status' ? null : 'status')}
               style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12,
-                padding: "0 12px",
-                height: 40,
-                gap: 8,
-                background: filterStatusOpen ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#4B5563",
-                boxSizing: "border-box",
+                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
+                background: activeFilter === 'status' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
               Status
               <ChevronDown size={16} color="#4B5563" />
             </button>
-
-            {filterStatusOpen && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  width: 322,
-                  height: 384,
-                  zIndex: 500,
-                  background: "rgba(255, 255, 255, 1)",
-                  boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
-                  borderRadius: 12,
-                  paddingTop: 12,
-                  paddingRight: 16,
-                  paddingBottom: 12,
-                  paddingLeft: 16,
-                  boxSizing: "border-box",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                }}
-              >
-                {/* Status items */}
-                <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
-                  {STATUS_OPTIONS.map((option) => {
-                    const isChecked = filterDraftStatus.includes(option);
-                    return (
-                      <div
-                        key={option}
-                        onClick={() =>
-                          setFilterDraftStatus((prev) =>
-                            isChecked ? prev.filter((s) => s !== option) : [...prev, option]
-                          )
-                        }
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
-                          padding: "8px 4px",
-                          cursor: "pointer",
-                          borderRadius: 8,
-                          transition: "background 0.15s",
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLDivElement).style.background = "rgba(237, 239, 242, 1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLDivElement).style.background = "transparent";
-                        }}
-                      >
-                        {/* Checkbox square */}
-                        <div
-                          style={{
-                            width: 18,
-                            height: 18,
-                            borderRadius: 2,
-                            border: isChecked
-                              ? "2px solid rgba(0, 35, 111, 1)"
-                              : "2px solid rgba(128, 128, 128, 1)",
-                            boxSizing: "border-box",
-                            background: isChecked ? "rgba(0, 35, 111, 1)" : "#fff",
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginTop: 3,
-                            marginLeft: 3,
-                          }}
-                        >
-                          {isChecked && (
-                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                              <path
-                                d="M1 4L3.5 6.5L9 1"
-                                stroke="#fff"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                        <span
-                          style={{
-                            fontFamily: "Inter, sans-serif",
-                            fontSize: 14,
-                            fontWeight: 400,
-                            color: "rgba(70, 70, 70, 1)",
-                            flex: 1,
-                          }}
-                        >
-                          {option}
-                        </span>
-                       
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Apply & Cancel buttons */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    gap: 12,
-                    width: 160,
-                    height: 32,
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      setFilterDraftStatus([]);
-                      setFilterStatusOpen(false);
-                    }}
-                    style={{
-                      width: 72,
-                      height: 32,
-                      borderRadius: 12,
-                      padding: "8px 16px",
-                      border: "none",
-                      background: "transparent",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "rgba(70, 70, 70, 1)",
-                      cursor: "pointer",
-                      boxSizing: "border-box",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background = "rgba(237, 239, 242, 1)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => setFilterStatusOpen(false)}
-                    style={{
-                      width: 76,
-                      height: 32,
-                      borderRadius: 12,
-                      padding: "8px 16px",
-                      border: "none",
-                      background: "rgba(0, 35, 111, 1)",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "#fff",
-                      cursor: "pointer",
-                      boxSizing: "border-box",
-                    }}
-                  >
-                    Apply
-                  </button>
-                </div>
+            {activeFilter === 'status' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <Status onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
               </div>
             )}
           </div>
 
-          {/* Priority, Source, Followup buttons */}
-          {["Priority", "Source", "Followup"].map((label) => (
+          {/* Priority */}
+          <div style={{ position: "relative" }}>
             <button
-              key={label}
+              onClick={() => setActiveFilter(activeFilter === 'priority' ? null : 'priority')}
               style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12,
-                padding: "0 12px",
-                height: 40,
-                gap: 8,
-                background: "transparent",
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#4B5563",
-                boxSizing: "border-box",
+                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
+                background: activeFilter === 'priority' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
-              {label}
+              Priority
               <ChevronDown size={16} color="#4B5563" />
             </button>
-          ))}
+            {activeFilter === 'priority' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <Priority onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
+
+          {/* Source */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'source' ? null : 'source')}
+              style={{
+                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
+                background: activeFilter === 'source' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+              }}
+            >
+              Source
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'source' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <Source onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
+
+          {/* Followup */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'followup' ? null : 'followup')}
+              style={{
+                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
+                background: activeFilter === 'followup' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+              }}
+            >
+              Followup
+              <ChevronDown size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'followup' && (
+              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+                <FollowUp isOpen={true} onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+              </div>
+            )}
+          </div>
         </div>
 
-        <button
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid rgba(212, 213, 216, 1)",
-            borderRadius: 12,
-            padding: "0 12px",
-            height: 40,
-            width: 108,
-            gap: 8,
-            background: "transparent",
-            cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
-            fontSize: 14,
-            color: "#4B5563",
-            boxSizing: "border-box",
-          }}
-        >
-          Sort by
-          <ArrowDownUp size={16} color="#4B5563" />
-        </button>
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(212, 213, 216, 1)",
+              borderRadius: 12,
+              padding: "0 12px",
+              height: 40,
+              width: 108,
+              gap: 8,
+              background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+              cursor: "pointer",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 14,
+              color: "#4B5563",
+              boxSizing: "border-box",
+            }}
+          >
+            Sort by
+            <ArrowDownUp size={16} color="#4B5563" />
+          </button>
+          {activeFilter === 'sort' && (
+            <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}>
+              <Sort isOpen={true} onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Table ── */}
@@ -775,6 +661,7 @@ const Leads = () => {
           <StatusTimeline onClose={() => setIsStatusTimelineOpen(false)} leadName="John Dorghamasadsad" />
         </ModalOverlay>
       )}
+
     </div>
   );
 };

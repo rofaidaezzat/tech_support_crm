@@ -1,4 +1,5 @@
 import React from 'react';
+import successGif from '../assets/021cdc25443adcea6d224afca74ea8b293c34440.gif';
 interface SuccessfullyProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,25 +16,9 @@ export const Successfully: React.FC<SuccessfullyProps> = ({
         className="bg-white w-[443px] h-[347px] rounded-3xl shadow-[0_2px_4px_rgba(0,0,0,0.17)] 
                    flex flex-col items-center justify-center relative overflow-hidden"
       >
-        {/* Light Blue Blob Illustration */}
-        <div className="absolute top-[71px] left-1/2 -translate-x-1/2 w-[258px] h-[140px]">
-          <svg
-            width="258"
-            height="140"
-            viewBox="0 0 258 140"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M 30 70 
-                 Q 30 30 80 25 
-                 Q 130 15 170 45 
-                 Q 220 70 200 110 
-                 Q 170 135 110 125 
-                 Q 50 115 30 70 Z"
-              fill="#F0F4FF"
-            />
-          </svg>
+        {/* Success Illustration */}
+        <div className="absolute top-[50px] left-1/2 -translate-x-1/2 flex items-center justify-center">
+          <img src={successGif} alt="Success" className="w-[150px] object-contain" />
         </div>
 
         {/* Success Text */}
