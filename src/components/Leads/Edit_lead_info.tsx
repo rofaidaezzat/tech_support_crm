@@ -201,7 +201,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         {/* Lead name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Lead name<span style={{ color: "#EF4444" }}>*</span>
+            Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
@@ -217,7 +217,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         {/* Company name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Company name<span style={{ color: "#EF4444" }}>*</span>
+            Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
@@ -233,7 +233,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         {/* Phone number */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Phone number<span style={{ color: "#EF4444" }}>*</span>
+            Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="tel"
@@ -249,7 +249,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         {/* Next followup */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Next followup<span style={{ color: "#EF4444" }}>*</span>
+            Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             {/* Display formatted date as read-only overlay */}

@@ -1,40 +1,8 @@
-
-import { useState } from 'react';
-import '../styles/overview-mobile.css';
-import coinIcon from '../assets/coin-unbroken.svg';
-import Task_drawer from '../components/Navbar/Task_drawer';
+import React from 'react';
 import commissionIcon from '../assets/4a99657e1acb696f86d3bd926bedf5fe9fbead65.gif';
-import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
-import messageTextIcon from '../assets/message-text-02 (1).svg';
-import filePlusIcon from '../assets/file-plus-01.svg';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
-const funnelData = [
-  { name: 'Jan', Leads: 480, Deals: 100 },
-  { name: 'Feb', Leads: 800, Deals: 400 },
-  { name: 'Mar', Leads: 400, Deals: 50 },
-  { name: 'Apr', Leads: 500, Deals: 100 },
-  { name: 'May', Leads: 800, Deals: 200 },
-  { name: 'June', Leads: 400, Deals: 50 },
-  { name: 'July', Leads: 800, Deals: 400 },
-  { name: 'Aug', Leads: 600, Deals: 100 },
-  { name: 'Sep', Leads: 500, Deals: 100 },
-];
-
-const leadsBarData = [
-  { name: 'Deal', value: 15 },
-  { name: 'No answer', value: 25 },
-  { name: 'Wrong number', value: 35 },
-  { name: 'Meeting', value: 54 },
-  { name: 'Not interested', value: 55 },
-  { name: 'Interested', value: 93 },
-  { name: 'Followup', value: 95 },
-  { name: 'Fresh', value: 98 },
-];
-
-const Overview = () => {
-  const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
-  const cards = [
+const Overview_Manager: React.FC = () => {
+     const cards = [
     {
       title: "Followups Today",
       count: "10",
@@ -133,8 +101,7 @@ const Overview = () => {
   ];
 
   return (
-    <>
-      <div style={{ background: "#F5F6FA", width: "100%", maxWidth: 1440, boxSizing: "border-box", paddingBottom: 32 }}>
+    <div style={{ background: "#F5F6FA", width: "100%", maxWidth: 1440, boxSizing: "border-box", paddingBottom: 32 }}>
       {/* Header */}
       <div className="overview-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -168,501 +135,339 @@ const Overview = () => {
           </div>
         </div>
       </div>
-
       <div className="overview-main" style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "flex-start" }}>
-        
-        {/* Left section: Summary Cards & Followups Table */}
-        <div className="overview-left" style={{ display: "flex", flexDirection: "column", gap: 24, flex: "2.5", minWidth: 600 }}>
-          
-          {/* Row 1 & 2: Summary Cards (6 items) */}
-          <div className="overview-cards-grid" style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            width: "100%",
-            gap: 24
-          }}>
-            {cards.map((card, index) => (
-              <div key={index} style={{
-                background: "rgba(255, 255, 255, 1)",
-                boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-                width: "100%",
-                height: 127,
-                borderRadius: 12,
-                padding: "32px 24px",
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                boxSizing: "border-box"
-              }}>
-                {/* Icon circle */}
-                <div style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  backgroundColor: "#F4F5F7",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0
-                }}>
-                  {card.icon}
-                </div>
+              
+              {/* Left section: Summary Cards & Followups Table */}
+              <div className="overview-left" style={{ display: "flex", flexDirection: "column", gap: 24, flex: "2.5", minWidth: 600 }}>
                 
-                {/* Text content */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  <span style={{ 
-                    fontFamily: "Inter, sans-serif", 
-                    fontSize: 16, 
-                    fontWeight: 400, 
-                    color: "#111827" 
-                  }}>
-                    {card.title}
-                  </span>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                    <span style={{ 
-                      fontFamily: "Inter, sans-serif", 
-                      fontSize: 24, 
-                      fontWeight: 600, 
-                      color: "#111827",
-                      lineHeight: 1
-                    }}>
-                      {card.count}
-                    </span>
-                    <span style={{ 
-                      fontFamily: "Inter, sans-serif", 
-                      fontSize: 14, 
-                      fontWeight: 400, 
-                      color: "#6B7280" 
-                    }}>
-                      {card.subtitle}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Followups Table */}
-          <div className="overview-followups" style={{
-            boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-            background: "rgba(255, 255, 255, 1)",
-            width: "100%",
-            height: 435,
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            boxSizing: "border-box"
-          }}>
-            <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Followups Today</span>
-            
-            {/* Table headers */}
-            <div className="overview-table-header" style={{
-              display: "grid",
-              gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
-              background: "#E5E7EB",
-              padding: "12px 16px",
-              borderRadius: 8,
-              gap: 16
-            }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Lead info</span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Status</span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Phone number</span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Priority</span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>Actions</span>
-            </div>
-
-            {/* Table rows */}
-            <div className="overview-table-rows-wrapper" style={{ width: "100%", height: 300, display: "flex", flexDirection: "column", overflowY: "auto" }}>
-              {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="overview-table-row" style={{
+                {/* Row 1 & 2: Summary Cards (6 items) */}
+                <div className="overview-cards-grid" style={{
                   display: "grid",
-                  gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
-                  padding: "16px",
-                  borderBottom: "1px solid #F3F4F6",
-                  gap: 16,
-                  alignItems: "center"
+                  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                  width: "100%",
+                  gap: 24
                 }}>
-                  {/* Lead info */}
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
-                    <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Elshayeeb inc.</span>
-                  </div>
-                  {/* Status */}
-                  <div>
-                    <span style={{ background: "#E5E7EB", padding: "4px 8px", borderRadius: 12, fontSize: 12, color: "#374151", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>FU after meeting</span>
-                  </div>
-                  {/* Phone */}
-                  <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>+201121504065</span>
-                  {/* Priority */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#D97706" }} />
-                    <span style={{ fontSize: 14, color: "#D97706", fontFamily: "Inter, sans-serif" }}>Medium</span>
-                  </div>
-                  {/* Actions */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
-                    <img src={whatsappIcon} width={20} height={20} alt="WhatsApp" style={{ cursor: "pointer" }} />
-                    <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} />
-                    <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} />
-                    <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right section: Calendar & Revenue Target */}
-        <div className="overview-right" style={{ display: "flex", flexDirection: "column", gap: 24, flex: "1", minWidth: 300 }}>
-          
-          {/* Calendar Widget */}
-          <div className="overview-calendar" style={{
-            boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-            background: "rgba(255, 255, 255, 1)",
-            width: "100%",
-            height: 332,
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            boxSizing: "border-box"
-          }}>
-            {/* Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 18, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Calender</span>
-              <button style={{
-                border: "1px solid rgba(212, 213, 216, 1)",
-                background: "transparent",
-                height: 36,
-                borderRadius: 8,
-                padding: "0 12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 8,
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#374151"
-              }}>
-                April
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-            </div>
-            
-            {/* Days row */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
-              <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'<'}</span>
-              <div style={{ display: "flex", gap: 16, borderBottom: "1px solid #E5E7EB", flex: 1, margin: "0 16px", justifyContent: "space-between" }}>
-                {[1, 2, 3, 4, 5].map((item, index) => {
-                  const isActive = index === 0;
-                  return (
+                  {cards.map((card, index) => (
                     <div key={index} style={{
+                      background: "rgba(255, 255, 255, 1)",
+                      boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
+                      width: "100%",
+                      height: 127,
+                      borderRadius: 12,
+                      padding: "32px 24px",
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
-                      color: isActive ? "#1D4ED8" : "#6B7280",
-                      borderBottom: isActive ? "2px solid #1D4ED8" : "2px solid transparent",
-                      paddingBottom: 8,
-                      marginBottom: -1,
-                      fontFamily: "Inter, sans-serif",
-                      gap: 4
+                      gap: 16,
+                      boxSizing: "border-box"
                     }}>
-                      <span style={{ fontSize: 12 }}>Sun</span>
-                      <span style={{ fontSize: 14 }}>6</span>
+                      {/* Icon circle */}
+                      <div style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: "50%",
+                        backgroundColor: "#F4F5F7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0
+                      }}>
+                        {card.icon}
+                      </div>
+                      
+                      {/* Text content */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        <span style={{ 
+                          fontFamily: "Inter, sans-serif", 
+                          fontSize: 16, 
+                          fontWeight: 400, 
+                          color: "#111827" 
+                        }}>
+                          {card.title}
+                        </span>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                          <span style={{ 
+                            fontFamily: "Inter, sans-serif", 
+                            fontSize: 24, 
+                            fontWeight: 600, 
+                            color: "#111827",
+                            lineHeight: 1
+                          }}>
+                            {card.count}
+                          </span>
+                          <span style={{ 
+                            fontFamily: "Inter, sans-serif", 
+                            fontSize: 14, 
+                            fontWeight: 400, 
+                            color: "#6B7280" 
+                          }}>
+                            {card.subtitle}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
-              <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'>'}</span>
-            </div>
-
-            {/* Tasks section */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 8 }}>
-              <span style={{ fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", color: "#111827" }}>Tasks</span>
-              {[
-                "Weekly meeting with the team.",
-                "Calling yesterday low priority leads.",
-                "Revise latest deals."
-              ].map((text, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#BBE5B3', flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, color: '#374151', fontFamily: "Inter, sans-serif" }}>{text}</span>
+                  ))}
                 </div>
-              ))}
-              <span
-                onClick={() => setIsTaskDrawerOpen(true)}
-                style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif", marginTop: 4 }}
-              >View more</span>
-            </div>
-          </div>
-
-          {/* Revenue Target card */}
-          <div className="overview-revenue" style={{
-            boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-            background: "rgba(255, 255, 255, 1)",
-            width: "100%",
-            height: 381,
-            borderRadius: 12,
-            padding: "24px 16px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            boxSizing: "border-box"
-          }}>
-            {/* Title and date */}
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
-              <span style={{ fontSize: 18, fontWeight: 400, color: "#111827", fontFamily: "Inter, sans-serif" }}>Revenue Target</span>
-              <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>April 2026</span>
-            </div>
-
-            {/* Pricing row */}
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 4
-            }}>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: "#111827", fontFamily: "Inter, sans-serif" }}>25,000 EGP</span>
-                <span style={{ fontSize: 14, color: "#111827", fontFamily: "Inter, sans-serif" }}>/40,000 EGP</span>
-              </div>
-              <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Only 15,000 left !</span>
-            </div>
-
-            {/* The graph */}
-            <div style={{
-              width: "100%",
-              flex: 1,
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 16
-            }}>
-              <div style={{ width: 190, height: 190, position: "relative" }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: 'Completed', value: 60, fill: '#00236F' },
-                        { name: 'Remaining', value: 40, fill: '#B0BBD2' }
-                      ]}
-                      innerRadius={70.167}
-                      outerRadius={95}
-                      startAngle={90}
-                      endAngle={-270}
-                      dataKey="value"
-                      stroke="none"
-                      cornerRadius={0}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-                
-                {/* Centered text in PieChart */}
-                <div style={{
-                  position: "absolute",
-                  top: 0, left: 0, right: 0, bottom: 0,
+      
+                {/* Followups Table */}
+                <div className="overview-followups" style={{
+                  boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
+                  background: "rgba(255, 255, 255, 1)",
+                  width: "100%",
+                  height: 435,
+                  borderRadius: 12,
+                  padding: 16,
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  pointerEvents: "none"
+                  gap: 16,
+                  boxSizing: "border-box"
                 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ 
-                      fontSize: 59.598, 
-                      fontWeight: 700, 
-                      color: "#FFF", 
-                      fontFamily: "'Noto Sans', sans-serif", 
-                      WebkitTextStroke: "1.66px #000",
-                      lineHeight: "normal"
-                    }}>60</span>
-                    <span style={{ 
-                      fontSize: 38.628, 
-                      fontWeight: 700, 
-                      color: "#FFF", 
-                      fontFamily: "'Noto Sans', sans-serif", 
-                      WebkitTextStroke: "1.07px #000",
-                      lineHeight: "normal",
-                      width: 41.879
-                    }}>%</span>
+                  <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Followups Today</span>
+                  
+                  {/* Table headers */}
+                  <div className="overview-table-header" style={{
+                    display: "grid",
+                    gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
+                    background: "#E5E7EB",
+                    padding: "12px 16px",
+                    borderRadius: 8,
+                    gap: 16
+                  }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Lead info</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Status</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Phone number</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Priority</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>Actions</span>
                   </div>
-                  <span style={{ fontSize: 16, color: "#00236F", fontFamily: "Inter, sans-serif", fontWeight: 500, marginTop: 4 }}>Completed</span>
+      
+                  {/* Table rows */}
+                  <div className="overview-table-rows-wrapper" style={{ width: "100%", height: 300, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <div key={i} className="overview-table-row" style={{
+                        display: "grid",
+                        gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
+                        padding: "16px",
+                        borderBottom: "1px solid #F3F4F6",
+                        gap: 16,
+                        alignItems: "center"
+                      }}>
+                        {/* Lead info */}
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
+                          <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Elshayeeb inc.</span>
+                        </div>
+                        {/* Status */}
+                        <div>
+                          <span style={{ background: "#E5E7EB", padding: "4px 8px", borderRadius: 12, fontSize: 12, color: "#374151", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>FU after meeting</span>
+                        </div>
+                        {/* Phone */}
+                        <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>+201121504065</span>
+                        {/* Priority */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#D97706" }} />
+                          <span style={{ fontSize: 14, color: "#D97706", fontFamily: "Inter, sans-serif" }}>Medium</span>
+                        </div>
+                        {/* Actions */}
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
+                          <img src={whatsappIcon} width={20} height={20} alt="WhatsApp" style={{ cursor: "pointer" }} />
+                          <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} />
+                          <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} />
+                          <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom section: Sales Funnel & Leads Status Distribution */}
-        <div className="overview-bottom" style={{ display: "flex", gap: 24, width: "100%", marginTop: 8 }}>
-          
-          {/* Sales Funnel Performance */}
-          <div className="overview-chart-funnel" style={{
-            boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-            background: "rgba(255, 255, 255, 1)",
-            flex: 1,
-            minWidth: 400,
-            height: 389,
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            boxSizing: "border-box"
-          }}>
-            <div className="overview-chart-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 18, fontWeight: 400, color: "#111827", fontFamily: "Inter, sans-serif" }}>Sales Funnel Performance</span>
-              <button style={{
-                border: "1px solid rgba(212, 213, 216, 1)",
-                background: "transparent",
-                height: 36,
-                borderRadius: 8,
-                padding: "0 12px",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#374151"
-              }}>
-                This month
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-            </div>
-            
-            <div className="overview-chart-scroll-wrapper" style={{ width: "100%", flex: 1, marginTop: 16, overflowX: "auto" }}>
-              <div className="overview-chart-inner" style={{ width: "100%", height: "100%", minHeight: 300 }}>
-                <ResponsiveContainer width="100%" height="100%" minHeight={300}>
-                  <LineChart data={funnelData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={true} stroke="#E5E7EB" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6B7280" }} dy={10} />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 12, fill: "#6B7280" }} 
-                      ticks={[0, 160, 320, 480, 640, 800]} 
-                      label={{ value: 'Count', angle: -90, position: 'insideLeft', offset: 10, style: { fill: '#374151', fontSize: 14, fontWeight: 500, fontFamily: 'Inter, sans-serif' } }}
-                    />
-                    <Tooltip cursor={{ stroke: 'rgba(244, 245, 247, 1)', strokeWidth: 2 }} />
-                    <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: 20, marginTop: -30 }} />
-                    <Line type="linear" dataKey="Leads" stroke="#5B5BE6" strokeWidth={2} dot={{ r: 4, fill: "white", stroke: "#5B5BE6", strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                    <Line type="linear" dataKey="Deals" stroke="#71CC5C" strokeWidth={2} dot={{ r: 4, fill: "white", stroke: "#71CC5C", strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-          {/* Leads Status Distribution */}
-          <div className="overview-chart-leads" style={{
-            boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-            background: "rgba(255, 255, 255, 1)",
-            flex: 1,
-            minWidth: 400,
-            height: 389,
-            borderRadius: 12,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            boxSizing: "border-box"
-          }}>
-            <div className="overview-chart-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 18, fontWeight: 400, color: "#111827", fontFamily: "Inter, sans-serif" }}>Leads Status Distribution</span>
-              <div style={{ display: "flex", gap: 12 }}>
-                <button style={{
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  background: "transparent",
-                  height: 36,
-                  borderRadius: 8,
-                  padding: "0 12px",
+      
+              {/* Right section: Calendar & Revenue Target */}
+              <div className="overview-right" style={{ display: "flex", flexDirection: "column", gap: 24, flex: "1", minWidth: 300 }}>
+                
+                {/* Calendar Widget */}
+                <div className="overview-calendar" style={{
+                  boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
+                  background: "rgba(255, 255, 255, 1)",
+                  width: "100%",
+                  height: 332,
+                  borderRadius: 12,
+                  padding: 16,
                   display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 14,
-                  color: "#374151"
+                  flexDirection: "column",
+                  gap: 16,
+                  boxSizing: "border-box"
                 }}>
-                  All members
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </button>
-                <button style={{
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  background: "transparent",
-                  height: 36,
-                  borderRadius: 8,
-                  padding: "0 12px",
+                  {/* Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 18, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Calender</span>
+                    <button style={{
+                      border: "1px solid rgba(212, 213, 216, 1)",
+                      background: "transparent",
+                      height: 36,
+                      borderRadius: 8,
+                      padding: "0 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                      cursor: "pointer",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 14,
+                      color: "#374151"
+                    }}>
+                      April
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                  </div>
+                  
+                  {/* Days row */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                    <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'<'}</span>
+                    <div style={{ display: "flex", gap: 16, borderBottom: "1px solid #E5E7EB", flex: 1, margin: "0 16px", justifyContent: "space-between" }}>
+                      {[1, 2, 3, 4, 5].map((item, index) => {
+                        const isActive = index === 0;
+                        return (
+                          <div key={index} style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            color: isActive ? "#1D4ED8" : "#6B7280",
+                            borderBottom: isActive ? "2px solid #1D4ED8" : "2px solid transparent",
+                            paddingBottom: 8,
+                            marginBottom: -1,
+                            fontFamily: "Inter, sans-serif",
+                            gap: 4
+                          }}>
+                            <span style={{ fontSize: 12 }}>Sun</span>
+                            <span style={{ fontSize: 14 }}>6</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'>'}</span>
+                  </div>
+      
+                  {/* Tasks section */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 8 }}>
+                    <span style={{ fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", color: "#111827" }}>Tasks</span>
+                    {[
+                      "Weekly meeting with the team.",
+                      "Calling yesterday low priority leads.",
+                      "Revise latest deals."
+                    ].map((text, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#BBE5B3', flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: '#374151', fontFamily: "Inter, sans-serif" }}>{text}</span>
+                      </div>
+                    ))}
+                    <span
+                      onClick={() => setIsTaskDrawerOpen(true)}
+                      style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif", marginTop: 4 }}
+                    >View more</span>
+                  </div>
+                </div>
+      
+                {/* Revenue Target card */}
+                <div className="overview-revenue" style={{
+                  boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
+                  background: "rgba(255, 255, 255, 1)",
+                  width: "100%",
+                  height: 381,
+                  borderRadius: 12,
+                  padding: "24px 16px",
                   display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 14,
-                  color: "#374151"
+                  flexDirection: "column",
+                  gap: 16,
+                  boxSizing: "border-box"
                 }}>
-                  This month
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </button>
+                  {/* Title and date */}
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
+                    <span style={{ fontSize: 18, fontWeight: 400, color: "#111827", fontFamily: "Inter, sans-serif" }}>Revenue Target</span>
+                    <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>April 2026</span>
+                  </div>
+      
+                  {/* Pricing row */}
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4
+                  }}>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                      <span style={{ fontSize: 18, fontWeight: 700, color: "#111827", fontFamily: "Inter, sans-serif" }}>25,000 EGP</span>
+                      <span style={{ fontSize: 14, color: "#111827", fontFamily: "Inter, sans-serif" }}>/40,000 EGP</span>
+                    </div>
+                    <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Only 15,000 left !</span>
+                  </div>
+      
+                  {/* The graph */}
+                  <div style={{
+                    width: "100%",
+                    flex: 1,
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: 16
+                  }}>
+                    <div style={{ width: 190, height: 190, position: "relative" }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: 'Completed', value: 60, fill: '#00236F' },
+                              { name: 'Remaining', value: 40, fill: '#B0BBD2' }
+                            ]}
+                            innerRadius={70.167}
+                            outerRadius={95}
+                            startAngle={90}
+                            endAngle={-270}
+                            dataKey="value"
+                            stroke="none"
+                            cornerRadius={0}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      
+                      {/* Centered text in PieChart */}
+                      <div style={{
+                        position: "absolute",
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        pointerEvents: "none"
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <span style={{ 
+                            fontSize: 59.598, 
+                            fontWeight: 700, 
+                            color: "#FFF", 
+                            fontFamily: "'Noto Sans', sans-serif", 
+                            WebkitTextStroke: "1.66px #000",
+                            lineHeight: "normal"
+                          }}>60</span>
+                          <span style={{ 
+                            fontSize: 38.628, 
+                            fontWeight: 700, 
+                            color: "#FFF", 
+                            fontFamily: "'Noto Sans', sans-serif", 
+                            WebkitTextStroke: "1.07px #000",
+                            lineHeight: "normal",
+                            width: 41.879
+                          }}>%</span>
+                        </div>
+                        <span style={{ fontSize: 16, color: "#00236F", fontFamily: "Inter, sans-serif", fontWeight: 500, marginTop: 4 }}>Completed</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="overview-chart-scroll-wrapper" style={{ width: "100%", flex: 1, marginTop: 8, overflowX: "auto" }}>
-              <div className="overview-chart-inner" style={{ width: "100%", height: "100%", minHeight: 300 }}>
-                <ResponsiveContainer width="100%" height="100%" minHeight={300}>
-                  <BarChart layout="vertical" data={leadsBarData} margin={{ top: 0, right: 30, left: 40, bottom: 0 }} barSize={16}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={true} stroke="#E5E7EB" />
-                    <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6B7280" }} />
-                    <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#374151" }} />
-                    <Tooltip cursor={{ fill: 'rgba(244, 245, 247, 0.5)' }} />
-                    <Bar dataKey="value" fill="#3B5998" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
+      
     </div>
-      {/* Task Drawer Overlay */}
-      {isTaskDrawerOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            onClick={() => setIsTaskDrawerOpen(false)}
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0, 0, 0, 0.3)",
-              zIndex: 999,
-            }}
-          />
-          {/* Drawer */}
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              right: 0,
-              height: "100vh",
-              zIndex: 1000,
-            }}
-          >
-            <Task_drawer onClose={() => setIsTaskDrawerOpen(false)} />
-          </div>
-        </>
-      )}
-    </>
   );
-}
+};
 
-export default Overview;
+export default Overview_Manager;

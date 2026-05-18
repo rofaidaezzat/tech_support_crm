@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
+import '../styles/tables-mobile.css';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
 import editIcon from '../assets/edit-contained.svg';
@@ -17,7 +18,6 @@ import Lead_form from '../components/Leads/Lead_form';
 import Notes from '../components/Deals/Notes';
 import Leads_messages from '../components/Leads/Leads_messages';
 import StatusTimeline from '../components/Leads/StatusTimeline';
-
 // Filter Components
 import DateFilter from '../components/Filteration/Date';
 import { FollowUp } from '../components/Filteration/FollowUp';
@@ -67,6 +67,7 @@ const COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "
 const Leads = () => {
   const [leads, setLeads] = useState(INITIAL_LEADS);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
   
   // Filter Dropdowns & Modals
   type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | null;
@@ -83,6 +84,7 @@ const Leads = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -93,10 +95,16 @@ const Leads = () => {
           setOpenDropdown(null);
         }
       }
+      if (openActionMenu !== null) {
+        const ref = actionMenuRefs.current[openActionMenu];
+        if (ref && !ref.contains(e.target as Node)) {
+          setOpenActionMenu(null);
+        }
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openDropdown]);
+  }, [openDropdown, openActionMenu]);
 
   const handleStatusChange = (leadIndex: number, newStatus: string) => {
     setLeads((prev) =>
@@ -109,6 +117,7 @@ const Leads = () => {
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
+        className="page-header"
         style={{
           width: "100%",
           height: 56,
@@ -160,6 +169,7 @@ const Leads = () => {
 
       {/* ── Filter Bar ── */}
       <div
+        className="filter-bar"
         style={{
           marginTop: 24,
           width: "100%",
@@ -173,7 +183,7 @@ const Leads = () => {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <div className="filter-bar-left" style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <div
             style={{
               display: "flex",
@@ -246,7 +256,7 @@ const Leads = () => {
             </button>
             {activeFilter === 'status' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Status onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+                <Status onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
               </div>
             )}
           </div>
@@ -267,7 +277,7 @@ const Leads = () => {
             </button>
             {activeFilter === 'priority' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Priority onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+                <Priority onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
               </div>
             )}
           </div>
@@ -288,7 +298,7 @@ const Leads = () => {
             </button>
             {activeFilter === 'source' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Source onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} />
+                <Source onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
               </div>
             )}
           </div>
@@ -315,7 +325,7 @@ const Leads = () => {
           </div>
         </div>
 
-        <div style={{ position: "relative" }}>
+        <div className="filter-bar-right" style={{ position: "relative" }}>
           <button
             onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
             style={{
@@ -349,6 +359,7 @@ const Leads = () => {
 
       {/* ── Table ── */}
       <div
+        className="responsive-table-container"
         style={{
           marginTop: 16,
           width: "100%",
@@ -361,36 +372,53 @@ const Leads = () => {
       >
         {/* Table Header */}
         <div
+          className="responsive-table-row"
           style={{
             width: "100%",
             height: 48,
             background: "rgba(212, 213, 216, 1)",
             display: "flex",
             alignItems: "center",
-            padding: "0 24px",
+            padding: "0 12px",
             boxSizing: "border-box",
             borderTopLeftRadius: 12,
             borderTopRightRadius: 12,
-            gap: 8,
+            justifyContent: "space-between",
           }}
         >
-          {COL_HEADERS.map((col) => (
-            <div
-              key={col}
-              style={{
-                flex: col === "Lead info" ? 2 : col === "Actions" ? 1.8 : col === "Status" ? 1.6 : 1,
-                fontFamily: "Inter, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#141414",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {col}
-            </div>
-          ))}
+          {COL_HEADERS.map((col) => {
+            const widthMap: Record<string, number> = {
+              "Date": 70,
+              "Lead info": 146,
+              "Status": 112,
+              "Phone number": 99,
+              "Message": 58,
+              "Priority": 60,
+              "Lead Source": 79,
+              "Next Followup": 91,
+              "Actions": 132,
+            };
+            return (
+              <div
+                key={col}
+                style={{
+                  width: widthMap[col] || 100,
+                  flexShrink: 0,
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#141414",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: col === "Actions" ? "flex" : "block",
+                  justifyContent: col === "Actions" ? "center" : "flex-start",
+                }}
+              >
+                {col}
+              </div>
+            );
+          })}
         </div>
 
         {/* Table Body */}
@@ -398,23 +426,24 @@ const Leads = () => {
           {leads.map((lead, i) => (
             <div
               key={i}
+              className="responsive-table-row"
               style={{
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                padding: "0 24px",
+                padding: "16px 12px",
                 boxSizing: "border-box",
                 height: 72,
                 borderBottom: i < leads.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
-                gap: 8,
+                justifyContent: "space-between",
               }}
             >
               {/* Date */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
+              <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
                 {lead.date}
               </div>
               {/* Lead info */}
-              <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+              <div style={{ width: 146, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                 <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#141414" }}>
                   {lead.name}
                 </span>
@@ -425,7 +454,7 @@ const Leads = () => {
 
               {/* Status with dropdown */}
               <div
-                style={{ flex: 1.6, position: "relative" }}
+                style={{ width: 112, flexShrink: 0, position: "relative" }}
                 ref={(el) => { dropdownRefs.current[i] = el; }}
               >
                 <div
@@ -437,7 +466,7 @@ const Leads = () => {
                     background: "rgba(230, 233, 241, 1)",
                     borderRadius: 12,
                     padding: "4px 8px",
-                    width: 152,
+                    width: "100%",
                     height: 26,
                     boxSizing: "border-box",
                     cursor: "pointer",
@@ -451,11 +480,12 @@ const Leads = () => {
                       fontSize: 13,
                       lineHeight: "140%",
                       color: "rgba(70, 70, 70, 1)",
-                      width: 144,
+                      flex: 1,
                       height: 18,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
+                      textAlign: "center"
                     }}
                   >
                     {lead.status}
@@ -484,8 +514,10 @@ const Leads = () => {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 12,
-                          padding: "10px 20px",
+                          justifyContent: "space-between",
+                          padding: "16px 12px",
+                          borderBottom: "1px solid var(--Foundation-neutral-neutral-50, #EDEFF2)",
+                          alignSelf: "stretch",
                           cursor: "pointer",
                         }}
                         onMouseEnter={(e) => {
@@ -520,15 +552,7 @@ const Leads = () => {
                         >
                           {option}
                         </span>
-                        <span
-                          style={{
-                            fontFamily: "Inter, sans-serif",
-                            fontSize: 13,
-                            color: "rgba(160, 160, 160, 1)",
-                          }}
-                        >
-                          (200)
-                        </span>
+                        
                       </div>
                     ))}
                   </div>
@@ -536,16 +560,16 @@ const Leads = () => {
               </div>
 
               {/* Phone */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
-                {lead.phone}
+              <div style={{ width: 99, flexShrink: 0, fontFamily: "Inter, sans-serif", fontStyle: "normal", fontWeight: 400, fontSize: 13, lineHeight: "140%", color: "var(--Foundation-neutral-neutral-800, #464646)" }}>
+                {"*******" + lead.phone.slice(-4)}
               </div>
 
               {/* Message icon */}
-              <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+              <div style={{ width: 58, flexShrink: 0, display: "flex", alignItems: "center" }}>
                 <img src={mail04Icon} alt="Message" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsMessagesOpen(true)} />
               </div>
               {/* Priority */}
-              <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 60, flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
                 <span
                   style={{
                     width: 6,
@@ -574,7 +598,7 @@ const Leads = () => {
               </div>
 
               {/* Lead Source */}
-              <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+              <div style={{ width: 79, flexShrink: 0, display: "flex", alignItems: "center" }}>
                 <span
                   style={{
                     display: "inline-flex",
@@ -600,20 +624,73 @@ const Leads = () => {
               </div>
 
               {/* Next Followup */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
+              <div style={{ width: 91, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
                 {lead.followup}
               </div>
 
               {/* Actions */}
-              <div style={{ flex: 1.8, display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, position: "relative" }} ref={(el) => (actionMenuRefs.current[i] = el)}>
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} />
                 <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsNotesOpen(true)} />
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
-                <img src={coinIcon} alt="Deal" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsConvertToDealOpen(true)} />
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 16" fill="none" style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsStatusTimelineOpen(true)}>
-                  <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                
+                {/* Three dots menu */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ cursor: "pointer", flexShrink: 0 }} onClick={() => setOpenActionMenu(openActionMenu === i ? null : i)}>
+                  <path d="M12 3C11.175 3 10.5 3.675 10.5 4.5C10.5 5.325 11.175 6 12 6C12.825 6 13.5 5.325 13.5 4.5C13.5 3.675 12.825 3 12 3ZM12 18C11.175 18 10.5 18.675 10.5 19.5C10.5 20.325 11.175 21 12 21C12.825 21 13.5 20.325 13.5 19.5C13.5 18.675 12.825 18 12 18ZM12 10.5C11.175 10.5 10.5 11.175 10.5 12C10.5 12.825 11.175 13.5 12 13.5C12.825 13.5 13.5 12.825 13.5 12C13.5 11.175 12.825 10.5 12 10.5Z" fill="#464646"/>
                 </svg>
-                <img src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsEditLeadOpen(true)} />
+
+                {/* Dropdown Menu */}
+                {openActionMenu === i && (
+                  <div style={{
+                    position: "absolute",
+                    top: 32,
+                    right: 0,
+                    zIndex: 10,
+                    borderRadius: 12,
+                    background: "var(--Foundation-neutral-white, #FFF)",
+                    boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
+                    display: "inline-flex",
+                    flexDirection: "column",
+                    padding: 12,
+                    alignItems: "flex-start",
+                    gap: 4
+                  }}>
+                    {/* Status timeline */}
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { setIsStatusTimelineOpen(true); setOpenActionMenu(null); }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 16" fill="none">
+                        <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Status timeline</span>
+                    </div>
+
+                    {/* Convert to deal */}
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { setIsConvertToDealOpen(true); setOpenActionMenu(null); }}
+                    >
+                      <img src={coinIcon} alt="Convert to deal" width={20} height={20} />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Convert to deal</span>
+                    </div>
+
+                    {/* Edit info */}
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { setIsEditLeadOpen(true); setOpenActionMenu(null); }}
+                    >
+                      <img src={editIcon} alt="Edit info" width={20} height={20} />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Edit info</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}

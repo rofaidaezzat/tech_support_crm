@@ -1,0 +1,97 @@
+/* =============================================
+   Settings Page Mobile Styles
+   Applies only on screens ≤ 768px
+   ============================================= */
+
+@media (max-width: 768px) {
+  /* Main Container (Left and Right Cards) */
+  .settings-main-container {
+    flex-direction: column !important;
+  }
+
+  /* Left and Right Cards */
+  .settings-left-card,
+  .settings-right-card {
+    flex: unset !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Left Card inner content container and its children */
+  .settings-left-card > div:nth-child(2) {
+    height: auto !important;
+  }
+
+  .settings-left-card > div:nth-child(2) > div {
+    height: auto !important;
+  }
+
+  /* Profile Info Area */
+  .settings-profile-info {
+    flex-direction: column !important;
+    align-items: center !important;
+    height: auto !important;
+    text-align: center !important;
+  }
+
+  /* Profile Columns */
+  .settings-profile-columns {
+    flex-direction: column !important;
+    gap: 24px !important;
+    width: 100% !important;
+  }
+
+  .settings-profile-columns > div {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .settings-profile-columns > div > div {
+    align-self: center !important;
+    justify-content: center !important;
+  }
+
+  /* Monthly Performance Rank */
+  .settings-rank-container {
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  /* Make the rank list take full width */
+  .settings-rank-container > div:nth-child(2) {
+    width: 100% !important;
+  }
+
+  /* Stack each rank item row */
+  .settings-rank-container > div:nth-child(2) > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  /* Stack rank number and name */
+  .settings-rank-container > div:nth-child(2) > div > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  /* Reset the fixed width of the rank number */
+  .settings-rank-container > div:nth-child(2) > div > div:first-child > span:first-child {
+    width: auto !important;
+  }
+
+  /* Achievement Badges */
+  .settings-badges-container {
+    flex-direction: column !important;
+    height: auto !important;
+    gap: 16px !important;
+  }
+
+  /* Right Card wrappers */
+  .settings-right-card > div {
+    height: auto !important;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, ChevronDown, ArrowDownUp } from 'lucide-react';
+import '../styles/tables-mobile.css';
 import filterIcon from '../assets/filter.svg';
 import starsIcon from '../assets/stars.svg';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
@@ -40,6 +41,7 @@ const Deals = () => {
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
+        className="page-header"
         style={{
           width: "100%",
           height: 56,
@@ -90,6 +92,7 @@ const Deals = () => {
       </div>
       {/* ── Filter Bar ── */}
       <div
+        className="filter-bar"
         style={{
           marginTop: 24,
           width: "100%",
@@ -107,7 +110,7 @@ const Deals = () => {
         }}
       >
         {/* Left group */}
-        <div style={{ display: "flex", alignItems: "center", width: 644 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", width: 644 }}>
           {/* Filter input */}
           <div
             style={{
@@ -125,7 +128,7 @@ const Deals = () => {
               background: "transparent",
               flexShrink: 0,
               boxSizing: "border-box",
-              marginRight: 40,
+              marginRight: 20,
             }}
           >
             <img src={filterIcon} alt="filter" width={24} height={24} />
@@ -146,7 +149,7 @@ const Deals = () => {
           </div>
 
           {/* Date dropdown */}
-          <div style={{ position: "relative", marginRight: 16 }}>
+          <div style={{ position: "relative", marginRight: 12 }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'date' ? null : 'date')}
               style={{
@@ -208,8 +211,8 @@ const Deals = () => {
           </div>
         </div>
 
-        {/* Sort by button */}
-        <div style={{ position: "relative" }}>
+        {/* Sort by button (Right group) */}
+        <div className="filter-bar-right" style={{ position: "relative" }}>
           <button
             onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
             style={{
@@ -244,6 +247,7 @@ const Deals = () => {
 
       {/* ── Table ── */}
       <div
+        className="responsive-table-container"
         style={{
           marginTop: 16,
           width: "100%",
@@ -256,33 +260,34 @@ const Deals = () => {
       >
         {/* Table Header */}
         <div
+          className="responsive-table-row"
           style={{
             width: "100%",
             height: 48,
             background: "rgba(212, 213, 216, 1)",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            paddingRight: 12,
-            paddingLeft: 12,
+            padding: "0 12px",
             boxSizing: "border-box",
             borderTopLeftRadius: 12,
             borderTopRightRadius: 12,
+            justifyContent: "space-between",
           }}
         >
           {[
-            { label: "Date",          flex: 1   },
-            { label: "Customer Info", flex: 2   },
-            { label: "Phone number",  flex: 1.4 },
-            { label: "City",          flex: 1   },
-            { label: "Deal details",  flex: 1.4 },
-            { label: "Value (EGP)",   flex: 1.4 },
-            { label: "Actions",       flex: 1   },
-          ].map(({ label, flex }) => (
+            { label: "Date",          width: 70   },
+            { label: "Customer Info", width: 146  },
+            { label: "Phone number",  width: 99   },
+            { label: "City",          width: 99   },
+            { label: "Deal details",  width: 152  },
+            { label: "Value (EGP)",   width: 108  },
+            { label: "Actions",       width: 66   },
+          ].map(({ label, width }) => (
             <div
               key={label}
               style={{
-                flex,
+                width,
+                flexShrink: 0,
                 fontFamily: "Inter, sans-serif",
                 fontSize: 13,
                 fontWeight: 600,
@@ -290,6 +295,8 @@ const Deals = () => {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                display: label === "Actions" ? "flex" : "block",
+                justifyContent: label === "Actions" ? "center" : "flex-start",
               }}
             >
               {label}
@@ -313,22 +320,23 @@ const Deals = () => {
           ].map((deal, i, arr) => (
             <div
               key={i}
+              className="responsive-table-row"
               style={{
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
-                paddingRight: 12,
-                paddingLeft: 12,
+                padding: "16px 12px",
                 boxSizing: "border-box",
                 height: 72,
                 borderBottom: i < arr.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
+                justifyContent: "space-between",
               }}
             >
               {/* Date */}
               <div
                 style={{
-                  flex: 1,
+                  width: 70,
+                  flexShrink: 0,
                   fontFamily: "Inter, sans-serif",
                   fontWeight: 400,
                   fontSize: 13,
@@ -341,7 +349,7 @@ const Deals = () => {
               </div>
 
               {/* Customer Info */}
-              <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+              <div style={{ width: 146, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                 <span
                   style={{
                     fontFamily: "Inter, sans-serif",
@@ -371,22 +379,25 @@ const Deals = () => {
               {/* Phone number */}
               <div
                 style={{
-                  flex: 1.4,
+                  width: 99,
+                  flexShrink: 0,
                   fontFamily: "Inter, sans-serif",
+                  fontStyle: "normal",
                   fontWeight: 400,
                   fontSize: 13,
                   lineHeight: "140%",
                   letterSpacing: 0,
-                  color: "#4B5563",
+                  color: "var(--Foundation-neutral-neutral-800, #464646)",
                 }}
               >
-                {deal.phone}
+                {"*******" + deal.phone.slice(-4)}
               </div>
 
               {/* City */}
               <div
                 style={{
-                  flex: 1,
+                  width: 99,
+                  flexShrink: 0,
                   fontFamily: "Inter, sans-serif",
                   fontWeight: 400,
                   fontSize: 13,
@@ -399,7 +410,7 @@ const Deals = () => {
               </div>
 
               {/* Deal details */}
-              <div style={{ flex: 1.4 }}>
+              <div style={{ width: 152, flexShrink: 0 }}>
                 <span
                   style={{
                     fontFamily: "Inter, sans-serif",
@@ -417,7 +428,7 @@ const Deals = () => {
               </div>
 
               {/* Value (EGP) */}
-              <div style={{ flex: 1.4, display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 108, flexShrink: 0, display: "flex", alignItems: "center", gap: 8 }}>
                 <span
                   style={{
                     fontFamily: "Inter, sans-serif",
@@ -434,7 +445,7 @@ const Deals = () => {
               </div>
 
               {/* Actions */}
-              <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ width: 66, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer" }} />
                 <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesOpen(true)} />
               </div>

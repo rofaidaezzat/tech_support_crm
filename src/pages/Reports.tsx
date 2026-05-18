@@ -2,6 +2,7 @@ import { ArrowDownUp, ChevronDown, Plus } from 'lucide-react'
 import filterIcon from '../assets/filter.svg';
 import starsIcon from '../assets/stars.svg';
 import { useState } from 'react';
+import '../styles/tables-mobile.css';
 import mailIcon from '../assets/message-text-02 (1).svg';
 import Pagination from '../components/Pagination';
 import New_Report_Modal from '../components/Reports/New_Report_Modal';
@@ -19,6 +20,7 @@ const Reports = () => {
  <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
+        className="page-header"
         style={{
           width: "100%",
           height: 56,
@@ -72,6 +74,7 @@ const Reports = () => {
       </div>
       {/* ── Filter Bar ── */}
       <div
+        className="filter-bar"
         style={{
           marginTop: 24,
           width: "100%",
@@ -89,7 +92,7 @@ const Reports = () => {
         }}
       >
         {/* Left group */}
-        <div style={{ display: "flex", alignItems: "center", width: 644 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", width: 644 }}>
           {/* Filter input */}
           <div
             style={{
@@ -107,7 +110,7 @@ const Reports = () => {
               background: "transparent",
               flexShrink: 0,
               boxSizing: "border-box",
-              marginRight: 40,
+              marginRight: 20,
             }}
           >
             <img src={filterIcon} alt="filter" width={24} height={24} />
@@ -127,7 +130,7 @@ const Reports = () => {
           </div>
 
           {/* Date dropdown */}
-          <div style={{ position: "relative", marginRight: 16 }}>
+          <div style={{ position: "relative", marginRight: 12 }}>
             <button
               onClick={() => setActiveFilter(activeFilter === "date" ? null : "date")}
               style={{
@@ -212,7 +215,7 @@ const Reports = () => {
         </div>
 
         {/* Sort by dropdown */}
-        <div style={{ position: "relative" }}>
+        <div className="filter-bar-right" style={{ position: "relative" }}>
           <button
             onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
             style={{
@@ -259,6 +262,7 @@ const Reports = () => {
       </div>
       {/* ── Table ── */}
       <div
+        className="responsive-table-container"
         style={{
           marginTop: 16,
           width: "100%",
@@ -271,6 +275,7 @@ const Reports = () => {
       >
         {/* Table Header */}
         <div
+          className="responsive-table-row"
           style={{
             width: "100%",
             height: 48,
@@ -278,27 +283,27 @@ const Reports = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingRight: 12,
-            paddingLeft: 12,
+            padding: "0 12px",
             boxSizing: "border-box",
             borderTopLeftRadius: 12,
             borderTopRightRadius: 12,
           }}
         >
           {[
-            { label: "Date",                 flex: 1 },
-            { label: "Calls",                flex: 1 },
-            { label: "Contacts",             flex: 1 },
-            { label: "Followups",            flex: 1 },
-            { label: "Meetings",             flex: 1 },
-            { label: "Deals",                flex: 1 },
-            { label: "Deals Value",          flex: 1.4 },
-            { label: "Top Priority & notes", flex: 1.4 },
-          ].map(({ label, flex }) => (
+            { label: "Date",                 width: 70 },
+            { label: "Calls",                width: 41 },
+            { label: "Contacts",             width: 59 },
+            { label: "Followups",            width: 65 },
+            { label: "Meetings",             width: 60 },
+            { label: "Deals",                width: 41 },
+            { label: "Revenue (EGP)",        width: 96 },
+            { label: "Top Priority & notes", width: 125 },
+          ].map(({ label, width }) => (
             <div
               key={label}
               style={{
-                flex,
+                width,
+                flexShrink: 0,
                 fontFamily: "Inter, sans-serif",
                 fontSize: 13,
                 fontWeight: 600,
@@ -315,58 +320,69 @@ const Reports = () => {
 
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
-          {[...Array(10)].map((_, i, arr) => (
+          {[
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+          ].map((report, i, arr) => (
             <div
               key={i}
+              className="responsive-table-row"
               style={{
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                paddingRight: 12,
-                paddingLeft: 12,
+                padding: "16px 12px",
                 boxSizing: "border-box",
                 height: 72,
                 borderBottom: i < arr.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
               }}
             >
               {/* Date */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                04/11/2026
+              <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                {report.date}
               </div>
 
               {/* Calls */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 66666
               </div>
 
               {/* Contacts */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 59, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 888
               </div>
 
               {/* Followups */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 65, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 444
               </div>
 
               {/* Meetings */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 60, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 888
               </div>
 
               {/* Deals */}
-              <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 888
               </div>
 
               {/* Deals Value */}
-              <div style={{ flex: 1.4, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+              <div style={{ width: 96, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 120,000,000
               </div>
 
               {/* Top Priority & notes */}
-              <div style={{ flex: 1.4, display: "flex", alignItems: "center" }}>
+              <div style={{ width: 125, flexShrink: 0, display: "flex", alignItems: "center" }}>
                 <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesModalOpen(true)} />
               </div>
             </div>

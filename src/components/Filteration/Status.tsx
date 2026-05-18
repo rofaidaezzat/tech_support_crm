@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import "../../styles/filteration-mobile.css";
 
 const STATUS_OPTIONS = [
   { label: "Fresh", count: 200 },
@@ -14,10 +15,22 @@ const STATUS_OPTIONS = [
 interface StatusProps {
   onApply?: (selected: string[]) => void;
   onClear?: () => void;
+  onClose?: () => void;
 }
 
-const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
+const Status: React.FC<StatusProps> = ({ onApply, onClear, onClose }) => {
   const [selected, setSelected] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onClose?.();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
 
   const toggleOption = (label: string) => {
     setSelected((prev) =>
@@ -28,6 +41,7 @@ const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
   const handleClear = () => {
     setSelected([]);
     onClear?.();
+    onClose?.();
   };
 
   const handleApply = () => {
@@ -35,18 +49,18 @@ const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
   };
 
   return (
-    <div style={styles.container}>
+    <div ref={containerRef} className="filter-modal" style={styles.container}>
       {/* Options list */}
-      <div style={styles.optionsList}>
+      <div className="filter-list" style={styles.optionsList}>
         {STATUS_OPTIONS.map((option) => (
-          <label key={option.label} style={styles.checkboxRow}>
+          <label key={option.label} className="filter-checkbox-row" style={styles.checkboxRow}>
             <input
               type="checkbox"
               checked={selected.includes(option.label)}
               onChange={() => toggleOption(option.label)}
               style={styles.checkbox}
             />
-            <span style={styles.optionText}>
+            <span className="filter-text" style={styles.optionText}>
               {option.label}
               <span style={styles.count}> ({option.count})</span>
             </span>
@@ -58,7 +72,7 @@ const Status: React.FC<StatusProps> = ({ onApply, onClear }) => {
       <div style={styles.divider} />
 
       {/* Action buttons */}
-      <div style={styles.buttonsRow}>
+      <div className="filter-buttons" style={styles.buttonsRow}>
         {/* Clear button */}
         <button style={styles.clearButton} onClick={handleClear}>
           Clear

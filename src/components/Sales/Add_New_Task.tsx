@@ -4,10 +4,9 @@ import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
 
-interface EditTaskProps {
+interface AddNewTaskProps {
   onClose?: () => void;
   onSave?: (data: any) => void;
-  initialData?: any;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -43,20 +42,17 @@ const textareaStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
-  fontStyle: "normal",
-  fontWeight: 400,
-  fontSize: 16,
-  lineHeight: "normal",
-  color: "var(--Foundation-neutral-neutral-950, #141414)",
-  alignSelf: "stretch",
+  fontWeight: 500,
+  fontSize: 13,
+  color: "#4B5563",
   marginBottom: 6,
   display: "block",
 };
 
-const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) => {
-  const [title, setTitle] = useState(initialData?.title || "");
-  const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">(initialData?.relatedTo || "Lead");
-  const [selectedLead, setSelectedLead] = useState(initialData?.selectedLead || "");
+const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
+  const [title, setTitle] = useState("");
+  const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">("Lead");
+  const [selectedLead, setSelectedLead] = useState("");
   const [isLeadDropdownOpen, setIsLeadDropdownOpen] = useState(false);
   const [leadSearchText, setLeadSearchText] = useState("");
 
@@ -68,10 +64,10 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
     { id: 5, name: "Lead name", phone: "*******2222" },
   ];
 
-  const [description, setDescription] = useState(initialData?.description || "");
-  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "">(initialData?.priority || "");
-  const [dueDate, setDueDate] = useState(initialData?.dueDate || "");
-  const [reminderDate, setReminderDate] = useState(initialData?.reminderDate || "");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "">("");
+  const [dueDate, setDueDate] = useState("");
+  const [reminderDate, setReminderDate] = useState("");
 
   const isSaveEnabled =
     title.trim() !== "" &&
@@ -104,14 +100,12 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
       style={{
         display: "flex",
         width: 462,
-        height: 824,
         flexDirection: "column",
         alignItems: "flex-start",
-        background: "rgba(245, 246, 250, 1)",
         borderRadius: 12,
         overflow: "hidden",
-        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
-        position: "relative",
+        background: "rgba(245, 246, 250, 1)",
+        maxHeight: "90vh",
       }}
     >
       {/* ── Header ── */}
@@ -130,9 +124,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ width: "15.6px", height: "15.103px" }}>
-            <path d="M10.5999 16.1032H16.5999M1 16.1032L5.36599 15.2235C5.59776 15.1768 5.81058 15.0626 5.97772 14.8954L15.7514 5.11637C16.22 4.64752 16.2197 3.88753 15.7507 3.41907L13.6803 1.35099C13.2115 0.882725 12.4519 0.883044 11.9835 1.3517L2.20876 11.1318C2.04195 11.2987 1.92805 11.511 1.8813 11.7423L1 16.1032Z" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <img src={plusIcon} alt="Add New Task" width={24} height={24} />
           <span
             style={{
               fontFamily: "Inter, sans-serif",
@@ -142,7 +134,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
               lineHeight: "24px",
             }}
           >
-            Edit Task
+            Add New Task
           </span>
         </div>
         <button
@@ -168,29 +160,30 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
       <div
         style={{
           width: 462,
-          height: 748,
           display: "flex",
           flexDirection: "column",
           boxSizing: "border-box",
+          overflowY: "auto",
+          flex: 1,
         }}
       >
         {/* Form Container */}
         <div
           style={{
             width: 422,
-            height: 600,
             marginTop: 32,
             marginLeft: 20,
             display: "flex",
             flexDirection: "column",
             gap: 16,
             boxSizing: "border-box",
+            paddingBottom: 24,
           }}
         >
           {/* Title */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={labelStyle}>
-              Title<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              Title<span style={{ color: "#00236F" }}>*</span>
             </label>
             <input
               type="text"
@@ -203,16 +196,9 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
           </div>
 
           {/* Related To */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <label style={{
-                fontFamily: "Inter, sans-serif",
-                fontStyle: "normal",
-                fontWeight: 400,
-                fontSize: 16,
-                lineHeight: "normal",
-                color: "var(--Foundation-neutral-neutral-950, #141414)",
-              }}>Related to</label>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>Related to</label>
               <div
                 style={{
                   display: "flex",
@@ -364,7 +350,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
           {/* Description */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={labelStyle}>
-              Description<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              Description<span style={{ color: "#00236F" }}>*</span>
             </label>
             <textarea
               value={description}
@@ -378,7 +364,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
           {/* Priority */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={labelStyle}>
-              Priority<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              Priority<span style={{ color: "#00236F" }}>*</span>
             </label>
             <div style={{ display: "flex", gap: 8 }}>
               {["Low", "Medium", "High"].map((p) => {
@@ -410,7 +396,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
           {/* Due date */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={labelStyle}>
-              Due date<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              Due date<span style={{ color: "#00236F" }}>*</span>
             </label>
             <div style={{ position: "relative", width: "100%" }}>
               <input
@@ -549,4 +535,4 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
   );
 };
 
-export default Edit_Task;
+export default Add_New_Task;

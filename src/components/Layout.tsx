@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
+import '../styles/mobile-nav.css';
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Task_drawer from "./Navbar/Task_drawer";
@@ -13,6 +14,7 @@ const Layout: React.FC = () => {
   const [showAddTask, setShowAddTask] = useState(false);
   const [showEditTask, setShowEditTask] = useState(false);
   const [editingTaskData, setEditingTaskData] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Extract the current page from the pathname for the Sidebar active state
   const currentPath = location.pathname.substring(1) || "overview";
@@ -20,7 +22,8 @@ const Layout: React.FC = () => {
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>
       {/* Sidebar on the left */}
-      <Sidebar
+      <div className="layout-sidebar">
+        <Sidebar
         currentPage={currentPath}
         onNavigate={(page) => {
           if (page === "logout") {
@@ -32,15 +35,17 @@ const Layout: React.FC = () => {
           }
         }}
       />
+      </div>
 
       {/* Main content area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", backgroundColor: "#F5F6FA" }}>
+      <div className="layout-main" style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", backgroundColor: "#F5F6FA" }}>
         <div style={{ position: "relative", zIndex: 10 }}>
-          <Navbar onTasksClick={() => setIsTaskDrawerOpen(true)} />
+          <Navbar onTasksClick={() => setIsTaskDrawerOpen(true)} onMenuClick={() => setIsMobileMenuOpen(true)} />
         </div>
 
         {/* Scrollable page content */}
         <div
+          className="layout-content"
           style={{
             flex: 1,
             overflowY: "auto",
@@ -164,6 +169,31 @@ const Layout: React.FC = () => {
           </div>
         </>
       )}
+
+      {/* ── Mobile Sidebar Overlay ── */}
+      <div 
+        className={`mobile-sidebar-backdrop ${isMobileMenuOpen ? 'open' : ''}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* ── Mobile Sidebar Drawer ── */}
+      <div className={`mobile-sidebar-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div style={{ height: "100%", width: 94 }}>
+          <Sidebar
+            currentPage={currentPath}
+            onNavigate={(page) => {
+              setIsMobileMenuOpen(false);
+              if (page === "logout") {
+                console.log("Logout clicked");
+              } else if (page === "overview") {
+                navigate("/");
+              } else {
+                navigate(`/${page}`);
+              }
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };

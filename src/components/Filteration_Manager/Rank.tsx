@@ -7,7 +7,7 @@ interface ValueProps {
   onClose?: () => void;
 }
 
-const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose }) => {
+const Rank: React.FC<ValueProps> = ({ onApply, onClear, onClose }) => {
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -134,14 +134,14 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose }) => {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    width: "352px",
-    height: "234px",
     borderRadius: "12px",
-    background: "rgba(255, 255, 255, 1)",
-    boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
-    display: "flex",
-    flexDirection: "column",
+    background: "var(--Foundation-neutral-white, #FFF)",
+    boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
+    display: "inline-flex",
     padding: "12px 16px",
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
     gap: "16px",
     boxSizing: "border-box",
   },
@@ -299,4 +299,4 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
-export default Value;
+export default Rank;

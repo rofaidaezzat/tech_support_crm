@@ -9,6 +9,7 @@ interface NavbarProps {
   onTasksClick?: () => void;
   onNotificationClick?: () => void;
   onProfileClick?: () => void;
+  onMenuClick?: () => void;
 }
 
 
@@ -16,6 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onSearch,
   onTasksClick,
   onProfileClick,
+  onMenuClick,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -53,6 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
     <div
+      className="layout-navbar"
       style={{
         position: "absolute",
         left: 0,
@@ -70,15 +73,23 @@ const Navbar: React.FC<NavbarProps> = ({
       }}
     >
       
+      {/* ── Hamburger (Mobile Only) ── */}
+      <button className="mobile-hamburger" onClick={onMenuClick}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(70, 70, 70, 1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
 
       {/* ── Center: Search Bar + Dropdown ── */}
-      <div ref={searchRef} style={{ position: "relative", width: 406 }}>
+      <div ref={searchRef} className="navbar-search" style={{ position: "relative", width: 406 }}>
         {/* Search Input */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            width: 406,
+            width: "100%",
             height: 40,
             border: "1px solid rgba(0, 35, 111, 1)",
             borderRadius: 12,
@@ -126,6 +137,7 @@ const Navbar: React.FC<NavbarProps> = ({
               letterSpacing: "0%",
               color: "rgba(70, 70, 70, 1)",
               background: "transparent",
+              width: "100%",
             }}
           />
         </div>

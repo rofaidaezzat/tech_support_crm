@@ -152,7 +152,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Lead name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Lead name<span style={{ color: "#EF4444" }}>*</span>
+            Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
@@ -167,7 +167,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Company name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Company name<span style={{ color: "#EF4444" }}>*</span>
+            Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
@@ -182,7 +182,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Phone number */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Phone number<span style={{ color: "#EF4444" }}>*</span>
+            Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="tel"
@@ -197,7 +197,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Lead Source */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Lead Source<span style={{ color: "#EF4444" }}>*</span>
+            Lead Source<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             {/* Custom Select Box */}

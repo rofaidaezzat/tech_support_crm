@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logout from "./Setting/Logout";
+import Logout from "./Logout";
 
 interface SidebarProps {
   onNavigate?: (page: string) => void;

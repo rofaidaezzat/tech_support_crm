@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import "../../styles/filteration-mobile.css";
 
 type DatePreset =
   | "Today"
@@ -33,11 +34,23 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
   const [selectedPreset, setSelectedPreset] = useState<DatePreset>(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onClose?.();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
 
   const handleClear = () => {
     setSelectedPreset(null);
     setStartDate("");
     setEndDate("");
+    onClose?.();
   };
 
   const handleApply = () => {
@@ -63,6 +76,8 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
 
   return (
     <div
+      ref={containerRef}
+      className="filter-modal"
       style={{
         width: 520,
         height: 400,
@@ -80,6 +95,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
     >
       {/* ── Main content row ── */}
       <div
+        className="filter-split"
         style={{
           width: 488,
           height: 304,
@@ -90,6 +106,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
       >
         {/* Left – preset radio list */}
         <div
+          className="filter-split-item filter-list"
           style={{
             width: 187,
             height: 304,
@@ -159,6 +176,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
                 </div>
 
                 <span
+                  className="filter-text"
                   style={{
                     fontFamily: "Inter, sans-serif",
                     fontSize: 14,
@@ -185,6 +203,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
 
         {/* Right – date inputs */}
         <div
+          className="filter-split-item"
           style={{
             width: 277,
             height: 158,
@@ -232,6 +251,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
             </div>
             <input
               type="date"
+              className="filter-input"
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.target.value);
@@ -284,6 +304,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
             </div>
             <input
               type="date"
+              className="filter-input"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.target.value);
@@ -313,6 +334,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
 
       {/* ── Footer – Clear + Apply ── */}
       <div
+        className="filter-buttons"
         style={{
           display: "flex",
           justifyContent: "flex-end",
