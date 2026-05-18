@@ -147,7 +147,7 @@ const Leads = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 154,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -201,7 +201,7 @@ const Leads = () => {
               transform: "rotate(0deg)",
             }}
           >
-       <img src={filterIcon} alt="filter" width={24} height={24} />
+            <img src={filterIcon} alt="filter" width={24} height={24} />
             <input
               type="text"
               placeholder="Filter by date, name,..."
@@ -215,7 +215,7 @@ const Leads = () => {
                 color: "#141414",
               }}
             />
-           <img src={starsIcon} alt="stars" width={24} height={24} />
+            <img src={starsIcon} alt="stars" width={24} height={24} />
           </div>
 
 

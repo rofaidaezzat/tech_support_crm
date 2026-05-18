@@ -71,7 +71,7 @@ const Deals = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 149,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
@@ -145,7 +145,7 @@ const Deals = () => {
                 color: "#141414",
               }}
             />
-           
+
           </div>
 
           {/* Date dropdown */}

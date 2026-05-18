@@ -17,7 +17,7 @@ const Reports = () => {
     const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
     const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   return (
- <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
+    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
       <div
         className="page-header"
@@ -50,7 +50,7 @@ const Reports = () => {
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 167,
-            height: 56,
+            height: 48,
             borderRadius: 12,
             padding: "8px 24px",
             display: "flex",
