@@ -9,7 +9,6 @@ interface AddNewTaskProps {
   onClose?: () => void;
   onSave?: (data: any) => void;
 }
-
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 48,
@@ -24,7 +23,6 @@ const inputStyle: React.CSSProperties = {
   boxSizing: "border-box",
   transition: "border-color 0.2s",
 };
-
 const textareaStyle: React.CSSProperties = {
   width: "100%",
   height: 120,

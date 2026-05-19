@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
+import "../../styles/task-modal-mobile.css";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
@@ -8,7 +9,6 @@ interface AddNewTaskProps {
   onClose?: () => void;
   onSave?: (data: any) => void;
 }
-
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 48,
@@ -23,7 +23,6 @@ const inputStyle: React.CSSProperties = {
   boxSizing: "border-box",
   transition: "border-color 0.2s",
 };
-
 const textareaStyle: React.CSSProperties = {
   width: "100%",
   height: 120,
@@ -51,10 +50,19 @@ const labelStyle: React.CSSProperties = {
 
 const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   const [title, setTitle] = useState("");
+  const [selectedAssign, setSelectedAssign] = useState("");
+  const [isAssignDropdownOpen, setIsAssignDropdownOpen] = useState(false);
   const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">("Lead");
   const [selectedLead, setSelectedLead] = useState("");
   const [isLeadDropdownOpen, setIsLeadDropdownOpen] = useState(false);
   const [leadSearchText, setLeadSearchText] = useState("");
+
+  const mockSales = [
+    "Sales 1",
+    "Sales 2",
+    "Sales 3",
+    "Sales 4"
+  ];
 
   const mockLeads = [
     { id: 1, name: "Lead name", phone: "*******2222" },
@@ -97,19 +105,23 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
   return (
     <div
+      className="task-modal-container"
       style={{
         display: "flex",
         width: 462,
+        height: 567,
         flexDirection: "column",
         alignItems: "flex-start",
+        background: "rgba(245, 246, 250, 1)",
         borderRadius: 12,
         overflow: "hidden",
-        background: "rgba(245, 246, 250, 1)",
-        maxHeight: "90vh",
+        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
+        position: "relative",
       }}
     >
       {/* ── Header ── */}
       <div
+        className="task-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -158,17 +170,19 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
       {/* ── Body ── */}
       <div
+        className="task-modal-body"
         style={{
           width: 462,
           display: "flex",
           flexDirection: "column",
           boxSizing: "border-box",
-          overflowY: "auto",
           flex: 1,
+          overflowY: "auto",
         }}
       >
         {/* Form Container */}
         <div
+          className="task-modal-form"
           style={{
             width: 422,
             marginTop: 32,
@@ -177,7 +191,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             flexDirection: "column",
             gap: 16,
             boxSizing: "border-box",
-            paddingBottom: 24,
+            paddingBottom: 96,
           }}
         >
           {/* Title */}
@@ -193,6 +207,70 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
+          </div>
+
+          {/* Assign To */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, height: 75, width: 422 }}>
+            <label style={labelStyle}>Assign to</label>
+            <div style={{ position: "relative", width: "100%" }}>
+              <div
+                onClick={() => setIsAssignDropdownOpen(!isAssignDropdownOpen)}
+                style={{
+                  ...inputStyle,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: selectedAssign ? "#141414" : "#9CA3AF" }}>
+                  {selectedAssign || "Sales Name"}
+                </span>
+                <ChevronDown size={16} color="#6B7280" />
+              </div>
+              {isAssignDropdownOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    marginTop: 4,
+                    width: "100%",
+                    background: "rgba(255, 255, 255, 1)",
+                    borderRadius: 12,
+                    boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+                    padding: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    zIndex: 100,
+                    boxSizing: "border-box"
+                  }}
+                >
+                  {mockSales.map((sale) => (
+                    <div
+                      key={sale}
+                      onClick={() => {
+                        setSelectedAssign(sale);
+                        setIsAssignDropdownOpen(false);
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        borderRadius: 8,
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 14,
+                        color: "#141414",
+                      }}
+                    >
+                      {sale}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Related To */}
@@ -262,6 +340,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               </div>
               {isLeadDropdownOpen && (
                 <div
+                  className="task-modal-dropdown"
                   style={{
                     position: "absolute",
                     top: "100%",
@@ -280,7 +359,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                     boxSizing: "border-box"
                   }}
                 >
-                  <div style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
+                  <div className="task-modal-dropdown-inner" style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
                     <Search size={18} color="#9CA3AF" style={{ position: "absolute", left: 12, top: 11 }} />
                     <input
                       type="text"
@@ -303,6 +382,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                     />
                   </div>
                   <div
+                    className="task-modal-dropdown-inner"
                     style={{
                       width: 401,
                       height: 260,
@@ -490,6 +570,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
         {/* ── Footer ── */}
         <div
+          className="task-modal-footer"
           style={{
             position: "absolute",
             bottom: 0,
@@ -505,6 +586,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
           }}
         >
           <button
+            className="task-modal-footer-btn"
             onClick={handleSave}
             disabled={!isSaveEnabled}
             style={{

@@ -4,6 +4,7 @@ import { Mail, Phone, Star, Users, FileText, TrendingUp, BarChart2, Plus, Target
 interface SalesCardProps {
   onAssignTask?: () => void;
   onPauseAccount?: () => void;
+  onViewTasks?: () => void;
 }
 
 const StatBox = ({ icon, value, label }: { icon: React.ReactNode, value: string, label: string }) => (
@@ -39,7 +40,7 @@ const ProgressBar = ({ icon, label, value, percentage }: { icon: React.ReactNode
   </div>
 );
 
-export const Sales_Card: React.FC<SalesCardProps> = ({ onAssignTask, onPauseAccount }) => {
+export const Sales_Card: React.FC<SalesCardProps> = ({ onAssignTask, onPauseAccount, onViewTasks }) => {
   return (
     <div
       style={{
@@ -158,7 +159,10 @@ export const Sales_Card: React.FC<SalesCardProps> = ({ onAssignTask, onPauseAcco
             <path d="M6.625 7.89062C6.625 7.19164 7.19164 6.625 7.89062 6.625H12.1094C12.8084 6.625 13.375 7.19164 13.375 7.89062V12.1094C13.375 12.8084 12.8084 13.375 12.1094 13.375H7.89062C7.19164 13.375 6.625 12.8084 6.625 12.1094V7.89062Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
           </svg>
         </button>
-        <button style={{ width: 48, height: 48, borderRadius: 12, border: '1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)', padding: 12, background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, aspectRatio: '1/1' }}>
+        <button 
+          onClick={onViewTasks}
+          style={{ width: 48, height: 48, borderRadius: 12, border: '1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)', padding: 12, background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, aspectRatio: '1/1' }}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ width: 24, height: 24, flexShrink: 0 }}>
             <path d="M10.7999 21.6H4.79989C3.47441 21.6 2.39989 20.5254 2.3999 19.2L2.4 4.80001C2.4 3.47453 3.47452 2.40002 4.79999 2.40002H15.6003C16.9257 2.40002 18.0003 3.47454 18.0003 4.80002V9.60002M17.3999 17.349V17.2858M6.60028 7.20002H13.8003M6.60028 10.8H13.8003M6.60028 14.4H10.2003M21.5999 17.4C21.5999 17.4 20.6037 20.3397 17.3999 20.2883C14.1961 20.237 13.1999 17.4 13.1999 17.4C13.1999 17.4 14.1557 14.409 17.3999 14.409C20.6441 14.409 21.5999 17.4 21.5999 17.4Z" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>

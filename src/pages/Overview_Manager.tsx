@@ -1,12 +1,17 @@
 import React from 'react';
 import commissionIcon from '../assets/4a99657e1acb696f86d3bd926bedf5fe9fbead65.gif';
+import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
+import messageTextIcon from '../assets/message-text-02.svg';
+import filePlusIcon from '../assets/file-plus-01.svg';
+import coinIcon from '../assets/coin-unbroken.svg';
+import { ResponsiveContainer, PieChart, Pie, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, Area, AreaChart } from 'recharts';
 
 const Overview_Manager: React.FC = () => {
      const cards = [
     {
-      title: "Followups Today",
+      title: "Total Followups",
       count: "10",
-      subtitle: "pending",
+      subtitle: "today",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
           <path d="M36.1539 25.3991V6.92289C36.1539 5.22593 34.7736 3.84597 33.077 3.84597H29.2308V3.07674C29.2308 1.8042 28.1957 0.769043 26.9231 0.769043C25.6506 0.769043 24.6154 1.8042 24.6154 3.07674V3.84597H12.3077V3.07674C12.3077 1.8042 11.2726 0.769043 10.0001 0.769043C8.72752 0.769043 7.69236 1.8042 7.69236 3.07674V3.84597H3.84621C2.14962 3.84597 0.769287 5.22593 0.769287 6.92289V33.0767C0.769287 34.7737 2.14962 36.1537 3.84621 36.1537H25.3994C26.8044 38.0178 29.0296 39.2306 31.5385 39.2306C35.7802 39.2306 39.2308 35.7796 39.2308 31.5383C39.2308 29.0295 38.0181 26.8042 36.1539 25.3991ZM26.1539 3.07674C26.1539 2.6523 26.4991 2.3075 26.9231 2.3075C27.3472 2.3075 27.6924 2.6523 27.6924 3.07674V9.23058C27.6924 9.65501 27.3472 9.99981 26.9231 9.99981C26.4991 9.99981 26.1539 9.65501 26.1539 9.23058V3.07674ZM24.7609 10.0116C25.0827 10.899 25.926 11.5383 26.9231 11.5383C27.9203 11.5383 28.7636 10.899 29.0854 10.0117C29.1707 10.2538 29.2308 10.5054 29.2308 10.769C29.2308 12.0416 28.1957 13.0767 26.9231 13.0767C25.6506 13.0767 24.6154 12.0416 24.6154 10.769C24.6154 10.5054 24.6755 10.2538 24.7609 10.0116ZM9.23083 3.07674C9.23083 2.6523 9.576 2.3075 10.0001 2.3075C10.4241 2.3075 10.7693 2.6523 10.7693 3.07674V9.23058C10.7693 9.65501 10.4241 9.99981 10.0001 9.99981C9.576 9.99981 9.23083 9.65501 9.23083 9.23058V3.07674ZM7.83782 10.0116C8.15961 10.899 9.00293 11.5383 10.0001 11.5383C10.9972 11.5383 11.8405 10.899 12.1623 10.0117C12.2476 10.2538 12.3077 10.5054 12.3077 10.769C12.3077 12.0416 11.2726 13.0767 10.0001 13.0767C8.72752 13.0767 7.69236 12.0416 7.69236 10.769C7.69236 10.5054 7.75241 10.2538 7.83782 10.0116ZM2.30775 6.92289C2.30775 6.07478 2.99773 5.38443 3.84621 5.38443H7.69236V7.69817C6.73463 8.41717 6.1539 9.55487 6.1539 10.769C6.1539 12.8897 7.87941 14.6152 10.0001 14.6152C12.1207 14.6152 13.8462 12.8897 13.8462 10.769C13.8462 9.55487 13.2655 8.41717 12.3077 7.69817V5.38443H24.6154V7.69817C23.6577 8.41717 23.077 9.55487 23.077 10.769C23.077 12.8897 24.8025 14.6152 26.9231 14.6152C29.0438 14.6152 30.7693 12.8897 30.7693 10.769C30.7693 9.55487 30.1886 8.41717 29.2308 7.69817V5.38443H33.077C33.9255 5.38443 34.6154 6.07478 34.6154 6.92289V16.1537H2.30775V6.92289ZM24.6154 26.9229H20.0001C19.5752 26.9229 19.2308 27.2669 19.2308 27.6921V32.3075C19.2308 32.7327 19.5752 33.0767 20.0001 33.0767H24.0012C24.1104 33.6123 24.2785 34.1261 24.493 34.6152H3.84621C2.99773 34.6152 2.30775 33.9248 2.30775 33.0767V17.6921H34.6154V24.4927C33.6722 24.0791 32.6326 23.846 31.5385 23.846C28.9064 23.846 26.5807 25.1763 25.1933 27.1983C25.0522 27.0332 24.8497 26.9229 24.6154 26.9229ZM23.8462 28.4613V31.5383H20.7693V28.4613H23.8462ZM31.5385 37.6921C28.1453 37.6921 25.3847 34.9314 25.3847 31.5383C25.3847 28.1451 28.1453 25.3844 31.5385 25.3844C34.9317 25.3844 37.6924 28.1451 37.6924 31.5383C37.6924 34.9314 34.9317 37.6921 31.5385 37.6921Z" fill="#00236F"/>
@@ -15,9 +20,9 @@ const Overview_Manager: React.FC = () => {
       )
     },
     {
-      title: "Tasks Due Today",
+      title: "Total tasks",
       count: "10",
-      subtitle: "pending",
+      subtitle: "today",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" viewBox="0 0 39 39" fill="none">
           <path d="M35.625 5H26.875C26.258 3.51931 25.2166 2.25437 23.8819 1.36459C22.5473 0.474809 20.9791 0 19.375 0C17.7709 0 16.2027 0.474809 14.8681 1.36459C13.5334 2.25437 12.492 3.51931 11.875 5H3.125C2.2965 5.00099 1.50222 5.33055 0.916387 5.91639C0.330551 6.50222 0.000992411 7.2965 0 8.125V29.375C0.000992411 30.2035 0.330551 30.9978 0.916387 31.5836C1.50222 32.1694 2.2965 32.499 3.125 32.5H14.8875L14.4706 35H14.375C13.8777 35 13.4008 35.1975 13.0492 35.5492C12.6975 35.9008 12.5 36.3777 12.5 36.875V38.125C12.5 38.2908 12.5658 38.4497 12.6831 38.5669C12.8003 38.6842 12.9592 38.75 13.125 38.75H25.625C25.7908 38.75 25.9497 38.6842 26.0669 38.5669C26.1842 38.4497 26.25 38.2908 26.25 38.125V36.875C26.25 36.3777 26.0525 35.9008 25.7008 35.5492C25.3492 35.1975 24.8723 35 24.375 35H24.2794L23.8625 32.5H35.625C36.4535 32.499 37.2478 32.1694 37.8336 31.5836C38.4194 30.9978 38.749 30.2035 38.75 29.375V8.125C38.749 7.2965 38.4194 6.50222 37.8336 5.91639C37.2478 5.33055 36.4535 5.00099 35.625 5ZM35.625 6.25C36.1223 6.25 36.5992 6.44754 36.9508 6.79917C37.3025 7.15081 37.5 7.62772 37.5 8.125V26.25H36.25V8.125C36.25 7.95924 36.1842 7.80027 36.0669 7.68306C35.9497 7.56585 35.7908 7.5 35.625 7.5H27.4681C27.4359 7.07888 27.3707 6.66093 27.2731 6.25H35.625ZM11.2819 8.75C11.3447 9.60968 11.5449 10.4537 11.875 11.25H10.625C9.96196 11.25 9.32607 11.5134 8.85723 11.9822C8.38839 12.4511 8.125 13.087 8.125 13.75V22.5C8.125 23.163 8.38839 23.7989 8.85723 24.2678C9.32607 24.7366 9.96196 25 10.625 25H28.125C28.788 25 29.4239 24.7366 29.8928 24.2678C30.3616 23.7989 30.625 23.163 30.625 22.5V13.75C30.625 13.087 30.3616 12.4511 29.8928 11.9822C29.4239 11.5134 28.788 11.25 28.125 11.25H26.875C27.2057 10.4538 27.4066 9.60979 27.47 8.75H35V26.25H3.75V8.75H11.2819ZM26.2106 12.5H28.125C28.3436 12.5014 28.558 12.5607 28.7463 12.6719L19.375 19.8381L10.0037 12.6719C10.192 12.5607 10.4064 12.5014 10.625 12.5H12.5394C13.2716 13.6494 14.2818 14.5955 15.4766 15.251C16.6714 15.9065 18.0122 16.2501 19.375 16.2501C20.7378 16.2501 22.0786 15.9065 23.2734 15.251C24.4682 14.5955 25.4784 13.6494 26.2106 12.5ZM15.3888 18.3638L9.48313 23.0037C9.41205 22.8453 9.37521 22.6737 9.375 22.5V13.7644L15.3888 18.3638ZM16.4144 19.1475L18.9956 21.1213C19.1046 21.2045 19.2379 21.2496 19.375 21.2496C19.5121 21.2496 19.6454 21.2045 19.7544 21.1213L22.3356 19.1475L28.1875 23.7438C28.1675 23.7438 28.1481 23.75 28.125 23.75H10.625C10.6044 23.75 10.585 23.745 10.5625 23.7438L16.4144 19.1475ZM29.375 22.5C29.3747 22.6738 29.3379 22.8457 29.2669 23.0044L23.3612 18.3638L29.375 13.7644V22.5ZM19.375 1.25C20.7347 1.25 22.064 1.65321 23.1945 2.40865C24.3251 3.16408 25.2063 4.23781 25.7267 5.49405C26.247 6.75029 26.3832 8.13263 26.1179 9.46625C25.8526 10.7999 25.1978 12.0249 24.2364 12.9864C23.2749 13.9478 22.0499 14.6026 20.7162 14.8679C19.3826 15.1332 18.0003 14.997 16.7441 14.4767C15.4878 13.9563 14.4141 13.0751 13.6586 11.9445C12.9032 10.814 12.5 9.48475 12.5 8.125C12.5022 6.3023 13.2272 4.55486 14.516 3.26602C15.8049 1.97717 17.5523 1.25215 19.375 1.25ZM3.125 6.25H11.4769C11.3793 6.66093 11.3141 7.07888 11.2819 7.5H3.125C2.95924 7.5 2.80027 7.56585 2.68306 7.68306C2.56585 7.80027 2.5 7.95924 2.5 8.125V26.25H1.25V8.125C1.25 7.62772 1.44754 7.15081 1.79917 6.79917C2.15081 6.44754 2.62772 6.25 3.125 6.25ZM25 36.875V37.5H13.75V36.875C13.75 36.7092 13.8158 36.5503 13.9331 36.4331C14.0503 36.3158 14.2092 36.25 14.375 36.25H24.375C24.5408 36.25 24.6997 36.3158 24.8169 36.4331C24.9342 36.5503 25 36.7092 25 36.875ZM23.0125 35H15.7375L16.1544 32.5H22.5956L23.0125 35ZM35.625 31.25H3.125C2.62772 31.25 2.15081 31.0525 1.79917 30.7008C1.44754 30.3492 1.25 29.8723 1.25 29.375V27.5H37.5V29.375C37.5 29.8723 37.3025 30.3492 36.9508 30.7008C36.5992 31.0525 36.1223 31.25 35.625 31.25Z" fill="#00236F"/>
@@ -25,9 +30,9 @@ const Overview_Manager: React.FC = () => {
       )
     },
     {
-      title: "New Leads",
+      title: "Total fresh Leads",
       count: "10",
-      subtitle: "freshers",
+      subtitle: "today",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
           <g clipPath="url(#clip0_1882_10619)">
@@ -48,7 +53,7 @@ const Overview_Manager: React.FC = () => {
       )
     },
     {
-      title: "Deals Closed",
+      title: "Total Deals",
       count: "10",
       subtitle: "this month",
       icon: (
@@ -65,33 +70,26 @@ const Overview_Manager: React.FC = () => {
       )
     },
     {
-      title: "Calls Made",
-      count: "10",
+      title: "Total Deals Value",
+      count: "50,000 EGP",
+      subtitle: "",
+      icon: (
+       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <path d="M8.42088 34.7366C8.42088 32.9926 7.00703 31.5787 5.26296 31.5787C3.51888 31.5787 2.10504 32.9926 2.10504 34.7366C2.10504 36.4807 3.51888 37.8946 5.26296 37.8946C7.00703 37.8946 8.42088 36.4807 8.42088 34.7366ZM10.5262 34.7366C10.5262 37.6434 8.16974 39.9998 5.26296 39.9998C2.35618 39.9998 -0.000244141 37.6434 -0.000244141 34.7366C-0.000244141 31.8299 2.35618 29.4734 5.26296 29.4734C8.16974 29.4734 10.5262 31.8299 10.5262 34.7366ZM33.6842 13.6838V12.6312H32.6316C32.0503 12.6312 31.579 12.1599 31.579 11.5786C31.579 10.9972 32.0503 10.5259 32.6316 10.5259H34.7369C35.3181 10.5259 35.7895 10.0546 35.7895 9.47327V8.42063H32.6316C32.0503 8.42063 31.579 7.94935 31.579 7.36799V5.26271C31.579 3.88811 32.4583 2.72158 33.6842 2.28776V1.05215C33.6842 0.4708 34.1556 -0.000488281 34.7369 -0.000488281C35.3181 -0.000488281 35.7895 0.4708 35.7895 1.05215V2.10479H36.8422C37.4234 2.10479 37.8948 2.57608 37.8948 3.15743C37.8948 3.73878 37.4234 4.21007 36.8422 4.21007H34.7369C34.1556 4.21007 33.6842 4.68136 33.6842 5.26271V6.31535H36.8422C37.4234 6.31535 37.8948 6.78664 37.8948 7.36799V9.47327C37.8948 10.8476 37.0152 12.0122 35.7895 12.4462V13.6838C35.7895 14.2652 35.3181 14.7365 34.7369 14.7365C34.1556 14.7365 33.6842 14.2652 33.6842 13.6838ZM23.1578 28.4208C23.1578 26.6768 21.7439 25.2629 19.9999 25.2629C18.2559 25.2629 16.842 26.6768 16.842 28.4208V34.7366L16.8584 35.0594C17.0201 36.6518 18.3647 37.8946 19.9999 37.8946C21.7439 37.8946 23.1578 36.4807 23.1578 34.7366V28.4208ZM25.2631 34.7366C25.2631 37.6434 22.9067 39.9998 19.9999 39.9998C17.2751 39.9998 15.0332 37.9291 14.7635 35.2754L14.7367 34.7366V28.4208C14.7367 25.514 17.0932 23.1576 19.9999 23.1576C22.9067 23.1576 25.2631 25.514 25.2631 28.4208V34.7366ZM37.8948 24.2102C37.8948 22.4662 36.4809 21.0523 34.7369 21.0523C32.9929 21.0523 31.579 22.4662 31.579 24.2102V34.7366C31.579 36.4807 32.9929 37.8946 34.7369 37.8946C36.4809 37.8946 37.8948 36.4807 37.8948 34.7366V24.2102ZM40.0001 34.7366C40.0001 37.6434 37.6436 39.9998 34.7369 39.9998C31.8301 39.9998 29.4737 37.6434 29.4737 34.7366V24.2102C29.4737 21.3035 31.8301 18.947 34.7369 18.947C37.6436 18.947 40.0001 21.3035 40.0001 24.2102V34.7366Z" fill="#00236F"/>
+</svg>
+      )
+    },
+    {
+      title: "Total Calls Made",
+      count: "500",
       subtitle: "this month",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
           <g clipPath="url(#clip0_1882_9676)">
             <path d="M20 0C8.9616 0 0 8.9616 0 20C0 31.0384 8.9616 40 20 40C31.0384 40 40 31.0384 40 20C40 8.9616 31.0384 0 20 0ZM20 1.2496C30.352 1.2496 38.7504 9.648 38.7504 20C38.7504 30.352 30.352 38.7008 20 38.7008C17.543 38.705 15.1093 38.2242 12.8385 37.2859C10.5677 36.3476 8.50451 34.9702 6.76714 33.2329C5.02977 31.4955 3.65244 29.4323 2.71413 27.1615C1.77582 24.8907 1.29498 22.457 1.2992 20C1.3008 9.648 9.648 1.2496 20 1.2496ZM10.8496 11.2C9.78786 12.1182 8.98473 13.2981 8.51993 14.6226C8.05514 15.9471 7.94484 17.3701 8.2 18.7504L9.7504 18.4496C9.55126 17.3414 9.64474 16.2005 10.0216 15.1395C10.3985 14.0785 11.0456 13.1343 11.8992 12.4L10.8496 11.2ZM20.8 12.7008L17.3504 14.7008C15.4432 15.8016 14.7488 18.2432 15.8496 20.1504L19.8496 27.0496C20.9488 28.9616 23.4384 29.6528 25.3504 28.5504L28.8 26.5504L26.4 22.4L24.3504 23.6C23.8528 23.8848 23.7216 23.7696 23.5504 23.6496C23.3776 23.5312 23.3008 23.3504 23.3008 23.3504V23.3008L20.8496 19.0992C20.8496 19.0992 20.7216 18.8736 20.6992 18.6512C20.6784 18.4272 20.6128 18.2928 21.0512 18.0496L23.2 16.8496L22 14.7504L20.8 12.7008ZM12.7504 14.1008C11.9016 15.1788 11.4749 16.5292 11.5504 17.8992L13.1504 17.8C13.0934 16.8261 13.3957 15.8651 14 15.0992L12.7504 14.1008ZM20.2 14.8496L20.6 15.5504L21 16.2496L20.2992 16.6992C19.3824 17.2112 19.0384 18.1488 19.0992 18.8C19.1632 19.4528 19.4992 19.9008 19.4992 19.9008L21.8512 24.0496C21.8512 24.0496 22.1024 24.5744 22.6512 24.9504C23.1968 25.3264 24.2128 25.4864 25.1504 24.9504L25.8 24.5504L26.6 25.9504L24.5504 27.1504C24.2749 27.3095 23.9706 27.4124 23.6551 27.4533C23.3396 27.4941 23.0191 27.472 22.7122 27.3882C22.4053 27.3044 22.118 27.1607 21.867 26.9653C21.6159 26.7698 21.4061 26.5266 21.2496 26.2496L17.2496 19.3504C17.0907 19.0748 16.988 18.7706 16.9473 18.4551C16.9065 18.1396 16.9287 17.8192 17.0124 17.5124C17.0962 17.2055 17.2399 16.9183 17.4352 16.6672C17.6305 16.4161 17.8736 16.2062 18.1504 16.0496L20.2 14.8496Z" fill="#00236F"/>
           </g>
           <defs>
             <clipPath id="clip0_1882_9676">
-              <rect width="40" height="40" fill="white"/>
-            </clipPath>
-          </defs>
-        </svg>
-      )
-    },
-    {
-      title: "Tasks Finished",
-      count: "10",
-      subtitle: "this month",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <g clipPath="url(#clip0_1882_9136)">
-            <path d="M31.8884 5.11649H27.907V4.85603C27.907 3.97231 27.1908 3.25603 26.307 3.25603H23.1861C22.8605 1.66533 21.4512 0.465332 19.7675 0.465332C18.0838 0.465332 16.6745 1.66533 16.3489 3.25603H13.228C12.3489 3.25603 11.628 3.97231 11.628 4.85603V5.11649H7.64657C6.25122 5.11649 5.11633 6.25138 5.11633 7.64673V36.5444C5.11633 37.9398 6.25122 39.0746 7.64657 39.0746H31.8931C33.2884 39.0746 34.4233 37.9398 34.4233 36.5444V7.64673C34.4187 6.25138 33.2838 5.11649 31.8884 5.11649ZM13.0233 4.85603C13.0233 4.7444 13.1163 4.65138 13.228 4.65138H16.9768C17.3628 4.65138 17.6745 4.33975 17.6745 3.9537C17.6745 2.80022 18.614 1.86068 19.7675 1.86068C20.921 1.86068 21.8605 2.80022 21.8605 3.9537C21.8605 4.33975 22.1721 4.65138 22.5582 4.65138H26.307C26.4187 4.65138 26.5117 4.7444 26.5117 4.85603V7.70719C26.5117 7.81882 26.4187 7.91184 26.307 7.91184H13.228C13.1163 7.91184 13.0233 7.81882 13.0233 7.70719V4.85603ZM33.0233 36.5397C33.0233 37.163 32.5163 37.6746 31.8884 37.6746H7.64657C7.02331 37.6746 6.51168 37.1677 6.51168 36.5397V7.64673C6.51168 7.02347 7.01866 6.51184 7.64657 6.51184H11.628V7.70254C11.628 8.58626 12.3442 9.30254 13.228 9.30254H26.3117C27.1908 9.30254 27.9117 8.58626 27.9117 7.70254V6.51184H31.8931C32.5163 6.51184 33.028 7.01882 33.028 7.64673V36.5397H33.0233ZM29.7675 14.1863C29.7675 14.5723 29.4559 14.8839 29.0698 14.8839H19.7675C19.3814 14.8839 19.0698 14.5723 19.0698 14.1863C19.0698 13.8002 19.3814 13.4886 19.7675 13.4886H29.0698C29.4559 13.4886 29.7675 13.8002 29.7675 14.1863ZM19.0698 3.95836C19.0698 3.57231 19.3861 3.25603 19.7721 3.25603C20.1582 3.25603 20.4745 3.57231 20.4745 3.95836C20.4745 4.3444 20.1582 4.66068 19.7721 4.66068C19.3861 4.66068 19.0698 4.3444 19.0698 3.95836ZM16.5396 11.8328C16.814 12.1072 16.814 12.5491 16.5396 12.8188L12.8187 16.5398C12.6838 16.6746 12.5024 16.7444 12.3256 16.7444C12.1489 16.7444 11.9675 16.6746 11.8326 16.5398L9.97215 14.6793C9.69773 14.4049 9.69773 13.963 9.97215 13.6932C10.2466 13.4188 10.6884 13.4188 10.9582 13.6932L12.3256 15.0607L15.5535 11.8328C15.828 11.5584 16.2652 11.5584 16.5396 11.8328ZM29.7675 22.5584C29.7675 22.9444 29.4559 23.256 29.0698 23.256H19.7675C19.3814 23.256 19.0698 22.9444 19.0698 22.5584C19.0698 22.1723 19.3814 21.8607 19.7675 21.8607H29.0698C29.4559 21.8607 29.7675 22.1723 29.7675 22.5584ZM16.5396 20.2049C16.814 20.4793 16.814 20.9211 16.5396 21.1909L12.8187 24.9118C12.6838 25.0467 12.5024 25.1165 12.3256 25.1165C12.1489 25.1165 11.9675 25.0467 11.8326 24.9118L9.97215 23.0514C9.69773 22.777 9.69773 22.3351 9.97215 22.0653C10.2466 21.7956 10.6884 21.7909 10.9582 22.0653L12.3256 23.4328L15.5535 20.2049C15.828 19.9304 16.2652 19.9304 16.5396 20.2049ZM29.7675 30.9304C29.7675 31.3165 29.4559 31.6281 29.0698 31.6281H19.7675C19.3814 31.6281 19.0698 31.3165 19.0698 30.9304C19.0698 30.5444 19.3814 30.2328 19.7675 30.2328H29.0698C29.4559 30.2328 29.7675 30.5444 29.7675 30.9304ZM16.5396 28.577C16.814 28.8514 16.814 29.2932 16.5396 29.563L12.8187 33.2839C12.6838 33.4188 12.5024 33.4886 12.3256 33.4886C12.1489 33.4886 11.9675 33.4188 11.8326 33.2839L9.97215 31.4235C9.69773 31.1491 9.69773 30.7072 9.97215 30.4374C10.2466 30.1677 10.6884 30.163 10.9582 30.4374L12.3256 31.8049L15.5535 28.577C15.828 28.3025 16.2652 28.3025 16.5396 28.577Z" fill="#00236F"/>
-          </g>
-          <defs>
-            <clipPath id="clip0_1882_9136">
               <rect width="40" height="40" fill="white"/>
             </clipPath>
           </defs>
@@ -208,150 +206,198 @@ const Overview_Manager: React.FC = () => {
                   ))}
                 </div>
       
-                {/* Followups Table */}
-                <div className="overview-followups" style={{
-                  boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-                  background: "rgba(255, 255, 255, 1)",
-                  width: "100%",
-                  height: 435,
+                {/* Top Performers Table */}
+                <div className="overview-top-performers" style={{
                   borderRadius: 12,
-                  padding: 16,
+                  background: "var(--Foundation-neutral-white, #FFF)",
+                  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)",
                   display: "flex",
+                  width: "100%",
+                  padding: 16,
                   flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "flex-start",
                   gap: 16,
                   boxSizing: "border-box"
                 }}>
-                  <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Followups Today</span>
-                  
-                  {/* Table headers */}
-                  <div className="overview-table-header" style={{
-                    display: "grid",
-                    gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
-                    background: "#E5E7EB",
-                    padding: "12px 16px",
-                    borderRadius: 8,
-                    gap: 16
+                  {/* Header with Title and Button */}
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"
                   }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Lead info</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Status</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Phone number</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Priority</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>Actions</span>
+                    <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Top Performers Table</span>
+                    <button style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "8px 12px",
+                      borderRadius: 8,
+                      border: "1px solid #D4D5D8",
+                      background: "#FFF",
+                      color: "#4B5563",
+                      fontSize: 14,
+                      fontFamily: "Inter, sans-serif",
+                      cursor: "pointer"
+                    }}>
+                      This month
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
                   </div>
-      
-                  {/* Table rows */}
-                  <div className="overview-table-rows-wrapper" style={{ width: "100%", height: 300, display: "flex", flexDirection: "column", overflowY: "auto" }}>
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <div key={i} className="overview-table-row" style={{
-                        display: "grid",
-                        gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
-                        padding: "16px",
-                        borderBottom: "1px solid #F3F4F6",
-                        gap: 16,
-                        alignItems: "center"
+                  
+                  {/* The table */}
+                  <div style={{ width: "100%", overflowX: "auto" }}>
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: 16,
+                      minWidth: 600
+                    }}>
+                      {/* Header of table */}
+                      <div style={{
+                        borderRadius: "12px 12px 0 0",
+                        background: "var(--Foundation-neutral-neutral-100, #D4D5D8)",
+                        display: "flex",
+                        width: "100%",
+                        height: 48,
+                        padding: "0 32px 0 12px",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        boxSizing: "border-box"
                       }}>
-                        {/* Lead info */}
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
-                          <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Elshayeeb inc.</span>
-                        </div>
-                        {/* Status */}
-                        <div>
-                          <span style={{ background: "#E5E7EB", padding: "4px 8px", borderRadius: 12, fontSize: 12, color: "#374151", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>FU after meeting</span>
-                        </div>
-                        {/* Phone */}
-                        <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>+201121504065</span>
-                        {/* Priority */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#D97706" }} />
-                          <span style={{ fontSize: 14, color: "#D97706", fontFamily: "Inter, sans-serif" }}>Medium</span>
-                        </div>
-                        {/* Actions */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
-                          <img src={whatsappIcon} width={20} height={20} alt="WhatsApp" style={{ cursor: "pointer" }} />
-                          <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} />
-                          <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} />
-                          <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} />
-                        </div>
+                        <span style={{ width: 32, flexShrink: 0, fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Rank</span>
+                        <span style={{ width: 146, flexShrink: 0, fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>Sales Name</span>
+                        <span style={{ width: 60, flexShrink: 0, fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>Deals</span>
+                        <span style={{ width: 140, flexShrink: 0, fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>Target</span>
+                        <span style={{ width: 98, flexShrink: 0, fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "right" }}>Revenue (EGP)</span>
                       </div>
-                    ))}
+
+                      {/* Table Rows */}
+                      <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+                        {[1, 2, 3].map((item) => (
+                          <div key={item} style={{
+                            borderBottom: "1px solid var(--Foundation-neutral-neutral-50, #EDEFF2)",
+                            display: "flex",
+                            width: "100%",
+                            padding: 12,
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            boxSizing: "border-box"
+                          }}>
+                            {/* Rank */}
+                            <div style={{
+                              width: 32, flexShrink: 0, display: "flex", alignItems: "center"
+                            }}>
+                              <div style={{
+                                width: 24, height: 24, borderRadius: "50%", background: "#F4ECE5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: "#4B5563", fontFamily: "Inter, sans-serif"
+                              }}>
+                                {item}
+                              </div>
+                            </div>
+                            
+                            {/* Sales Name */}
+                            <span style={{ width: 146, flexShrink: 0, fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
+                            
+                            {/* Deals */}
+                            <span style={{ width: 60, flexShrink: 0, fontSize: 14, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "center" }}>1000000</span>
+                            
+                            {/* Target */}
+                            <div style={{ width: 140, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                              <div style={{ width: 64, height: 8, background: "#D4D5D8", borderRadius: 4, display: "flex", overflow: "hidden" }}>
+                                <div style={{ width: "30%", height: "100%", background: "#00236F" }} />
+                              </div>
+                              <span style={{ fontSize: 12, color: "#4B5563", fontFamily: "Inter, sans-serif" }}>30%</span>
+                            </div>
+                            
+                            {/* Revenue */}
+                            <span style={{ width: 98, flexShrink: 0, fontSize: 14, color: "#4B5563", fontFamily: "Inter, sans-serif", textAlign: "right" }}>50,000,000</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
       
-              {/* Right section: Calendar & Revenue Target */}
+              {/* Right section: Calendar  */}
               <div className="overview-right" style={{ display: "flex", flexDirection: "column", gap: 24, flex: "1", minWidth: 300 }}>
                 
                 {/* Calendar Widget */}
                 <div className="overview-calendar" style={{
                   boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
                   background: "rgba(255, 255, 255, 1)",
-                  width: "100%",
-                  height: 332,
-                  borderRadius: 12,
-                  padding: 16,
                   display: "flex",
+                  width: "100%",
+                  height: 575,
+                  padding: 16,
                   flexDirection: "column",
-                  gap: 16,
-                  boxSizing: "border-box"
+                  alignItems: "center",
+                  gap: 24,
+                  boxSizing: "border-box",
+                  borderRadius: 12,
+                  opacity: 1
                 }}>
-                  {/* Header */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 18, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Calender</span>
-                    <button style={{
-                      border: "1px solid rgba(212, 213, 216, 1)",
-                      background: "transparent",
-                      height: 36,
-                      borderRadius: 8,
-                      padding: "0 12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      cursor: "pointer",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 14,
-                      color: "#374151"
-                    }}>
-                      April
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </button>
-                  </div>
-                  
-                  {/* Days row */}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
-                    <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'<'}</span>
-                    <div style={{ display: "flex", gap: 16, borderBottom: "1px solid #E5E7EB", flex: 1, margin: "0 16px", justifyContent: "space-between" }}>
-                      {[1, 2, 3, 4, 5].map((item, index) => {
-                        const isActive = index === 0;
-                        return (
-                          <div key={index} style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            color: isActive ? "#1D4ED8" : "#6B7280",
-                            borderBottom: isActive ? "2px solid #1D4ED8" : "2px solid transparent",
-                            paddingBottom: 8,
-                            marginBottom: -1,
-                            fontFamily: "Inter, sans-serif",
-                            gap: 4
-                          }}>
-                            <span style={{ fontSize: 12 }}>Sun</span>
-                            <span style={{ fontSize: 14 }}>6</span>
-                          </div>
-                        );
-                      })}
+                  {/* Calendar with days */}
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%", height: 110, gap: 16, opacity: 1 }}>
+                    {/* Header: Calendar + Month button */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                      <span style={{ fontSize: 18, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Calender</span>
+                      <button style={{
+                        border: "1px solid rgba(212, 213, 216, 1)",
+                        background: "transparent",
+                        height: 36,
+                        borderRadius: 8,
+                        padding: "0 12px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        cursor: "pointer",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 14,
+                        color: "#374151"
+                      }}>
+                        April
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </button>
                     </div>
-                    <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'>'}</span>
+
+                    {/* Days of week */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                      <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'<'}</span>
+                      <div style={{ display: "flex", flex: 1, margin: "0 8px", justifyContent: "space-between", borderBottom: "1px solid #E5E7EB" }}>
+                        {["Sun", "Sun", "Sun", "Sun", "Sun", "Sun"].map((day, index) => {
+                          const isActive = index === 0;
+                          return (
+                            <div key={index} style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              color: isActive ? "#1D4ED8" : "#6B7280",
+                              borderBottom: isActive ? "2px solid #1D4ED8" : "2px solid transparent",
+                              paddingBottom: 8,
+                              marginBottom: -1,
+                              fontFamily: "Inter, sans-serif",
+                              gap: 4
+                            }}>
+                              <span style={{ fontSize: 12 }}>{day}</span>
+                              <span style={{ fontSize: 14 }}>6</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <span style={{ cursor: "pointer", color: "#374151", fontWeight: 600 }}>{'>'}</span>
+                    </div>
                   </div>
-      
+
                   {/* Tasks section */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 8 }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 20, width: "100%", height: 166, opacity: 1 }}>
                     <span style={{ fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", color: "#111827" }}>Tasks</span>
                     {[
                       "Weekly meeting with the team.",
-                      "Calling yesterday low priority leads.",
-                      "Revise latest deals."
+                      "Performance Reviews.",
+                      "Report Reviews."
                     ].map((text, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#BBE5B3', flexShrink: 0 }} />
@@ -360,112 +406,307 @@ const Overview_Manager: React.FC = () => {
                     ))}
                     <span
                       onClick={() => setIsTaskDrawerOpen(true)}
-                      style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif", marginTop: 4 }}
+                      style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif" }}
                     >View more</span>
                   </div>
-                </div>
-      
-                {/* Revenue Target card */}
-                <div className="overview-revenue" style={{
-                  boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-                  background: "rgba(255, 255, 255, 1)",
-                  width: "100%",
-                  height: 381,
-                  borderRadius: 12,
-                  padding: "24px 16px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 16,
-                  boxSizing: "border-box"
-                }}>
-                  {/* Title and date */}
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                  }}>
-                    <span style={{ fontSize: 18, fontWeight: 400, color: "#111827", fontFamily: "Inter, sans-serif" }}>Revenue Target</span>
-                    <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>April 2026</span>
-                  </div>
-      
-                  {/* Pricing row */}
-                  <div style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4
-                  }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                      <span style={{ fontSize: 18, fontWeight: 700, color: "#111827", fontFamily: "Inter, sans-serif" }}>25,000 EGP</span>
-                      <span style={{ fontSize: 14, color: "#111827", fontFamily: "Inter, sans-serif" }}>/40,000 EGP</span>
-                    </div>
-                    <span style={{ fontSize: 14, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Only 15,000 left !</span>
-                  </div>
-      
-                  {/* The graph */}
-                  <div style={{
-                    width: "100%",
-                    flex: 1,
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: 16
-                  }}>
-                    <div style={{ width: 190, height: 190, position: "relative" }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { name: 'Completed', value: 60, fill: '#00236F' },
-                              { name: 'Remaining', value: 40, fill: '#B0BBD2' }
-                            ]}
-                            innerRadius={70.167}
-                            outerRadius={95}
-                            startAngle={90}
-                            endAngle={-270}
-                            dataKey="value"
-                            stroke="none"
-                            cornerRadius={0}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      
-                      {/* Centered text in PieChart */}
-                      <div style={{
-                        position: "absolute",
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        pointerEvents: "none"
-                      }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <span style={{ 
-                            fontSize: 59.598, 
-                            fontWeight: 700, 
-                            color: "#FFF", 
-                            fontFamily: "'Noto Sans', sans-serif", 
-                            WebkitTextStroke: "1.66px #000",
-                            lineHeight: "normal"
-                          }}>60</span>
-                          <span style={{ 
-                            fontSize: 38.628, 
-                            fontWeight: 700, 
-                            color: "#FFF", 
-                            fontFamily: "'Noto Sans', sans-serif", 
-                            WebkitTextStroke: "1.07px #000",
-                            lineHeight: "normal",
-                            width: 41.879
-                          }}>%</span>
+
+                  {/* Divider */}
+                  <div style={{ width: "100%", height: 1, background: "#E5E7EB" }} />
+
+                  {/* Sales Daily Reports section */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 20, width: "100%", height: 203, opacity: 1 }}>
+                    <span style={{ fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif", color: "#111827" }}>Sales Daily Reports</span>
+
+                    {/* Submitted */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#BBE5B3", flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>Submitted (8):</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 16 }}>
+                        <div style={{ display: "flex", position: "relative", width: 56, height: 28, flexShrink: 0 }}>
+                          {[0, 1, 2].map((a) => (
+                            <div key={a} style={{ width: 28, height: 28, borderRadius: "50%", background: "#C4B5FD", border: "2px solid #FFF", position: "absolute", left: a * 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#4B5563" }}>
+                              {a + 1}
+                            </div>
+                          ))}
                         </div>
-                        <span style={{ fontSize: 16, color: "#00236F", fontFamily: "Inter, sans-serif", fontWeight: 500, marginTop: 4 }}>Completed</span>
+                        <span style={{ fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", marginLeft: 8 }}>Mohammed Mansour & 7 others</span>
                       </div>
                     </div>
+
+                    {/* Not Submitted */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#FCA5A5", flexShrink: 0 }} />
+                        <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>Not Submitted (2):</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 16 }}>
+                        <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#FCA5A5", border: "2px solid #FFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#4B5563", flexShrink: 0 }}>1</div>
+                        <span style={{ fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif" }}>Ahmed Hassan & 1 other</span>
+                      </div>
+                    </div>
+
+                    <span style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif" }}>View more</span>
                   </div>
                 </div>
               </div>
-      
+      </div>
+
+      {/* Charts Row */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 24, marginTop: 24 }}>
+
+        {/* Sales Funnel Performance */}
+        <div style={{
+          borderRadius: 12,
+          background: "var(--Foundation-neutral-white, #FFF)",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)",
+          display: "flex",
+          flex: "1 1 600px",
+          minWidth: 320,
+          height: 389,
+          padding: 16,
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 8,
+          boxSizing: "border-box"
+        }}>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+            <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Sales Funnel Performance</span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>All Sales <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={[
+              { month: "Jan", Leads: 480, Deals: 160 },
+              { month: "Feb", Leads: 800, Deals: 320 },
+              { month: "Mar", Leads: 500, Deals: 340 },
+              { month: "Apr", Leads: 620, Deals: 100 },
+              { month: "May", Leads: 800, Deals: 180 },
+              { month: "June", Leads: 460, Deals: 320 },
+              { month: "July", Leads: 620, Deals: 80 },
+              { month: "Aug", Leads: 500, Deals: 160 },
+              { month: "Sep", Leads: 480, Deals: 130 },
+            ]} margin={{ top: 24, right: 16, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6B7280", fontFamily: "Inter, sans-serif" }} />
+              <YAxis 
+                tick={{ fontSize: 11, fill: "#6B7280", fontFamily: "Inter, sans-serif" }} 
+                label={{ value: 'Count', angle: -90, position: 'insideLeft', fill: '#6B7280', fontSize: 13, fontFamily: "Inter, sans-serif", offset: 10 }}
+              />
+              <Tooltip />
+              <Legend verticalAlign="top" align="right" wrapperStyle={{ fontSize: 12, fontFamily: "Inter, sans-serif", paddingBottom: 16 }} />
+              <Line type="linear" dataKey="Leads" stroke="#00236F" strokeWidth={1} dot={{ r: 3, fill: '#FFF', strokeWidth: 1 }} activeDot={{ r: 5 }} />
+              <Line type="linear" dataKey="Deals" stroke="#4CAF50" strokeWidth={1} dot={{ r: 3, fill: '#FFF', strokeWidth: 1 }} activeDot={{ r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Team Revenue Target */}
+        <div style={{
+          borderRadius: 12,
+          background: "var(--Foundation-neutral-white, #FFF)",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)",
+          display: "flex",
+          flex: "1 1 500px",
+          minWidth: 280,
+          minHeight: 389,
+          padding: 16,
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          gap: 8,
+          boxSizing: "border-box"
+        }}>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "stretch", width: "100%" }}>
+            <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Team Revenue Target</span>
+            <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This Month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+          </div>
+
+          {/* The content div style */}
+          <div style={{ display: "flex", width: "100%", flexDirection: "column", alignItems: "flex-start", gap: 20, flexShrink: 0 }}>
+            {/* Title text */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#111827", fontFamily: "Inter, sans-serif" }}>25,000 EGP <span style={{ fontSize: 14, fontWeight: 400, color: "#6B7280" }}>/40,000 EGP</span></div>
+              <div style={{ fontSize: 13, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Only 15,000 left !</div>
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 16, width: "100%", flex: 1, alignItems: "center" }}>
+              {/* Donut */}
+              <div style={{ width: 190, height: 190, position: "relative", flexShrink: 0 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: 'Completed', value: 60, fill: '#00236F' },
+                        { name: 'Remaining', value: 40, fill: '#B0BBD2' }
+                      ]}
+                      innerRadius={70.167}
+                      outerRadius={95}
+                      startAngle={90}
+                      endAngle={-270}
+                      dataKey="value"
+                      stroke="none"
+                      cornerRadius={0}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                {/* Centered text */}
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ fontSize: 40, fontWeight: 700, color: "#FFF", fontFamily: "'Noto Sans', sans-serif", WebkitTextStroke: "1.66px #000", lineHeight: "normal" }}>60</span>
+                    <span style={{ fontSize: 26, fontWeight: 700, color: "#FFF", fontFamily: "'Noto Sans', sans-serif", WebkitTextStroke: "1.07px #000", lineHeight: "normal" }}>%</span>
+                  </div>
+                  <span style={{ fontSize: 14, color: "#00236F", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>Completed</span>
+                </div>
+              </div>
+
+              {/* Team list */}
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", gap: 16, flex: "1 1 200px" }}>
+                {[
+                  { name: "Mohammed Gammal", value: "6000 EGP", pct: 12 },
+                  { name: "Moataz Gammal", value: "6000 EGP", pct: 20 },
+                  { name: "Rewan Gammal", value: "6000 EGP", pct: 18 },
+                  { name: "Rewan Gammal", value: "6000 EGP", pct: 18 },
+                ].map((member, i) => (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "stretch", width: "100%" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <span style={{ fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif" }}>{member.name}</span>
+                      <span style={{ fontSize: 13, color: "#111827", fontFamily: "Inter, sans-serif", fontWeight: 700 }}>{member.value}</span>
+                    </div>
+                    
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ borderRadius: 4, background: "var(--border-input-enabled, #D8D8D8)", display: "flex", height: 10, width: 80, alignItems: "center", overflow: "hidden" }}>
+                        <div style={{ width: `${member.pct}%`, height: "100%", background: "#00236F" }} />
+                      </div>
+                      <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif", width: 28 }}>{member.pct}%</span>
+                    </div>
+                  </div>
+                ))}
+                <span style={{ fontSize: 12, color: "#1D4ED8", textDecoration: "underline", cursor: "pointer", fontFamily: "Inter, sans-serif" }}>View All</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Revenue Performance */}
+        <div style={{
+          borderRadius: 12,
+          background: "var(--Foundation-neutral-white, #FFF)",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)",
+          display: "flex",
+          flex: "1 1 600px",
+          minWidth: 320,
+          height: 389,
+          padding: 16,
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 8,
+          boxSizing: "border-box"
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+            <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Revenue Performance</span>
+            <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>All Sales <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={[
+              { month: "Jan",  Target: 40000, Achieved: 35000 },
+              { month: "Feb",  Target: 90000, Achieved: 80000 },
+              { month: "Mar",  Target: 40000, Achieved: 50000 },
+              { month: "Apr",  Target: 55000, Achieved: 30000 },
+              { month: "May",  Target: 35000, Achieved: 90000 },
+              { month: "June", Target: 65000, Achieved: 45000 },
+              { month: "July", Target: 50000, Achieved: 10000 },
+              { month: "Aug",  Target: 65000, Achieved: 60000 },
+              { month: "Sept", Target: 60000, Achieved: 60000 },
+            ]} margin={{ top: 24, right: 16, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="targetGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#EC130F" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#EC130F" stopOpacity={0.05}/>
+                </linearGradient>
+                <linearGradient id="achievedGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4BA832" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#4BA832" stopOpacity={0.05}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6B7280", fontFamily: "Inter, sans-serif" }} />
+              <YAxis tick={{ fontSize: 11, fill: "#6B7280", fontFamily: "Inter, sans-serif" }} tickFormatter={(v) => `${v/1000}K`} />
+              <Tooltip formatter={(v: number) => `${(v/1000).toFixed(0)}K`} />
+              <Legend verticalAlign="top" align="right" wrapperStyle={{ fontSize: 12, fontFamily: "Inter, sans-serif", paddingBottom: 16 }} />
+              <Area 
+                type="linear" 
+                dataKey="Target" 
+                stroke="#EC130F" 
+                strokeWidth={1} 
+                fill="url(#targetGrad)" 
+                style={{ filter: "drop-shadow(0 3px 3px rgba(195, 27, 27, 0.40)) drop-shadow(0 6px 9px rgba(195, 27, 27, 0.40)) drop-shadow(0 9px 18px rgba(195, 27, 27, 0.40))" }}
+                dot={{ r: 3, fill: "#FFF", strokeWidth: 1 }} 
+                activeDot={{ r: 5 }} 
+              />
+              <Area 
+                type="linear" 
+                dataKey="Achieved" 
+                stroke="#4BA832" 
+                strokeWidth={1} 
+                fill="url(#achievedGrad)" 
+                style={{ filter: "drop-shadow(0 3px 3px rgba(81, 195, 27, 0.40)) drop-shadow(0 6px 9px rgba(81, 195, 27, 0.40)) drop-shadow(0 9px 18px rgba(81, 195, 27, 0.40))" }}
+                dot={{ r: 3, fill: "#FFF", strokeWidth: 1 }} 
+                activeDot={{ r: 5 }} 
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Leads Status Distribution */}
+        <div style={{
+          borderRadius: 12,
+          background: "var(--Foundation-neutral-white, #FFF)",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)",
+          display: "flex",
+          flex: "1 1 500px",
+          minWidth: 280,
+          height: 389,
+          padding: 16,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 20,
+          boxSizing: "border-box"
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+            <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Leads Status Distribution</span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>All members <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart layout="vertical" data={[
+              { status: "Fresh",          value: 95 },
+              { status: "Followup",       value: 88 },
+              { status: "Interested",     value: 82 },
+              { status: "Not interested", value: 55 },
+              { status: "Meeting",        value: 45 },
+              { status: "Wrong number",   value: 38 },
+              { status: "No answer",      value: 30 },
+              { status: "Deal",           value: 15 },
+            ]} margin={{ top: 0, right: 16, left: 60, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "#6B7280", fontFamily: "Inter, sans-serif" }} />
+              <YAxis type="category" dataKey="status" tick={{ fontSize: 11, fill: "#374151", fontFamily: "Inter, sans-serif" }} width={80} />
+              <Tooltip />
+              <Bar dataKey="value" fill="#00236F" radius={[0, 4, 4, 0]} barSize={18} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+      </div>
     </div>
   );
 };

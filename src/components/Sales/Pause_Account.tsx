@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../styles/sales-modals-mobile.css';
 
 interface PauseAccountProps {
   onClose: () => void;
@@ -8,6 +9,7 @@ interface PauseAccountProps {
 export const Pause_Account: React.FC<PauseAccountProps> = ({ onClose, accountName = "Ahmed Mohammed" }) => {
   return (
     <div
+      className="sales-modal-container"
       style={{
         borderRadius: 12,
         background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
@@ -23,6 +25,7 @@ export const Pause_Account: React.FC<PauseAccountProps> = ({ onClose, accountNam
     >
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
         <div
+          className="sales-modal-text"
           style={{
             color: "var(--Foundation-neutral-neutral-950, #141414)",
             textAlign: "center",
@@ -37,6 +40,7 @@ export const Pause_Account: React.FC<PauseAccountProps> = ({ onClose, accountNam
           {accountName} ?
         </div>
         <div
+          className="sales-modal-text"
           style={{
             color: "var(--Foundation-neutral-neutral-800, #464646)",
             textAlign: "center",

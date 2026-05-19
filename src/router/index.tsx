@@ -22,7 +22,7 @@ export const router = createBrowserRouter(
       <Route path="/reports" element={<Reports />} />
       <Route path="/search" element={<Search_Results />} />
       <Route path="/settings" element={<Settings />} />
-      {/* <Route path="/overview-manager" element={<Overview_Manager />} /> */}
+      <Route path="/overview-manager" element={<Overview_Manager />} />
 
  
       <Route path="/sales" element={< Sales/>} />

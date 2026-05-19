@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/sales-modals-mobile.css';
 
 interface InviteNewSalesProps {
   onClose: () => void;
@@ -9,6 +10,7 @@ export const Invite_New_Sales: React.FC<InviteNewSalesProps> = ({ onClose }) => 
 
   return (
     <div
+      className="sales-modal-container"
       style={{
         display: "flex",
         width: 462,
@@ -76,6 +78,7 @@ export const Invite_New_Sales: React.FC<InviteNewSalesProps> = ({ onClose }) => 
       >
         {/* Input area */}
         <div
+          className="sales-modal-form"
           style={{
             display: "flex",
             width: 422,
@@ -123,6 +126,7 @@ export const Invite_New_Sales: React.FC<InviteNewSalesProps> = ({ onClose }) => 
           }}
         >
           <button
+            className="sales-modal-btn"
             style={{
               borderRadius: 12,
               background: "var(--Foundation-brand-brand-500, #00236F)",

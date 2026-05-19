@@ -16,7 +16,11 @@ import Rank from '../components/Filteration_Manager/Rank';
 import Leads_status from '../components/Filteration_Manager/Leads_status';
 import LeadsFilter from '../components/Filteration_Manager/Leads';
 import StatusFilter from '../components/Filteration_Manager/Status';
+import Deals from '../components/Filteration_Manager/Deals';
+import Target from '../components/Filteration_Manager/Target';
 import Add_New_Task from '../components/Sales/Add_New_Task';
+import Edit_Target from '../components/Sales/Edit_Target';
+import Sales_Tasks from '../components/Sales/Sales_Tasks';
 import { Sales_Card } from '../components/Sales/Sales_Card';
 import '../styles/Sales.css';// Reusable overlay for modals
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
@@ -77,8 +81,10 @@ const Sales: React.FC = () => {
   const [isPauseAccountOpen, setIsPauseAccountOpen] = useState(false);
   const [isInviteNewSalesOpen, setIsInviteNewSalesOpen] = useState(false);
   const [isAddNewTaskOpen, setIsAddNewTaskOpen] = useState(false);
+  const [isEditTargetOpen, setIsEditTargetOpen] = useState(false);
+  const [isSalesTasksOpen, setIsSalesTasksOpen] = useState(false);
   
-  type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | 'rank' | 'leads_status' | 'leads' | 'status_filter' | null;
+  type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | 'rank' | 'leads_status' | 'leads' | 'status_filter' | 'deals' | 'target' | null;
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
 
   // Close action menu when clicking outside
@@ -447,9 +453,27 @@ const Sales: React.FC = () => {
               )}
             </div>
             {/* Deals */}
-            <button style={filterBtnStyle}>Deals <ChevronDown size={14} color="#4B5563" /></button>
+            <div style={{ position: "relative" }}>
+              <button style={filterBtnStyle} onClick={() => setActiveFilter(activeFilter === 'deals' ? null : 'deals')}>
+                Deals <ChevronDown size={14} color="#4B5563" />
+              </button>
+              {activeFilter === 'deals' && (
+                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 10, marginTop: 4 }}>
+                  <Deals onClose={() => setActiveFilter(null)} />
+                </div>
+              )}
+            </div>
             {/* Target */}
-            <button style={filterBtnStyle}>Target <ChevronDown size={14} color="#4B5563" /></button>
+            <div style={{ position: "relative" }}>
+              <button style={filterBtnStyle} onClick={() => setActiveFilter(activeFilter === 'target' ? null : 'target')}>
+                Target <ChevronDown size={14} color="#4B5563" />
+              </button>
+              {activeFilter === 'target' && (
+                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 10, marginTop: 4 }}>
+                  <Target onClose={() => setActiveFilter(null)} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -500,6 +524,8 @@ const Sales: React.FC = () => {
               key={item} 
               onAssignTask={() => setIsAddNewTaskOpen(true)} 
               onPauseAccount={() => setIsPauseAccountOpen(true)}
+              onEditTarget={() => setIsEditTargetOpen(true)}
+              onViewTasks={() => setIsSalesTasksOpen(true)}
             />
           ))}
         </div>
@@ -598,7 +624,7 @@ const Sales: React.FC = () => {
                   <path d="M12.0001 4.8L12 19.2M19.2 12L4.80005 12" stroke="#464646" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </button>
-              <button style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
+              <button onClick={() => setIsSalesTasksOpen(true)} style={{ background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M10.7999 21.6H4.79989C3.47441 21.6 2.39989 20.5254 2.3999 19.2L2.4 4.80001C2.4 3.47453 3.47452 2.40002 4.79999 2.40002H15.6003C16.9257 2.40002 18.0003 3.47454 18.0003 4.80002V9.60002M17.3999 17.349V17.2858M6.60028 7.20002H13.8003M6.60028 10.8H13.8003M6.60028 14.4H10.2003M21.5999 17.4C21.5999 17.4 20.6037 20.3397 17.3999 20.2883C14.1961 20.237 13.1999 17.4 13.1999 17.4C13.1999 17.4 14.1557 14.409 17.3999 14.409C20.6441 14.409 21.5999 17.4 21.5999 17.4Z" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
@@ -616,6 +642,7 @@ const Sales: React.FC = () => {
                 <Action_Modal
                   onClose={() => setOpenActionMenu(null)}
                   onPause={() => { setIsPauseAccountOpen(true); setOpenActionMenu(null); }}
+                  onEditTarget={() => { setIsEditTargetOpen(true); setOpenActionMenu(null); }}
                 />
               )}
             </div>
@@ -630,6 +657,19 @@ const Sales: React.FC = () => {
       </div>
 
       {/* ── Modals ── */}
+      {isSalesTasksOpen && (
+        <ModalOverlay onClose={() => setIsSalesTasksOpen(false)}>
+          <Sales_Tasks
+            onClose={() => setIsSalesTasksOpen(false)}
+            onNewTask={() => { setIsSalesTasksOpen(false); setIsAddNewTaskOpen(true); }}
+          />
+        </ModalOverlay>
+      )}
+      {isEditTargetOpen && (
+        <ModalOverlay onClose={() => setIsEditTargetOpen(false)}>
+          <Edit_Target onClose={() => setIsEditTargetOpen(false)} />
+        </ModalOverlay>
+      )}
       {isAddNewTaskOpen && (
         <ModalOverlay onClose={() => setIsAddNewTaskOpen(false)}>
           <Add_New_Task onClose={() => setIsAddNewTaskOpen(false)} />
