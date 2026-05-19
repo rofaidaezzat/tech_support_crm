@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import commissionIcon from '../assets/4a99657e1acb696f86d3bd926bedf5fe9fbead65.gif';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import messageTextIcon from '../assets/message-text-02.svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
 import coinIcon from '../assets/coin-unbroken.svg';
 import { ResponsiveContainer, PieChart, Pie, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, Area, AreaChart } from 'recharts';
+import Veiw_More_Task from '../components/Sales/Veiw_More_Task';
+import View_More_Sales_Report from '../components/Sales/View_More_Sales_Report';
+import Month_filter from '../components/Filteration_Manager/Month_filter';
 
 const Overview_Manager: React.FC = () => {
-     const cards = [
+  const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
+  const [isSalesReportOpen, setIsSalesReportOpen] = useState(false);
+  const [openMonthFilter, setOpenMonthFilter] = useState<string | null>(null);
+
+  const cards = [
     {
       title: "Total Followups",
       count: "10",
@@ -228,22 +235,29 @@ const Overview_Manager: React.FC = () => {
                     alignSelf: "stretch"
                   }}>
                     <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Top Performers Table</span>
-                    <button style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      padding: "8px 12px",
-                      borderRadius: 8,
-                      border: "1px solid #D4D5D8",
-                      background: "#FFF",
-                      color: "#4B5563",
-                      fontSize: 14,
-                      fontFamily: "Inter, sans-serif",
-                      cursor: "pointer"
-                    }}>
-                      This month
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </button>
+                    <div style={{ position: "relative" }}>
+                      <button onClick={() => setOpenMonthFilter(openMonthFilter === 'top-performers' ? null : 'top-performers')} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        border: "1px solid #D4D5D8",
+                        background: "#FFF",
+                        color: "#4B5563",
+                        fontSize: 14,
+                        fontFamily: "Inter, sans-serif",
+                        cursor: "pointer"
+                      }}>
+                        This month
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </button>
+                      {openMonthFilter === 'top-performers' && (
+                        <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 10, marginTop: 4 }}>
+                          <Month_filter onChange={() => setOpenMonthFilter(null)} />
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
                   {/* The table */}
@@ -447,7 +461,10 @@ const Overview_Manager: React.FC = () => {
                       </div>
                     </div>
 
-                    <span style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif" }}>View more</span>
+                    <span 
+                      onClick={() => setIsSalesReportOpen(true)}
+                      style={{ fontSize: 12, color: '#1D4ED8', textDecoration: 'underline', cursor: 'pointer', fontFamily: "Inter, sans-serif" }}
+                    >View more</span>
                   </div>
                 </div>
               </div>
@@ -476,7 +493,14 @@ const Overview_Manager: React.FC = () => {
             <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Sales Funnel Performance</span>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>All Sales <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
-              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+              <div style={{ position: "relative" }}>
+                <button onClick={() => setOpenMonthFilter(openMonthFilter === 'sales-funnel' ? null : 'sales-funnel')} style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+                {openMonthFilter === 'sales-funnel' && (
+                  <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 10, marginTop: 4 }}>
+                    <Month_filter onChange={() => setOpenMonthFilter(null)} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <ResponsiveContainer width="100%" height="100%">
@@ -524,7 +548,14 @@ const Overview_Manager: React.FC = () => {
           {/* Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "stretch", width: "100%" }}>
             <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Team Revenue Target</span>
-            <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This Month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div style={{ position: "relative" }}>
+              <button onClick={() => setOpenMonthFilter(openMonthFilter === 'team-revenue' ? null : 'team-revenue')} style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This Month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+              {openMonthFilter === 'team-revenue' && (
+                <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 10, marginTop: 4 }}>
+                  <Month_filter onChange={() => setOpenMonthFilter(null)} />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* The content div style */}
@@ -683,7 +714,14 @@ const Overview_Manager: React.FC = () => {
             <span style={{ fontSize: 16, fontWeight: 500, color: "#111827", fontFamily: "Inter, sans-serif" }}>Leads Status Distribution</span>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>All members <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
-              <button style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+              <div style={{ position: "relative" }}>
+                <button onClick={() => setOpenMonthFilter(openMonthFilter === 'leads-status' ? null : 'leads-status')} style={{ padding: "6px 12px", border: "1px solid #D4D5D8", borderRadius: 8, background: "#FFF", fontSize: 13, color: "#374151", fontFamily: "Inter, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>This month <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg></button>
+                {openMonthFilter === 'leads-status' && (
+                  <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 10, marginTop: 4 }}>
+                    <Month_filter onChange={() => setOpenMonthFilter(null)} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <ResponsiveContainer width="100%" height="100%">
@@ -707,6 +745,35 @@ const Overview_Manager: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Modals */}
+      {isTaskDrawerOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <Veiw_More_Task onClose={() => setIsTaskDrawerOpen(false)} />
+        </div>
+      )}
+
+      {isSalesReportOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <View_More_Sales_Report onClose={() => setIsSalesReportOpen(false)} />
+        </div>
+      )}
     </div>
   );
 };

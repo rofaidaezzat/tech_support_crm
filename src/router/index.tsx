@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
+  Navigate,
 } from "react-router";
 import Deals from "../pages/Deals";
 import Leads from "../pages/Leads";
@@ -12,20 +13,23 @@ import Layout from "../components/Layout";
 import Overview from "../pages/Overview";
 import Sales from "../pages/Sales";
 import Overview_Manager from "../pages/Overview_Manager";
+import Login from "../pages/Login";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route index element={<Overview />} />
-      <Route path="/leads" element={<Leads />} />
-      <Route path="/deals" element={<Deals />} />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="/search" element={<Search_Results />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/overview-manager" element={<Overview_Manager />} />
-
- 
-      <Route path="/sales" element={< Sales/>} />
-    </Route>
+    <>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/login" replace />} />
+        <Route path="/overview" element={<Overview />} />
+        <Route path="/leads" element={<Leads />} />
+        <Route path="/deals" element={<Deals />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/search" element={<Search_Results />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/overview-manager" element={<Overview_Manager />} />
+        <Route path="/sales" element={<Sales />} />
+      </Route>
+      <Route path="/login" element={<Login />} />
+    </>
   )
 );
