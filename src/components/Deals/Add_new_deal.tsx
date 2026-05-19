@@ -1,9 +1,11 @@
 import closeIcon from "../../assets/x-02.svg";
 import plusIcon from "../../assets/plus-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         maxHeight: "90vh",
@@ -16,6 +18,7 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
     >
       {/* ── First Part (Header) ── */}
       <div
+        className="leads-modal-header"
         style={{
           background: "rgba(245, 246, 250, 1)",
           width: 462,
@@ -66,6 +69,7 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
 
       {/* ── Second Part (Body) ── */}
       <div
+        className="leads-modal-body"
         style={{
           background: "rgba(245, 246, 250, 1)",
           width: 462,
@@ -80,7 +84,7 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
         {/* ── Form Container ── */}
         <div
           style={{
-            width: 422,
+            width: "calc(100% - 40px)",
             flex: 1,
             minHeight: 0,
             display: "flex",
@@ -88,6 +92,7 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
             gap: 16,
             marginTop: 32,
             marginLeft: 20,
+            marginRight: 20,
             boxSizing: "border-box",
             overflowY: "auto", // In case it overflows
           }}
@@ -256,7 +261,8 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
           style={{
             marginTop: 48,
             marginLeft: 20,
-            width: 422,
+            marginRight: 20,
+            width: "calc(100% - 40px)",
             paddingBottom: 32,
             flexShrink: 0,
           }}
@@ -264,7 +270,7 @@ const Add_new_deal = ({ onClose }: { onClose?: () => void }) => {
           <button
             style={{
               background: "rgba(0, 35, 111, 1)",
-              width: 422,
+              width: "100%",
               height: 48,
               borderRadius: 12,
               display: "flex",

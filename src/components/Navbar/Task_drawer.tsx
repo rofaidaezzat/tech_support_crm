@@ -7,6 +7,7 @@ import bellIcon from "../../assets/bell-ringing-04.svg";
 import calendarIcon from "../../assets/calendar-03.svg";
 import infoIcon from "../../assets/information-circle-contained.svg";
 import userProfileIcon from "../../assets/user-profile-02.svg";
+import "../../styles/task-drawer-mobile.css";
 
 interface TaskDrawerProps {
   onClose?: () => void;
@@ -40,7 +41,7 @@ const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+      <div className="task-card-header" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <img src={starIcon} alt="Star" width={24} height={24} />
           <span
@@ -55,7 +56,7 @@ const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
             {taskData.title}
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="task-card-header-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <img onClick={() => onEdit?.(taskData)} src={editIcon} alt="Edit" width={24} height={24} style={{ cursor: "pointer" }} />
           <img src={checkIcon} alt="Complete" width={24} height={24} style={{ cursor: "pointer" }} />
         </div>
@@ -75,7 +76,7 @@ const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
       </p>
 
       {/* Details Container */}
-      <div style={{
+      <div className="task-card-details" style={{
         display: "flex",
         justifyContent: "space-between",
         borderTop: "1px solid rgba(212, 213, 216, 1)",
@@ -85,7 +86,7 @@ const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
         boxSizing: "border-box"
       }}>
         {/* The left */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 216 }}>
+        <div className="task-card-details-left" style={{ display: "flex", flexDirection: "column", gap: 12, width: 216 }}>
           {/* Lead Name */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
             <img src={userProfileIcon} alt="User" width={16} height={16} />
@@ -110,7 +111,7 @@ const TaskCard = ({ onEdit }: { onEdit?: (data: any) => void }) => {
         </div>
 
         {/* The right */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, paddingLeft: 16 }}>
+        <div className="task-card-details-right" style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, paddingLeft: 16 }}>
           {/* Priority */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
             <img src={infoIcon} alt="Info" width={16} height={16} />
@@ -142,6 +143,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
 
   return (
     <div
+      className="task-drawer-container"
       style={{
         width: 521,
         height: "100%",
@@ -155,22 +157,43 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
     >
       {/* ── Header ── */}
       <div style={{ padding: "16px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-          <img src={checkSquareIcon} alt="Tasks" width={24} height={24} />
-          <span
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 700,
-              fontSize: 20,
-              color: "#141414",
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <img src={checkSquareIcon} alt="Tasks" width={24} height={24} />
+            <span
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 700,
+                fontSize: 20,
+                color: "#141414",
+              }}
+            >
+              Tasks
+            </span>
+          </div>
+          <button 
+            className="task-drawer-close-btn" 
+            onClick={onClose}
+            style={{ 
+              background: "transparent", 
+              border: "none", 
+              cursor: "pointer", 
+              padding: 4, 
+              display: "none", // Hidden on desktop
+              alignItems: "center", 
+              justifyContent: "center" 
             }}
           >
-            Tasks
-          </span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
         {/* Tabs */}
         <div
+          className="task-drawer-tabs-wrapper"
           style={{
             display: "flex",
             width: 473,
@@ -182,6 +205,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
             <div
               key={tab}
               onClick={() => setActiveTab(tab)}
+              className="task-drawer-tab"
               style={{
                 width: 118.25,
                 height: 35,
@@ -210,6 +234,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
 
       {/* ── Task List ── */}
       <div
+        className="task-drawer-list"
         style={{
           width: 470, // Includes space for scrollbar
           flex: 1,
@@ -238,6 +263,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
       >
         <button
           onClick={() => onNewTask?.()}
+          className="task-drawer-footer-btn"
           style={{
             background: "rgba(0, 35, 111, 1)",
             width: 505,

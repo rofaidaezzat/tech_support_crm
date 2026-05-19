@@ -272,7 +272,7 @@ const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* ── Right: Actions & Profile ── */}
-      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+      <div className="navbar-right" style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <img
           src={checkSquareIcon}
           alt="Tasks"
@@ -295,6 +295,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           {showNotifications && (
             <div
+              className="navbar-notifications-dropdown"
               style={{
                 position: "fixed",
                 top: 62,
@@ -305,6 +306,7 @@ const Navbar: React.FC<NavbarProps> = ({
             >
               {/* ── Triangle pointer ── */}
               <div
+                className="navbar-notifications-pointer"
                 style={{
                   position: "absolute",
                   top: 0,
@@ -329,6 +331,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
               {/* ── Modal content box ── */}
               <div
+                className="navbar-notifications-box"
                 style={{
                   position: "absolute",
                   top: 14,

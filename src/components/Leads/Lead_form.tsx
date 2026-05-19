@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import filePlusIcon from "../../assets/file-plus-01.svg";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface LeadFormProps {
   leadsName?: string;
@@ -23,7 +24,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
   const isSaveEnabled = q1.trim() !== "" && q2.trim() !== "" && q3.trim() !== "";
 
   const savedTextareaStyle: React.CSSProperties = {
-    width: 422,
+    width: "100%",
     height: 85,
     resize: "none",
     border: "none",
@@ -40,7 +41,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
   };
 
   const defaultTextareaStyle: React.CSSProperties = {
-    width: 422,
+    width: "100%",
     height: 85,
     resize: "none",
     border: "1px solid rgba(0, 35, 111, 1)",
@@ -64,6 +65,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 607,
@@ -77,6 +79,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
     >
       {/* Header */}
       <div
+        className="leads-modal-header"
         slot={slot}
         style={{
           width: 462,
@@ -150,6 +153,7 @@ const Lead_form: React.FC<LeadFormProps> = ({
 
       {/* Form Body */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           flex: 1,
@@ -166,8 +170,9 @@ const Lead_form: React.FC<LeadFormProps> = ({
         }}
       >
         <div
+          className="leads-modal-inner"
           style={{
-            width: 422,
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             gap: 16,
@@ -246,12 +251,14 @@ const Lead_form: React.FC<LeadFormProps> = ({
         {/* Save / Edit Button */}
         {!isSaved ? (
           <button
+            className="leads-modal-footer-btn"
             onClick={handleSave}
             disabled={!isSaveEnabled}
             style={{
               marginTop: 40,
+              marginBottom: 24,
               alignSelf: "center",
-              width: 422,
+              width: "100%",
               height: 48,
               borderRadius: 12,
               border: "none",
@@ -279,11 +286,13 @@ const Lead_form: React.FC<LeadFormProps> = ({
           </button>
         ) : (
           <button
+            className="leads-modal-footer-btn"
             onClick={() => setIsSaved(false)}
             style={{
               marginTop: 40,
+              marginBottom: 24,
               alignSelf: "center",
-              width: 422,
+              width: "100%",
               height: 48,
               borderRadius: 12,
               border: "1.5px solid rgba(0, 35, 111, 1)",

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import closeIcon from '../../assets/x-02.svg';
+import "../../styles/leads-modal-mobile.css";
 
 const Notes = ({ onClose }: { onClose?: () => void }) => {
   const [noteText, setNoteText] = useState("");
@@ -7,6 +8,7 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 528,
@@ -19,6 +21,7 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
     >
       {/* ── First Part (Header) ── */}
       <div
+        className="leads-modal-header"
         style={{
           background: "rgba(245, 246, 250, 1)",
           width: 462,
@@ -66,25 +69,28 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
 
       {/* ── Second Section (Body) ── */}
       <div
+        className="leads-modal-body"
         style={{
           background: "rgba(245, 246, 250, 1)",
           width: 462,
           height: 437,
+          minHeight: 437,
           borderBottomLeftRadius: 12,
           borderBottomRightRadius: 12,
           flexDirection: "column",
           boxSizing: "border-box",
-          paddingTop: 32,
-          paddingLeft: 20,
+          padding: "32px 20px 24px 20px",
           position: "relative",
+          display: "flex",
         }}
       >
         {/* Message Card */}
         <div
           style={{
+            className: "leads-modal-inner",
             boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.059)", // Approximation of #0000000F
             background: "#FFFFFF",
-            width: 422,
+            width: "100%",
             height: 132,
             borderRadius: 12,
             padding: 12,
@@ -136,7 +142,7 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
               fontSize: 13,
               lineHeight: "140%",
               color: "rgba(70, 70, 70, 1)",
-              width: 398,
+              width: "100%",
               flex: 1,
             }}
           >
@@ -147,10 +153,8 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
         {/* ── Input Box / Success Bar ── */}
         <div
           style={{
-            position: "absolute",
-            bottom: 24,
-            left: 20,
-            width: 422,
+            marginTop: "auto",
+            width: "100%",
             height: isSubmitted ? 48 : 85,
             boxSizing: "border-box",
             transition: "height 0.2s",
@@ -162,7 +166,7 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
                 borderRadius: 12,
                 background: "#00236F",
                 display: "flex",
-                width: 422,
+                width: "100%",
                 height: 48,
                 padding: "8px 24px",
                 justifyContent: "center",

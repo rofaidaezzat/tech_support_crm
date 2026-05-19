@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../styles/notification-drawer-mobile.css";
 
 // ── Icon config per type ─────────────────────────────────────────────────────
 const iconConfig: Record<string, { bg: string; svg: React.ReactNode }> = {
@@ -104,6 +105,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
 
       {/* Drawer */}
       <div
+        className="notification-drawer-container"
         style={{
           position: "fixed",
           top: 0,
@@ -276,6 +278,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
           {filtered.map((notif) => (
             <div
               key={notif.id}
+              className="notification-drawer-item"
               style={{
                 background: notif.unread
                   ? "var(--Foundation-brand-brand-50, #E6E9F1)"

@@ -7,6 +7,9 @@ import commissionIcon from '../assets/4a99657e1acb696f86d3bd926bedf5fe9fbead65.g
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import messageTextIcon from '../assets/message-text-02 (1).svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
+import Notes from '../components/Deals/Notes';
+import LeadForm from '../components/Leads/Lead_form';
+import ConvertToDeal from '../components/Leads/Convert_to_deal';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
 const funnelData = [
@@ -34,6 +37,7 @@ const leadsBarData = [
 
 const Overview = () => {
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<{ type: "notes" | "lead" | "convert" | null, leadId: number | null }>({ type: null, leadId: null });
   const cards = [
     {
       title: "Followups Today",
@@ -257,8 +261,10 @@ const Overview = () => {
           }}>
             <span style={{ fontSize: 18, color: "#141414", fontFamily: "Inter, sans-serif", fontWeight: 400 }}>Followups Today</span>
             
-            {/* Table headers */}
-            <div className="overview-table-header" style={{
+            <div className="responsive-table-container" style={{ overflowX: "auto", width: "100%" }}>
+              <div className="responsive-table-inner" style={{ minWidth: 750, display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Table headers */}
+                <div className="overview-table-header" style={{
               display: "grid",
               gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
               background: "#E5E7EB",
@@ -303,12 +309,14 @@ const Overview = () => {
                   {/* Actions */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
                     <img src={whatsappIcon} width={20} height={20} alt="WhatsApp" style={{ cursor: "pointer" }} />
-                    <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} />
-                    <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} />
-                    <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} />
+                    <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "notes", leadId: i }); }} />
+                    <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "lead", leadId: i }); }} />
+                    <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "convert", leadId: i }); }} />
                   </div>
                 </div>
               ))}
+            </div>
+              </div>
             </div>
           </div>
         </div>
@@ -660,6 +668,23 @@ const Overview = () => {
             <Task_drawer onClose={() => setIsTaskDrawerOpen(false)} />
           </div>
         </>
+      )}
+
+      {/* Action Modals */}
+      {activeModal.type === "notes" && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
+          <Notes onClose={() => setActiveModal({ type: null, leadId: null })} />
+        </div>
+      )}
+      {activeModal.type === "lead" && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
+          <LeadForm onClose={() => setActiveModal({ type: null, leadId: null })} />
+        </div>
+      )}
+      {activeModal.type === "convert" && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
+          <ConvertToDeal onClose={() => setActiveModal({ type: null, leadId: null })} />
+        </div>
       )}
     </>
   );

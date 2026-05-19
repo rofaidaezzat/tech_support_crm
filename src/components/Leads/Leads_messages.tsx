@@ -1,12 +1,13 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import mailIcon from '../../assets/mail-04.svg';
+import '../../styles/leads-modal-mobile.css';
 
 const LeadsMessages = ({ onClose }: { onClose?: () => void }) => {
   return (
-    <div className="w-[462px] h-[528px] opacity-100 flex flex-col">
+    <div className="leads-tw-modal w-[462px] h-[528px] opacity-100 flex flex-col">
       {/* the first part */}
-      <div className="w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[rgba(245,246,250,1)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
+      <div className="leads-tw-modal-header w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[rgba(245,246,250,1)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
         <div className="flex gap-[12px]">
           <img src={mailIcon} alt="Mail" className="w-[24px] h-[24px]" />
           <div className="flex flex-col gap-1">
@@ -31,9 +32,12 @@ const LeadsMessages = ({ onClose }: { onClose?: () => void }) => {
       </div>
 
       {/* second */}
-      <div className="w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative">
+      <div 
+        className="leads-tw-modal-body w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative"
+        style={{ minHeight: 437 }}
+      >
         {/* the card message */}
-        <div className="w-[422px] h-[124px] flex flex-col gap-[12px] opacity-100 p-[12px] absolute top-[32px] left-[20px] rounded-[12px] shadow-[0px_1px_4px_0px_rgba(0,0,0,0.06)] bg-[rgba(255,255,255,1)]">
+        <div className="leads-modal-inner w-[calc(100%-40px)] h-[124px] flex flex-col gap-[12px] opacity-100 p-[12px] mx-auto mt-[32px] rounded-[12px] shadow-[0px_1px_4px_0px_rgba(0,0,0,0.06)] bg-[rgba(255,255,255,1)]">
           {/* Date */}
           <div
             style={{
@@ -57,7 +61,7 @@ const LeadsMessages = ({ onClose }: { onClose?: () => void }) => {
               fontSize: 13,
               lineHeight: "140%",
               color: "rgba(70, 70, 70, 1)",
-              width: 398,
+              width: "100%",
               height: 72,
             }}
           >

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
+import "../../styles/task-modal-mobile.css";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
@@ -97,6 +98,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
   return (
     <div
+      className="task-modal-container"
       style={{
         display: "flex",
         width: 462,
@@ -112,6 +114,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
     >
       {/* ── Header ── */}
       <div
+        className="task-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -160,6 +163,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
       {/* ── Body ── */}
       <div
+        className="task-modal-body"
         style={{
           width: 462,
           height: 748,
@@ -170,6 +174,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
       >
         {/* Form Container */}
         <div
+          className="task-modal-form"
           style={{
             width: 422,
             height: 600,
@@ -263,6 +268,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               </div>
               {isLeadDropdownOpen && (
                 <div
+                  className="task-modal-dropdown"
                   style={{
                     position: "absolute",
                     top: "100%",
@@ -281,7 +287,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                     boxSizing: "border-box"
                   }}
                 >
-                  <div style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
+                  <div className="task-modal-dropdown-inner" style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
                     <Search size={18} color="#9CA3AF" style={{ position: "absolute", left: 12, top: 11 }} />
                     <input
                       type="text"
@@ -304,6 +310,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                     />
                   </div>
                   <div
+                    className="task-modal-dropdown-inner"
                     style={{
                       width: 401,
                       height: 260,
@@ -491,6 +498,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
 
         {/* ── Footer ── */}
         <div
+          className="task-modal-footer"
           style={{
             position: "absolute",
             bottom: 0,
@@ -506,6 +514,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
           }}
         >
           <button
+            className="task-modal-footer-btn"
             onClick={handleSave}
             disabled={!isSaveEnabled}
             style={{

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface EditDealValueProps {
   onClose?: () => void;
@@ -21,6 +22,7 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         display: "flex",
         width: 462,
@@ -34,6 +36,7 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: "100%",
           height: 91,
@@ -83,6 +86,7 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: "100%",
           padding: "32px 20px 24px 20px",
@@ -103,10 +107,11 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
           </label>
           <input
             type="text"
+            className="leads-modal-inner"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             style={{
-              width: 422,
+              width: "100%",
               height: 48,
               borderRadius: 8,
               border: "1px solid #00236F",
@@ -125,10 +130,11 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
         </div>
 
         <button
+          className="leads-modal-footer-btn"
           onClick={handleSave}
           style={{
             marginTop: 59,
-            width: 422,
+            width: "100%",
             height: 48,
             borderRadius: 12,
             background: "#00236F",

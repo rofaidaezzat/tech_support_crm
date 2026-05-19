@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 
 interface AddNewLeadProps {
@@ -68,6 +69,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 580,
@@ -81,6 +83,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 72,
@@ -135,6 +138,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
 
       {/* ── Form Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           flex: 1,

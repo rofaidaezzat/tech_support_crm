@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/leads-modal-mobile.css";
 
 interface LogoutProps {
   onClose?: () => void;
@@ -8,6 +9,7 @@ interface LogoutProps {
 const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
   return (
     <div
+      className="leads-modal-root"
       style={{
         display: "flex",
         width: 462,
@@ -20,6 +22,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           display: "flex",
           padding: 20,
@@ -63,6 +66,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -123,7 +127,6 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
           </span>
         </div>
       </div>
-
       {/* ── Footer ── */}
       <div
         style={{
@@ -137,12 +140,12 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
           borderBottomLeftRadius: 12,
         }}
       >
-        <div style={{ display: "flex", gap: 12, width: 422, height: 48 }}>
+        <div style={{ display: "flex", gap: 12, width: "100%", height: 48 }}>
           {/* Cancel Button */}
           <button
             onClick={onClose}
             style={{
-              width: 205,
+              flex: 1,
               height: 48,
               borderRadius: 12,
               border: "1px solid rgba(212, 213, 216, 1)",
@@ -160,7 +163,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
           <button
             onClick={onLogout}
             style={{
-              width: 205,
+              flex: 1,
               height: 48,
               borderRadius: 12,
               border: "none",

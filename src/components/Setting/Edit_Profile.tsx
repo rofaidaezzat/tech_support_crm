@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import closeIcon from "../../assets/x-02.svg";
 import cameraIcon from "../../assets/carbon_camera.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface EditProfileProps {
   onClose?: () => void;
@@ -50,6 +51,7 @@ const Edit_Profile: React.FC<EditProfileProps> = ({ onClose, onSave }) => {
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 540,
@@ -64,6 +66,7 @@ const Edit_Profile: React.FC<EditProfileProps> = ({ onClose, onSave }) => {
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -109,6 +112,7 @@ const Edit_Profile: React.FC<EditProfileProps> = ({ onClose, onSave }) => {
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           flex: 1, // takes remaining height

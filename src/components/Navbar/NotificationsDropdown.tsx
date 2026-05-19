@@ -40,7 +40,7 @@ const NotificationsDropdown: React.FC<NotificationsDropdownProps> = ({
   return (
     <div
       style={{
-        width: 432,
+        width: "100%",
         boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.11)",
         borderRadius: 12,
         overflow: "hidden",

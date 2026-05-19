@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../styles/leads-modal-mobile.css";
 
 interface NewReportModalProps {
   onClose?: () => void;
@@ -98,6 +99,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 762,
         height: 596,
@@ -112,7 +114,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
       }}
     >
       {/* ── Header ── */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="leads-modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2
           style={{
             margin: 0,
@@ -137,6 +139,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
 
       {/* ── Form Body ── */}
       <div
+        className="leads-grid-mobile"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -256,8 +259,9 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
       </div>
 
       {/* ── Footer ── */}
-      <div>
+      <div className="leads-modal-footer">
         <button
+          className="leads-modal-footer-btn"
           onClick={handleSubmit}
           style={{
             background: "rgba(0, 35, 111, 1)",

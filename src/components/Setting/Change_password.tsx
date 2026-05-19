@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import closeIcon from "../../assets/x-02.svg";
 import eyeClosedIcon from "../../assets/eye-closed.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface ChangePasswordProps {
   onClose?: () => void;
@@ -89,6 +90,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 469,
@@ -103,6 +105,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -148,6 +151,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           flex: 1,
           padding: "24px 20px",

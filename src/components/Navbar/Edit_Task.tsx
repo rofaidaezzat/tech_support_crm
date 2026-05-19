@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
+import "../../styles/task-modal-mobile.css";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
@@ -101,6 +102,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
 
   return (
     <div
+      className="task-modal-container"
       style={{
         display: "flex",
         width: 462,
@@ -116,6 +118,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
     >
       {/* ── Header ── */}
       <div
+        className="task-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -166,6 +169,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
 
       {/* ── Body ── */}
       <div
+        className="task-modal-body"
         style={{
           width: 462,
           height: 748,
@@ -176,6 +180,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
       >
         {/* Form Container */}
         <div
+          className="task-modal-form"
           style={{
             width: 422,
             height: 600,
@@ -276,6 +281,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
               </div>
               {isLeadDropdownOpen && (
                 <div
+                  className="task-modal-dropdown"
                   style={{
                     position: "absolute",
                     top: "100%",
@@ -294,7 +300,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
                     boxSizing: "border-box"
                   }}
                 >
-                  <div style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
+                  <div className="task-modal-dropdown-inner" style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
                     <Search size={18} color="#9CA3AF" style={{ position: "absolute", left: 12, top: 11 }} />
                     <input
                       type="text"
@@ -317,6 +323,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
                     />
                   </div>
                   <div
+                    className="task-modal-dropdown-inner"
                     style={{
                       width: 401,
                       height: 260,
@@ -504,6 +511,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
 
         {/* ── Footer ── */}
         <div
+          className="task-modal-footer"
           style={{
             position: "absolute",
             bottom: 0,
@@ -519,6 +527,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
           }}
         >
           <button
+            className="task-modal-footer-btn"
             onClick={handleSave}
             disabled={!isSaveEnabled}
             style={{

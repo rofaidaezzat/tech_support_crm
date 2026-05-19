@@ -96,9 +96,22 @@
   .navbar-search {
     width: auto !important;
     flex: 1 !important;
-    margin-left: 12px;
+    margin: 0 12px !important;
   }
   .navbar-right {
     gap: 12px !important;
+  }
+
+  /* ── Notification Dropdown ── */
+  .navbar-notifications-dropdown {
+    width: calc(100vw - 32px) !important;
+    right: 16px !important;
+  }
+  .navbar-notifications-box {
+    width: 100% !important;
+  }
+  .navbar-notifications-pointer {
+    left: auto !important;
+    right: 74px !important;
   }
 }

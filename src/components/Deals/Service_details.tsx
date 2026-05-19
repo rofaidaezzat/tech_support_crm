@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface ServiceDetailsProps {
   onClose?: () => void;
@@ -25,7 +26,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
   };
 
   const savedTextareaStyle: React.CSSProperties = {
-    width: 422,
+    width: "100%",
     height: 152,
     resize: "none",
     border: "none",
@@ -42,12 +43,12 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     boxSizing: "border-box",
     transition: "all 0.25s ease",
     cursor: "default",
-    overflow: "hidden",
+    overflowY: "auto",
     textAlign: "left",
   };
 
   const editTextareaStyle: React.CSSProperties = {
-    width: 422,
+    width: "100%",
     height: 152,
     resize: "none",
     border: "1px solid #3B5BDB", // Blue border in edit mode
@@ -63,12 +64,13 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s, background 0.25s",
-    overflow: "hidden",
+    overflowY: "auto",
     textAlign: "left",
   };
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 450,
@@ -83,6 +85,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 90,
@@ -144,6 +147,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           height: 360,
@@ -158,6 +162,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
       >
         {/* Text Area */}
         <textarea
+          className="leads-modal-inner"
           value={details}
           onChange={(e) => isEditing && setDetails(e.target.value)}
           readOnly={!isEditing}
@@ -169,9 +174,10 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
           {!isEditing ? (
             // Edit Button (Secondary)
             <button
+              className="leads-modal-footer-btn"
               onClick={() => setIsEditing(true)}
               style={{
-                width: 422,
+                width: "100%",
                 height: 48,
                 borderRadius: 12,
                 border: "1px solid rgba(0, 35, 111, 1)",
@@ -218,9 +224,10 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
           ) : (
             // Save Button (Primary)
             <button
+              className="leads-modal-footer-btn"
               onClick={handleSave}
               style={{
-                width: 422,
+                width: "100%",
                 height: 48,
                 borderRadius: 12,
                 border: "none",

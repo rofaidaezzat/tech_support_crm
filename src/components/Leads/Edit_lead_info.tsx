@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import editIcon from "../../assets/edit-contained.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface EditLeadInfoProps {
   leadsName?: string;
@@ -91,6 +92,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 587,
@@ -104,6 +106,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         slot={slot}
         style={{
           width: 462,
@@ -173,6 +176,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
 
       {/* ── Form Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           height: 496,

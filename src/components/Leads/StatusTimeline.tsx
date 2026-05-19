@@ -1,5 +1,6 @@
 import React from "react";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 import calendarIcon from "../../assets/calendar-01.svg";
 import userIcon from "../../assets/user-profile-01.svg";
 import thumbDownIcon from "../../assets/thumb down.svg";
@@ -37,6 +38,7 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({
 }) => {
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 618,
@@ -50,6 +52,7 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 91,
@@ -118,6 +121,7 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           height: 527,

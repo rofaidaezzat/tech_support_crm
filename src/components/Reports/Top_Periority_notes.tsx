@@ -1,5 +1,6 @@
 import React from "react";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 interface TopPriorityNotesProps {
   onClose?: () => void;
@@ -34,6 +35,7 @@ const Top_Periority_notes: React.FC<TopPriorityNotesProps> = ({
 }) => {
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 371,
@@ -47,6 +49,7 @@ const Top_Periority_notes: React.FC<TopPriorityNotesProps> = ({
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 76,
@@ -94,6 +97,7 @@ const Top_Periority_notes: React.FC<TopPriorityNotesProps> = ({
 
       {/* ── Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           width: 462,
           height: 295,

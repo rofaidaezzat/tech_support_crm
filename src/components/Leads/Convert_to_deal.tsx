@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import checkSquareIcon from "../../assets/check-square-broken.svg";
 import closeIcon from "../../assets/x-02.svg";
+import "../../styles/leads-modal-mobile.css";
 
 import addressIcon from "../../assets/Address.svg";
 import searchIcon from "../../assets/search-01.svg";
@@ -85,6 +86,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
 
   return (
     <div
+      className="leads-modal-root"
       style={{
         width: 462,
         height: 637,
@@ -99,6 +101,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
     >
       {/* ── Header ── */}
       <div
+        className="leads-modal-header"
         style={{
           width: 462,
           height: 72,
@@ -148,6 +151,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
 
       {/* ── Form Body ── */}
       <div
+        className="leads-modal-body"
         style={{
           flex: 1,
           padding: "24px 20px",

@@ -4,12 +4,13 @@ import messageIcon from '../../assets/message-text-02.svg';
 import trashIcon from '../../assets/trash-02.svg';
 import markerIcon from '../../assets/marker-01.svg';
 import messageText021 from '../../assets/message-text-02 (1).svg';
+import '../../styles/leads-modal-mobile.css';
 
-const Notes = () => {
+const Notes = ({ onClose }: { onClose?: () => void }) => {
   return (
-    <div className="w-[462px] h-[528px] opacity-100 flex flex-col">
+    <div className="leads-tw-modal w-[462px] h-[528px] opacity-100 flex flex-col">
       {/* the first part */}
-      <div className="w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[rgba(245,246,250,1)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
+      <div className="leads-tw-modal-header w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[rgba(245,246,250,1)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
         <div className="flex gap-[12px]">
           <img src={messageIcon} alt="Notes" className="w-[24px] h-[24px]" />
           <div className="flex flex-col gap-1">
@@ -17,13 +18,13 @@ const Notes = () => {
             <span className="text-[14px] text-[#6B7280]">for "leads name"</span>
           </div>
         </div>
-        <button className="w-[32px] h-[32px] bg-white border border-[#D4D5D8] rounded-full flex items-center justify-center shrink-0 shadow-sm">
+        <button onClick={onClose} className="w-[32px] h-[32px] bg-white border border-[#D4D5D8] rounded-full flex items-center justify-center shrink-0 shadow-sm">
           <X className="w-[16px] h-[16px] text-[#111827]" />
         </button>
       </div>
 
       {/* second part */}
-      <div className="w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative flex flex-col items-center">
+      <div className="leads-tw-modal-body w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative flex flex-col items-center">
         
         {/* top tab section */}
         <div className="w-[462px] h-[35px] border-b-[1px] border-[rgba(212,213,216,1)] flex items-center px-[32px] mt-[16px]">
