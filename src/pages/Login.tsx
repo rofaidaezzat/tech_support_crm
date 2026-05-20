@@ -16,18 +16,22 @@ const Login: React.FC = () => {
   return (
     <div style={{
       width: "100%",
-      minHeight: "100vh",
+      height: "100vh",
       background: "#F5F6FA",
       display: "flex",
-      alignItems: "center",
+      padding: "88px 24px",
       justifyContent: "center",
-      fontFamily: "Inter, sans-serif"
+      alignItems: "center",
+      fontFamily: "Inter, sans-serif",
+      boxSizing: "border-box",
+      overflow: "hidden"
     }}>
       {/* Main Container */}
       <div style={{
         display: "flex",
-        width: 1392,
-        height: 656,
+        width: "100%",
+        height: "100%",
+        gap: 24,
         justifyContent: "space-between",
         alignItems: "center"
       }}>
@@ -36,8 +40,8 @@ const Login: React.FC = () => {
         <div style={{
           boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
           background: "rgba(255, 255, 255, 1)",
-          width: 684,
-          height: 656,
+          flex: 1,
+          height: "100%",
           borderRadius: 12,
           display: "flex",
           justifyContent: "center",
@@ -66,11 +70,19 @@ const Login: React.FC = () => {
                   </clipPath>
                 </defs>
               </svg>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 500, color: "#111827" }}>Welcome back</h1>
+              <h1 style={{
+                margin: 0,
+                color: "var(--Foundation-neutral-neutral-950, #141414)",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "23px",
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "normal"
+              }}>Welcome back</h1>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", width: "100%", gap: 24 }}>
+            <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", width: "100%", gap: 32 }}>
               
               {/* Inputs Wrapper */}
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -83,12 +95,20 @@ const Login: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     style={{
-                      height: 44,
-                      padding: "0 12px",
                       borderRadius: 8,
-                      border: "1px solid #D4D5D8",
+                      background: "transparent",
+                      border: email ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
+                      display: "flex",
+                      height: 36,
+                      padding: "12px",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      alignSelf: "stretch",
+                      boxSizing: "border-box",
+                      width: "100%",
                       outline: "none",
-                      fontSize: 14
+                      fontSize: 14,
+                      transition: "border 0.2s ease"
                     }}
                   />
                 </div>
@@ -101,16 +121,38 @@ const Login: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     style={{
-                      height: 44,
-                      padding: "0 12px",
                       borderRadius: 8,
-                      border: "1px solid #D4D5D8",
+                      background: "transparent",
+                      border: password ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
+                      display: "flex",
+                      height: 36,
+                      padding: "12px",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      alignSelf: "stretch",
+                      boxSizing: "border-box",
+                      width: "100%",
                       outline: "none",
-                      fontSize: 14
+                      fontSize: 14,
+                      transition: "border 0.2s ease"
                     }}
                   />
                   <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 4 }}>
-                    <a href="/reset-password" style={{ fontSize: 12, color: "#00236F", textDecoration: "none" }}>Forgot password ?</a>
+                    <span 
+                      onClick={() => navigate("/reset-password")}
+                      style={{
+                        color: "var(--Foundation-brand-brand-500, #00236F)",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "13px",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "140%",
+                        textDecoration: "none",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Forgot password ?
+                    </span>
                   </div>
                 </div>
 
@@ -143,17 +185,28 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Part (Image) */}
-        <img 
-          src={rightImage} 
-          alt="Login banner" 
-          style={{
-            width: 684,
-            height: 656,
-            borderRadius: 12,
-            objectFit: "cover"
-          }}
-        />
+        {/* Right Part (Image Container) */}
+        <div style={{
+          flex: 1,
+          height: "100%",
+          borderRadius: 12,
+          overflow: "hidden",
+          background: "#081329",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          <img 
+            src={rightImage} 
+            alt="Login banner" 
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center"
+            }}
+          />
+        </div>
 
       </div>
     </div>

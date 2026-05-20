@@ -1,6 +1,5 @@
 import { ArrowDownUp, ChevronDown, Plus } from 'lucide-react'
 import filterIcon from '../assets/filter.svg';
-import starsIcon from '../assets/stars.svg';
 import { useState } from 'react';
 import '../styles/tables-mobile.css';
 import mailIcon from '../assets/message-text-02 (1).svg';

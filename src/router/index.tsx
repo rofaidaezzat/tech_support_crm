@@ -14,6 +14,9 @@ import Overview from "../pages/Overview";
 import Sales from "../pages/Sales";
 import Overview_Manager from "../pages/Overview_Manager";
 import Login from "../pages/Login";
+import Reset_Password from "../pages/Reset_Password";
+import OTP_Verification from "../pages/OTP_Verification";
+import Update_Password from "../pages/Update_Password";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +33,9 @@ export const router = createBrowserRouter(
         <Route path="/sales" element={<Sales />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<Reset_Password />} />
+      <Route path="/otp-verification" element={<OTP_Verification />} />
+      <Route path="/update-password" element={<Update_Password />} />
     </>
   )
 );
