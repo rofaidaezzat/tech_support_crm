@@ -1,0 +1,138 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+export interface LeadAssignedTo {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+export interface Lead {
+  id: string;
+  tenant_id: string;
+  assigned_to: LeadAssignedTo | null;
+  name: string;
+  phone: string;
+  email: string | null;
+  source: string;
+  status: string;
+  next_follow_up: string | null;
+  metadata: any | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Pagination {
+  currentPage: number;
+  limit: number;
+  totalPages: number;
+  total: number;
+}
+
+export interface GetLeadsResponse {
+  status: string;
+  code: number;
+  pagination: Pagination;
+  message: string;
+  data: Lead[];
+}
+
+export interface GetLeadResponse {
+  status: string;
+  code: number;
+  message: string;
+  data: Lead;
+}
+
+export interface CreateLeadRequest {
+  name: string;
+  phone: string;
+  source?: string;
+  status?: string;
+  assigned_to_id?: string;
+}
+
+export interface UpdateLeadRequest {
+  id: string;
+  body: {
+    name?: string;
+    phone?: string;
+    source?: string;
+    status?: string;
+    assigned_to_id?: string;
+  };
+}
+
+export interface DeleteLeadResponse {
+  status: string;
+  code: number;
+  message: string;
+}
+
+export const leadsApi = createApi({
+  reducerPath: 'leadsApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://crm-v1-otu8.vercel.app/',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ['Lead'],
+  endpoints: (builder) => ({
+    getLeads: builder.query<GetLeadsResponse, void>({
+      query: () => 'api/v1/leads/',
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ id }) => ({ type: 'Lead' as const, id })),
+              { type: 'Lead', id: 'LIST' },
+            ]
+          : [{ type: 'Lead', id: 'LIST' }],
+    }),
+    getLead: builder.query<GetLeadResponse, string>({
+      query: (id) => `api/v1/leads/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Lead', id }],
+    }),
+    createLead: builder.mutation<GetLeadResponse, CreateLeadRequest>({
+      query: (body) => ({
+        url: 'api/v1/leads',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Lead', id: 'LIST' }],
+    }),
+    updateLead: builder.mutation<GetLeadResponse, UpdateLeadRequest>({
+      query: ({ id, body }) => ({
+        url: `api/v1/leads/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Lead', id },
+        { type: 'Lead', id: 'LIST' },
+      ],
+    }),
+    deleteLead: builder.mutation<DeleteLeadResponse, string>({
+      query: (id) => ({
+        url: `api/v1/leads/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'Lead', id },
+        { type: 'Lead', id: 'LIST' },
+      ],
+    }),
+  }),
+});
+
+export const {
+  useGetLeadsQuery,
+  useGetLeadQuery,
+  useCreateLeadMutation,
+  useUpdateLeadMutation,
+  useDeleteLeadMutation,
+} = leadsApi;

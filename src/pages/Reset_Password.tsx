@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
+import { useForgotPasswordMutation } from '../app/service/crudauth';
+import { toast } from 'sonner';
 
 const Reset_Password: React.FC = () => {
   const navigate = useNavigate();
-  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add reset password / OTP trigger logic here
-    navigate('/otp-verification');
+    if (!email) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    try {
+      await forgotPassword({ email }).unwrap();
+      navigate('/otp-verification', { state: { email } });
+    } catch (err: any) {
+      console.error('Forgot password error:', err);
+      const errMsg = err?.data?.message || err?.message || 'Failed to send OTP. Please check your email.';
+      toast.error(errMsg);
+    }
   };
 
   return (
-    <div style={{
+    <div className="auth-container" style={{
       width: "100%",
       height: "100vh",
       background: "#F5F6FA",
@@ -25,8 +38,46 @@ const Reset_Password: React.FC = () => {
       boxSizing: "border-box",
       overflow: "hidden"
     }}>
+      <style>{`
+        @media (max-width: 1024px) {
+          .auth-container {
+            height: auto !important;
+            min-height: 100vh !important;
+            padding: 24px 16px !important;
+            overflow-y: auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+          .auth-inner-wrapper {
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 0 !important;
+            height: auto !important;
+          }
+          .auth-left-card {
+            width: 100% !important;
+            height: auto !important;
+            padding: 40px 16px !important;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05) !important;
+            background: #FFF !important;
+            border-radius: 12px !important;
+          }
+          .auth-content-wrapper {
+            width: 100% !important;
+            max-width: 380px !important;
+            gap: 40px !important;
+          }
+          .auth-right-banner {
+            display: none !important;
+          }
+          .auth-submit-btn {
+            width: 100% !important;
+          }
+        }
+      `}</style>
       {/* Main Container */}
-      <div style={{
+      <div className="auth-inner-wrapper" style={{
         display: "flex",
         width: "100%",
         height: "100%",
@@ -36,7 +87,7 @@ const Reset_Password: React.FC = () => {
       }}>
         
         {/* Left Part */}
-        <div style={{
+        <div className="auth-left-card" style={{
           boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
           background: "rgba(255, 255, 255, 1)",
           flex: 1,
@@ -95,7 +146,7 @@ const Reset_Password: React.FC = () => {
           </button>
 
           {/* Logo and Form Container */}
-          <div style={{
+          <div className="auth-content-wrapper" style={{
             display: "flex",
             width: 380,
             flexDirection: "column",
@@ -144,11 +195,11 @@ const Reset_Password: React.FC = () => {
 
             {/* Form */}
             <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", width: "100%", gap: 32 }}>
-              
+
               {/* Inputs Wrapper */}
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 
-                {/* Whatsapp Phone Number */}
+                {/* Email Address */}
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -161,15 +212,15 @@ const Reset_Password: React.FC = () => {
                     color: "var(--Foundation-neutral-neutral-950, #141414)",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 500
-                  }}>Whatsapp Phone Number<span style={{ color: "#00236F" }}>*</span></label>
+                  }}>Email Address<span style={{ color: "#00236F" }}>*</span></label>
                   <input 
-                    type="text" 
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     style={{
                       borderRadius: 8,
                       background: "transparent",
-                      border: whatsappNumber ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
+                      border: email ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
                       display: "flex",
                       height: 36,
                       padding: "12px",
@@ -189,10 +240,12 @@ const Reset_Password: React.FC = () => {
 
               {/* Submit Button */}
               <button 
+                className="auth-submit-btn"
                 type="submit"
+                disabled={isLoading}
                 style={{
                   borderRadius: 12,
-                  background: "var(--Foundation-brand-brand-500, #00236F)",
+                  background: isLoading ? "rgba(0, 35, 111, 0.6)" : "var(--Foundation-brand-brand-500, #00236F)",
                   display: "flex",
                   height: 48,
                   padding: "8px 24px",
@@ -204,10 +257,11 @@ const Reset_Password: React.FC = () => {
                   fontSize: 16,
                   fontWeight: 500,
                   border: "none",
-                  cursor: "pointer"
+                  cursor: isLoading ? "not-allowed" : "pointer",
+                  transition: "all 0.3s ease"
                 }}
               >
-                Send OTP
+                {isLoading ? "Sending OTP..." : "Send OTP"}
               </button>
 
             </form>
@@ -216,7 +270,7 @@ const Reset_Password: React.FC = () => {
         </div>
 
         {/* Right Part (Image Container) */}
-        <div style={{
+        <div className="auth-right-banner" style={{
           flex: 1,
           height: "100%",
           borderRadius: 12,

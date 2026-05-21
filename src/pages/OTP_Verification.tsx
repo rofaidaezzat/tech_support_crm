@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
+import { useVerifyOtpMutation } from '../app/service/crudauth';
+import { toast } from 'sonner';
 
 const OTP_Verification: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || '';
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+
   const isOtpComplete = otp.every(digit => digit !== '');
+
+  useEffect(() => {
+    if (!email) {
+      navigate('/reset-password');
+    }
+  }, [email, navigate]);
 
   const handleOtpChange = (value: string, index: number) => {
     if (isNaN(Number(value))) return;
@@ -27,16 +39,25 @@ const OTP_Verification: React.FC = () => {
     }
   };
 
-  const handleOTPVerification = (e: React.FormEvent) => {
+  const handleOTPVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join('');
-    // Add verification API call here
-    console.log("Verifying OTP:", otpCode);
-    navigate('/update-password'); // Navigate to next password step in flow
+    if (!email || otpCode.length < 6) {
+      toast.error("Please enter a valid 6-digit OTP.");
+      return;
+    }
+    try {
+      await verifyOtp({ email, otp: otpCode }).unwrap();
+      navigate('/update-password', { state: { email } });
+    } catch (err: any) {
+      console.error('OTP verification error:', err);
+      const errMsg = err?.data?.message || err?.message || 'Invalid or expired OTP.';
+      toast.error(errMsg);
+    }
   };
 
   return (
-    <div style={{
+    <div className="auth-container" style={{
       width: "100%",
       height: "100vh",
       background: "#F5F6FA",
@@ -48,8 +69,57 @@ const OTP_Verification: React.FC = () => {
       boxSizing: "border-box",
       overflow: "hidden"
     }}>
+      <style>{`
+        @media (max-width: 1024px) {
+          .auth-container {
+            height: auto !important;
+            min-height: 100vh !important;
+            padding: 24px 16px !important;
+            overflow-y: auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+          .auth-inner-wrapper {
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 0 !important;
+            height: auto !important;
+          }
+          .auth-left-card {
+            width: 100% !important;
+            height: auto !important;
+            padding: 40px 16px !important;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05) !important;
+            background: #FFF !important;
+            border-radius: 12px !important;
+          }
+          .auth-content-wrapper {
+            width: 100% !important;
+            max-width: 380px !important;
+            gap: 40px !important;
+          }
+          .auth-right-banner {
+            display: none !important;
+          }
+          .auth-submit-btn {
+            width: 100% !important;
+          }
+          .otp-inputs-wrapper {
+            width: 100% !important;
+            max-width: 343px !important;
+            gap: 6px !important;
+          }
+          .otp-inputs-wrapper input {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 8px !important;
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
       {/* Main Container */}
-      <div style={{
+      <div className="auth-inner-wrapper" style={{
         display: "flex",
         width: "100%",
         height: "100%",
@@ -59,7 +129,7 @@ const OTP_Verification: React.FC = () => {
       }}>
         
         {/* Left Part */}
-        <div style={{
+        <div className="auth-left-card" style={{
           boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
           background: "rgba(255, 255, 255, 1)",
           flex: 1,
@@ -118,7 +188,7 @@ const OTP_Verification: React.FC = () => {
           </button>
 
           {/* Logo and Form Container */}
-          <div style={{
+          <div className="auth-content-wrapper" style={{
             display: "flex",
             width: 380,
             flexDirection: "column",
@@ -167,9 +237,9 @@ const OTP_Verification: React.FC = () => {
 
             {/* Form */}
             <form onSubmit={handleOTPVerification} style={{ display: "flex", flexDirection: "column", width: "100%", gap: 32, alignItems: "center" }}>
-              
+
               {/* OTP Inputs (The Six Cards) */}
-              <div style={{
+              <div className="otp-inputs-wrapper" style={{
                 display: "flex",
                 width: 343,
                 justifyContent: "space-between",
@@ -210,11 +280,12 @@ const OTP_Verification: React.FC = () => {
 
               {/* Verify Button */}
               <button 
+                className="auth-submit-btn"
                 type="submit"
-                disabled={!isOtpComplete}
+                disabled={!isOtpComplete || isLoading}
                 style={{
                   borderRadius: 12,
-                  background: isOtpComplete ? "var(--Foundation-brand-brand-500, #00236F)" : "var(--Foundation-neutral-neutral-100, #D4D5D8)",
+                  background: (!isOtpComplete || isLoading) ? "var(--Foundation-neutral-neutral-100, #D4D5D8)" : "var(--Foundation-brand-brand-500, #00236F)",
                   display: "flex",
                   height: 48,
                   padding: "8px 24px",
@@ -222,15 +293,15 @@ const OTP_Verification: React.FC = () => {
                   alignItems: "center",
                   gap: 8,
                   alignSelf: "stretch",
-                  color: isOtpComplete ? "#FFF" : "var(--Foundation-neutral-neutral-500, #808080)",
+                  color: (!isOtpComplete || isLoading) ? "var(--Foundation-neutral-neutral-500, #808080)" : "#FFF",
                   fontSize: 16,
                   fontWeight: 500,
                   border: "none",
-                  cursor: isOtpComplete ? "pointer" : "not-allowed",
+                  cursor: (!isOtpComplete || isLoading) ? "not-allowed" : "pointer",
                   transition: "all 0.3s ease"
                 }}
               >
-                Verify
+                {isLoading ? "Verifying..." : "Verify"}
               </button>
 
             </form>
@@ -239,7 +310,7 @@ const OTP_Verification: React.FC = () => {
         </div>
 
         {/* Right Part (Image Container) */}
-        <div style={{
+        <div className="auth-right-banner" style={{
           flex: 1,
           height: "100%",
           borderRadius: 12,
