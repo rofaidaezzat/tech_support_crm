@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
-import { useVerifyOtpMutation } from '../app/service/crudauth';
+import { useVerifyOtpMutation, useResendOtpMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
+import { validateOtp } from '../validation';
 
 const OTP_Verification: React.FC = () => {
   const navigate = useNavigate();
@@ -10,8 +11,36 @@ const OTP_Verification: React.FC = () => {
   const email = location.state?.email || '';
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
+  const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
+  const [timer, setTimer] = useState(40);
 
   const isOtpComplete = otp.every(digit => digit !== '');
+
+  useEffect(() => {
+    if (timer <= 0) return;
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const formatTime = (seconds: number) => {
+    const secs = String(seconds).padStart(2, '0');
+    return `00:${secs}`;
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+    try {
+      await resendOtp({ email, type: 'VERIFICATION' }).unwrap();
+      toast.success("Verification code resent successfully!");
+      setTimer(40);
+    } catch (err: any) {
+      console.error('Failed to resend OTP:', err);
+      const errMsg = err?.data?.message || err?.message || 'Failed to resend verification code.';
+      toast.error(errMsg);
+    }
+  };
 
   useEffect(() => {
     if (!email) {
@@ -42,10 +71,18 @@ const OTP_Verification: React.FC = () => {
   const handleOTPVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join('');
-    if (!email || otpCode.length < 6) {
-      toast.error("Please enter a valid 6-digit OTP.");
+    
+    const validation = validateOtp(otpCode);
+    if (!validation.isValid) {
+      const firstError = Object.values(validation.errors)[0];
+      toast.error(firstError);
       return;
     }
+    if (!email) {
+      toast.error("Email is required for verification.");
+      return;
+    }
+
     try {
       await verifyOtp({ email, otp: otpCode }).unwrap();
       navigate('/update-password', { state: { email } });
@@ -238,44 +275,98 @@ const OTP_Verification: React.FC = () => {
             {/* Form */}
             <form onSubmit={handleOTPVerification} style={{ display: "flex", flexDirection: "column", width: "100%", gap: 32, alignItems: "center" }}>
 
-              {/* OTP Inputs (The Six Cards) */}
-              <div className="otp-inputs-wrapper" style={{
-                display: "flex",
-                width: 343,
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}>
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    placeholder="-"
-                    onChange={(e) => handleOtpChange(e.target.value, index)}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    style={{
-                      borderRadius: 12,
-                      border: digit ? "1px solid var(--Foundation-brand-brand-500, #00236F)" : "1px solid #D4D5D8",
-                      display: "flex",
-                      width: 48,
-                      height: 48,
-                      padding: "10px 0",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      textAlign: "center",
-                      fontSize: 18,
-                      fontWeight: 600,
-                      color: "var(--Foundation-neutral-neutral-950, #141414)",
-                      background: "transparent",
-                      flexShrink: 0,
-                      boxSizing: "border-box",
-                      outline: "none",
-                      transition: "border 0.2s ease"
-                    }}
-                  />
-                ))}
+              {/* Container for Inputs and Resend Section with exactly 16px gap */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center", width: "100%" }}>
+                {/* OTP Inputs (The Six Cards) */}
+                <div className="otp-inputs-wrapper" style={{
+                  display: "flex",
+                  width: 343,
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}>
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      id={`otp-${index}`}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      placeholder="-"
+                      onChange={(e) => handleOtpChange(e.target.value, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      style={{
+                        borderRadius: 12,
+                        border: digit ? "1px solid var(--Foundation-brand-brand-500, #00236F)" : "1px solid #D4D5D8",
+                        display: "flex",
+                        width: 48,
+                        height: 48,
+                        padding: "10px 0",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        color: "var(--Foundation-neutral-neutral-950, #141414)",
+                        background: "transparent",
+                        flexShrink: 0,
+                        boxSizing: "border-box",
+                        outline: "none",
+                        transition: "border 0.2s ease"
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Resend Code Section */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 8,
+                  height: 18,
+                }}>
+                  {timer > 0 ? (
+                    <span style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 13,
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "140%",
+                      color: "var(--Foundation-neutral-neutral-800, #464646)",
+                      textAlign: "center"
+                    }}>
+                      Resend code in{" "}
+                      <span style={{ color: "var(--Foundation-brand-brand-500, #00236F)", fontWeight: 500 }}>
+                        {formatTime(timer)}
+                      </span>{" "}
+                      s
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={isResending}
+                      style={{
+                        color: "var(--Foundation-neutral-neutral-600, #747474)",
+                        textAlign: "center",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 13,
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "140%",
+                        textDecorationLine: "underline",
+                        textDecorationStyle: "solid",
+                        background: "transparent",
+                        border: "none",
+                        padding: 0,
+                        cursor: isResending ? "not-allowed" : "pointer",
+                        outline: "none"
+                      }}
+                    >
+                      {isResending ? "Resending..." : "Resend"}
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Verify Button */}

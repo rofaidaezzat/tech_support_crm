@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useLoginMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
+import { validateLogin } from '../validation';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -12,10 +13,15 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in all fields.");
+    
+    const validation = validateLogin({ email, password });
+    if (!validation.isValid) {
+      // Display the first validation error
+      const firstError = Object.values(validation.errors)[0];
+      toast.error(firstError);
       return;
     }
+
     try {
       await login({ email, password }).unwrap();
       navigate('/overview');

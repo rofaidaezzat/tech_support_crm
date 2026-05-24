@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export interface LeadAssignedTo {
   id: string;
@@ -63,6 +64,13 @@ export interface UpdateLeadRequest {
   };
 }
 
+export interface UpdateLeadStatusRequest {
+  id: string;
+  body: {
+    status: string;
+  };
+}
+
 export interface DeleteLeadResponse {
   status: string;
   code: number;
@@ -71,16 +79,7 @@ export interface DeleteLeadResponse {
 
 export const leadsApi = createApi({
   reducerPath: 'leadsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://crm-v1-otu8.vercel.app/',
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['Lead'],
   endpoints: (builder) => ({
     getLeads: builder.query<GetLeadsResponse, void>({
@@ -116,6 +115,17 @@ export const leadsApi = createApi({
         { type: 'Lead', id: 'LIST' },
       ],
     }),
+    updateLeadStatus: builder.mutation<GetLeadResponse, UpdateLeadStatusRequest>({
+      query: ({ id, body }) => ({
+        url: `api/v1/leads/${id}/status`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Lead', id },
+        { type: 'Lead', id: 'LIST' },
+      ],
+    }),
     deleteLead: builder.mutation<DeleteLeadResponse, string>({
       query: (id) => ({
         url: `api/v1/leads/${id}`,
@@ -134,5 +144,6 @@ export const {
   useGetLeadQuery,
   useCreateLeadMutation,
   useUpdateLeadMutation,
+  useUpdateLeadStatusMutation,
   useDeleteLeadMutation,
 } = leadsApi;

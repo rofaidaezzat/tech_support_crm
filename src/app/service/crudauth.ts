@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth, setCookie, deleteCookie } from './baseQuery';
 
 export interface User {
   id: string;
@@ -65,16 +66,7 @@ export interface VerifyEmailRequest {
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://crm-v1-otu8.vercel.app/',
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
@@ -86,7 +78,7 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           if (data?.data?.access_token) {
-            localStorage.setItem('token', data.data.access_token);
+            setCookie('token', data.data.access_token);
           }
         } catch (error) {
           console.error('Login failed:', error);
@@ -101,11 +93,11 @@ export const authApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          localStorage.removeItem('token');
+          deleteCookie('token');
         } catch (error) {
           console.error('Logout failed:', error);
-          // Still clean local storage token in case of failure
-          localStorage.removeItem('token');
+          // Still clean token in case of failure
+          deleteCookie('token');
         }
       },
     }),

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useForgotPasswordMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
+import { validateForgotPassword } from '../validation';
 
 const Reset_Password: React.FC = () => {
   const navigate = useNavigate();
@@ -11,10 +12,14 @@ const Reset_Password: React.FC = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address.");
+    
+    const validation = validateForgotPassword(email);
+    if (!validation.isValid) {
+      const firstError = Object.values(validation.errors)[0];
+      toast.error(firstError);
       return;
     }
+
     try {
       await forgotPassword({ email }).unwrap();
       navigate('/otp-verification', { state: { email } });

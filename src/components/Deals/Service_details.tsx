@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useUpdateDealMutation } from "../../app/service/cruddeals";
+import { toast } from "sonner";
 import closeIcon from "../../assets/x-02.svg";
 import "../../styles/leads-modal-mobile.css";
 
 interface ServiceDetailsProps {
   onClose?: () => void;
   onSave?: (details: string) => void;
+  dealId: string;
   leadsName?: string;
   initialDetails?: string;
 }
@@ -12,17 +15,34 @@ interface ServiceDetailsProps {
 const Service_details: React.FC<ServiceDetailsProps> = ({
   onClose,
   onSave,
+  dealId,
   leadsName = "leads name",
-  initialDetails = "Lorem ipsum dolor sit amet consectetur. Curabitur arcu nibh mi urna. Volutpat quis pellentesque elementum bibendum eu ipsum egestas tempus feugiat. Orci vestibulum commodo consequat et arcu urna risus. Odio nulla sed tellus sit sem accumsan mauris purus ac. Est nibh tortor amet tincidunt. Consequat sit ut magna orci enim. Dui urna et vitae ornare amet consectetur augue pretium.",
+  initialDetails = "",
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [details, setDetails] = useState(initialDetails);
+  const [updateDeal, { isLoading }] = useUpdateDealMutation();
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave(details);
+  const handleSave = async () => {
+    if (isLoading) return;
+
+    try {
+      const response = await updateDeal({
+        id: dealId,
+        body: { deals_details: details },
+      }).unwrap();
+
+      toast.success(response?.message || "Deal updated successfully");
+
+      if (onSave) {
+        onSave(details);
+      }
+      setIsEditing(false);
+    } catch (err: any) {
+      console.error("Failed to update deal details:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to update deal details.";
+      toast.error(errMsg);
     }
-    setIsEditing(false);
   };
 
   const savedTextareaStyle: React.CSSProperties = {
@@ -80,7 +100,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
-        background: "rgba(245, 246, 250, 1)", // same as others
+        background: "rgba(245, 246, 250, 1)",
       }}
     >
       {/* ── Header ── */}
@@ -172,7 +192,6 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
         {/* Action Button */}
         <div style={{ marginTop: 100 }}>
           {!isEditing ? (
-            // Edit Button (Secondary)
             <button
               className="leads-modal-footer-btn"
               onClick={() => setIsEditing(true)}
@@ -205,7 +224,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                  d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.4142 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
                   stroke="rgba(0, 35, 111, 1)"
                   strokeWidth="2"
                   strokeLinecap="round"
@@ -222,10 +241,10 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
               Edit
             </button>
           ) : (
-            // Save Button (Primary)
             <button
               className="leads-modal-footer-btn"
               onClick={handleSave}
+              disabled={isLoading}
               style={{
                 width: "100%",
                 height: 48,
@@ -236,7 +255,7 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,
                 fontSize: 15,
-                cursor: "pointer",
+                cursor: isLoading ? "not-allowed" : "pointer",
                 transition: "background 0.2s, color 0.2s",
                 display: "flex",
                 alignItems: "center",
@@ -244,9 +263,10 @@ const Service_details: React.FC<ServiceDetailsProps> = ({
                 gap: 8,
                 padding: "8px 24px",
                 boxSizing: "border-box",
+                opacity: isLoading ? 0.7 : 1,
               }}
             >
-              Save
+              {isLoading ? "Saving..." : "Save"}
             </button>
           )}
         </div>

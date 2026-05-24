@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useCreateLeadMutation } from "../../app/service/crudleads";
+import { toast } from "sonner";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import "../../styles/leads-modal-mobile.css";
@@ -38,23 +40,77 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
+const SOURCE_OPTIONS: { label: string; value: string }[] = [
+  { label: "Ads",       value: "ADS" },
+  { label: "Website",   value: "WEBSITE" },
+  { label: "Organic",   value: "ORGANIC" },
+  { label: "Referral",  value: "REFERRAL" },
+  { label: "Farmer",    value: "FARMER" },
+  { label: "Facebook",  value: "FACEBOOK" },
+  { label: "TikTok",    value: "TIKTOK" },
+  { label: "Instagram", value: "INSTAGRAM" },
+  { label: "WhatsApp",  value: "WHATSAPP" },
+  { label: "Telegram",  value: "TELEGRAM" },
+  { label: "LinkedIn",  value: "LINKEDIN" },
+  { label: "Twitter",   value: "TWITTER" },
+  { label: "YouTube",   value: "YOUTUBE" },
+  { label: "Other",     value: "OTHER" },
+];
+
+// Phone: 7–20 digits, allows +, spaces, hyphens, parentheses
+const PHONE_REGEX = /^[+\d][\d\s\-().]{5,19}$/;
+
 const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
   const [leadName, setLeadName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [leadSource, setLeadSource] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState<{ name?: string; phone?: string; source?: string }>({});
+
+  const [createLead, { isLoading }] = useCreateLeadMutation();
 
   const isSaveEnabled =
     leadName.trim() !== "" &&
     companyName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
-    leadSource.trim() !== "";
+    leadSource.trim() !== "" &&
+    !isLoading;
 
-  const handleSave = () => {
-    if (!isSaveEnabled) return;
-    if (onSave) {
-      onSave({ leadName, companyName, phoneNumber, leadSource });
+  const validate = () => {
+    const errors: { name?: string; phone?: string; source?: string } = {};
+    if (!leadName.trim()) errors.name = "Lead name is required.";
+    if (!phoneNumber.trim()) {
+      errors.phone = "Phone number is required.";
+    } else if (!PHONE_REGEX.test(phoneNumber.trim())) {
+      errors.phone = "Phone must be 7–20 digits and may include +, spaces, hyphens, or parentheses.";
+    }
+    if (!leadSource) errors.source = "Please choose a lead source.";
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSave = async () => {
+    if (isLoading) return;
+    if (!validate()) return;
+
+    try {
+      await createLead({
+        name: leadName,
+        phone: phoneNumber,
+        source: leadSource,
+      }).unwrap();
+
+      toast.success("Lead created successfully!");
+
+      if (onSave) {
+        onSave({ leadName, companyName, phoneNumber, leadSource });
+      }
+      if (onClose) onClose();
+    } catch (err: any) {
+      console.error("Failed to create lead:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to create lead.";
+      toast.error(errMsg);
     }
   };
 
@@ -65,6 +121,14 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     e.currentTarget.style.borderColor = "var(--Foundation-brand-brand-500, #00236F)";
     e.currentTarget.style.background = "#fff";
+  };
+
+  const errorTextStyle: React.CSSProperties = {
+    fontFamily: "Inter, sans-serif",
+    fontSize: 12,
+    color: "#E03131",
+    marginTop: 4,
+    lineHeight: "1.4",
   };
 
   return (
@@ -161,11 +225,12 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           <input
             type="text"
             value={leadName}
-            onChange={(e) => setLeadName(e.target.value)}
-            style={inputStyle}
+            onChange={(e) => { setLeadName(e.target.value); setFormErrors(prev => ({ ...prev, name: undefined })); }}
+            style={{ ...inputStyle, borderColor: formErrors.name ? "#E03131" : undefined }}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.name && <span style={errorTextStyle}>{formErrors.name}</span>}
         </div>
 
         {/* Company name */}
@@ -191,11 +256,13 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           <input
             type="tel"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            style={inputStyle}
+            placeholder="e.g. +20 123 456 7890"
+            onChange={(e) => { setPhoneNumber(e.target.value); setFormErrors(prev => ({ ...prev, phone: undefined })); }}
+            style={{ ...inputStyle, borderColor: formErrors.phone ? "#E03131" : undefined }}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.phone && <span style={errorTextStyle}>{formErrors.phone}</span>}
         </div>
 
         {/* Lead Source */}
@@ -218,7 +285,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                 borderColor: "var(--Foundation-brand-brand-500, #00236F)",
               }}
             >
-              <span>{leadSource || "Choose a lead source"}</span>
+              <span>{SOURCE_OPTIONS.find(o => o.value === leadSource)?.label || "Choose a lead source"}</span>
               <svg
                 width="20"
                 height="20"
@@ -252,13 +319,15 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                   padding: "8px 0",
                   display: "flex",
                   flexDirection: "column",
+                  maxHeight: 240,
+                  overflowY: "auto",
                 }}
               >
-                {["Organic", "Referral", "Ads", "Website", "Farmer"].map((option) => (
+                {SOURCE_OPTIONS.map(({ label, value }) => (
                   <div
-                    key={option}
+                    key={value}
                     onClick={() => {
-                      setLeadSource(option);
+                      setLeadSource(value);
                       setIsDropdownOpen(false);
                     }}
                     style={{
@@ -267,12 +336,12 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                       alignItems: "center",
                       gap: 12,
                       cursor: "pointer",
-                      background: leadSource === option ? "rgba(245, 246, 250, 1)" : "#fff",
+                      background: leadSource === value ? "rgba(245, 246, 250, 1)" : "#fff",
                       transition: "background 0.2s",
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
                     onMouseLeave={(e) => {
-                      if (leadSource !== option) {
+                      if (leadSource !== value) {
                         e.currentTarget.style.background = "#fff";
                       }
                     }}
@@ -283,8 +352,9 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                         width: 18,
                         height: 18,
                         borderRadius: "50%",
-                        border: leadSource === option ? "5px solid #00236F" : "2px solid #8B909A",
+                        border: leadSource === value ? "5px solid #00236F" : "2px solid #8B909A",
                         boxSizing: "border-box",
+                        flexShrink: 0,
                         transition: "border 0.2s",
                       }}
                     />
@@ -292,16 +362,18 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                       style={{
                         fontFamily: "Inter, sans-serif",
                         fontSize: 14,
-                        color: "#141414",
+                        color: leadSource === value ? "#00236F" : "#141414",
+                        fontWeight: leadSource === value ? 500 : 400,
                       }}
                     >
-                      {option}
+                      {label}
                     </span>
                   </div>
                 ))}
               </div>
             )}
           </div>
+          {formErrors.source && <span style={errorTextStyle}>{formErrors.source}</span>}
         </div>
 
         {/* Save button */}
@@ -335,7 +407,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
             boxSizing: "border-box",
           }}
         >
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </button>
       </div>
     </div>

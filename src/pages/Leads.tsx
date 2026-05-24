@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
+import { useGetLeadsQuery, useUpdateLeadStatusMutation } from '../app/service/crudleads';
+import { toast } from 'sonner';
 import '../styles/tables-mobile.css';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
@@ -42,14 +44,38 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
 
 const STATUS_OPTIONS = [
   "Fresh",
-  "Follow up",
   "Interested",
   "Not interested",
   "Meeting",
   "After meeting followup",
   "Wrong number",
   "No answer",
+  "Deal",
 ];
+
+// Map display labels → API values
+const STATUS_TO_API: Record<string, string> = {
+  "Fresh": "FRESH",
+  "Interested": "INTERESTED",
+  "Not interested": "NOT_INTERESTED",
+  "Meeting": "MEETING",
+  "After meeting followup": "AFTER_MEETING_FOLLOWUP",
+  "Wrong number": "WRONG_NUMBER",
+  "No answer": "NO_ANSWER",
+  "Deal": "DEAL",
+};
+
+// Map API values → display labels
+const STATUS_FROM_API: Record<string, string> = {
+  "FRESH": "Fresh",
+  "INTERESTED": "Interested",
+  "NOT_INTERESTED": "Not interested",
+  "MEETING": "Meeting",
+  "AFTER_MEETING_FOLLOWUP": "After meeting followup",
+  "WRONG_NUMBER": "Wrong number",
+  "NO_ANSWER": "No answer",
+  "DEAL": "Deal",
+};
 
 const INITIAL_LEADS = [
   { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
@@ -64,10 +90,39 @@ const INITIAL_LEADS = [
 
 const COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"];
 
+const formatDate = (isoString?: string | null) => {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return "";
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const Leads = () => {
-  const [leads, setLeads] = useState(INITIAL_LEADS);
+  const { data: leadsData, isLoading } = useGetLeadsQuery();
+  const [updateLeadStatus] = useUpdateLeadStatusMutation();
+  const [leads, setLeads] = useState<any[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (leadsData?.data) {
+      const mappedLeads = leadsData.data.map((lead: any) => ({
+        id: lead.id,
+        date: formatDate(lead.created_at),
+        name: lead.name,
+        company: lead.company_name || "",
+        status: STATUS_FROM_API[lead.status] || lead.status,
+        phone: lead.phone,
+        priority: lead.priority ? lead.priority.charAt(0).toUpperCase() + lead.priority.slice(1).toLowerCase() : "",
+        source: lead.source,
+        followup: formatDate(lead.next_follow_up),
+      }));
+      setLeads(mappedLeads);
+    }
+  }, [leadsData]);
   
   // Filter Dropdowns & Modals
   type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | null;
@@ -76,7 +131,9 @@ const Leads = () => {
   // Modal States
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isEditLeadOpen, setIsEditLeadOpen] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [isConvertToDealOpen, setIsConvertToDealOpen] = useState(false);
+  const [selectedConvertLead, setSelectedConvertLead] = useState<any>(null);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
@@ -106,11 +163,35 @@ const Leads = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdown, openActionMenu]);
 
-  const handleStatusChange = (leadIndex: number, newStatus: string) => {
+  const handleStatusChange = async (leadIndex: number, newStatus: string) => {
+    // "Deal" opens the Convert to Deal modal instead of calling the status API
+    if (newStatus === "Deal") {
+      setSelectedConvertLead(leads[leadIndex]);
+      setIsConvertToDealOpen(true);
+      setOpenDropdown(null);
+      return;
+    }
+    const lead = leads[leadIndex];
+    if (!lead?.id) return;
+    // Optimistic local update
     setLeads((prev) =>
-      prev.map((lead, i) => (i === leadIndex ? { ...lead, status: newStatus } : lead))
+      prev.map((l, i) => (i === leadIndex ? { ...l, status: newStatus } : l))
     );
     setOpenDropdown(null);
+    try {
+      await updateLeadStatus({
+        id: lead.id,
+        body: { status: STATUS_TO_API[newStatus] || newStatus },
+      }).unwrap();
+    } catch (err: any) {
+      // Revert optimistic update on error
+      setLeads((prev) =>
+        prev.map((l, i) => (i === leadIndex ? { ...l, status: lead.status } : l))
+      );
+      let errMsg = err?.data?.message || err?.message || "Failed to update status.";
+      if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
+      toast.error(errMsg);
+    }
   };
 
   return (
@@ -366,7 +447,7 @@ const Leads = () => {
           display: "flex",
           flexDirection: "column",
           borderRadius: 12,
-          overflow: "hidden",
+          overflow: "visible",
           border: "1px solid rgba(212, 213, 216, 1)",
         }}
       >
@@ -423,10 +504,19 @@ const Leads = () => {
 
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
-          {leads.map((lead, i) => (
-            <div
-              key={i}
-              className="responsive-table-row"
+          {isLoading ? (
+            <div style={{ padding: "40px", textAlign: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+              Loading leads...
+            </div>
+          ) : leads.length === 0 ? (
+            <div style={{ padding: "40px", textAlign: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+              No leads found.
+            </div>
+          ) : (
+            leads.map((lead, i) => (
+              <div
+                key={i}
+                className="responsive-table-row"
               style={{
                 width: "100%",
                 display: "flex",
@@ -436,6 +526,8 @@ const Leads = () => {
                 height: 72,
                 borderBottom: i < leads.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
                 justifyContent: "space-between",
+                borderBottomLeftRadius: i === leads.length - 1 ? 12 : 0,
+                borderBottomRightRadius: i === leads.length - 1 ? 12 : 0,
               }}
             >
               {/* Date */}
@@ -497,14 +589,16 @@ const Leads = () => {
                   <div
                     style={{
                       position: "absolute",
-                      top: "calc(100% + 4px)",
-                      left: 0,
-                      zIndex: 100,
+                      top: "calc(100% + 8px)",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
                       background: "rgba(255, 255, 255, 1)",
-                      boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.04)",
                       borderRadius: 12,
-                      padding: "12px 0",
-                      minWidth: 260,
+                      padding: "4px 0",
+                      minWidth: 220,
+                      border: "1px solid rgba(212, 213, 216, 1)",
                     }}
                   >
                     {STATUS_OPTIONS.map((option) => (
@@ -514,11 +608,14 @@ const Leads = () => {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "16px 12px",
-                          borderBottom: "1px solid var(--Foundation-neutral-neutral-50, #EDEFF2)",
+                          gap: 12,
+                          padding: "12px 16px",
+                          borderBottom: option === STATUS_OPTIONS[STATUS_OPTIONS.length - 1]
+                            ? "none"
+                            : "1px solid var(--Foundation-neutral-neutral-50, #EDEFF2)",
                           alignSelf: "stretch",
                           cursor: "pointer",
+                          transition: "background 0.2s ease",
                         }}
                         onMouseEnter={(e) => {
                           (e.currentTarget as HTMLDivElement).style.background = "rgba(237, 239, 242, 1)";
@@ -535,7 +632,7 @@ const Leads = () => {
                             borderRadius: "50%",
                             border: lead.status === option
                               ? "5px solid rgba(0, 35, 111, 1)"
-                              : "2px solid rgba(180, 180, 180, 1)",
+                              : "2px solid rgba(212, 213, 216, 1)",
                             boxSizing: "border-box",
                             background: "#fff",
                             flexShrink: 0,
@@ -546,8 +643,8 @@ const Leads = () => {
                             fontFamily: "Inter, sans-serif",
                             fontSize: 14,
                             fontWeight: 400,
-                            color: "rgba(70, 70, 70, 1)",
-                            flex: 1,
+                            color: lead.status === option ? "rgba(0, 35, 111, 1)" : "rgba(70, 70, 70, 1)",
+                            userSelect: "none",
                           }}
                         >
                           {option}
@@ -631,7 +728,7 @@ const Leads = () => {
               {/* Actions */}
               <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, position: "relative" }} ref={(el) => (actionMenuRefs.current[i] = el)}>
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} />
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsNotesOpen(true)} />
+                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => { setSelectedLeadId(lead.id); setIsNotesOpen(true); }} />
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
                 
                 {/* Three dots menu */}
@@ -673,7 +770,7 @@ const Leads = () => {
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
                       onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setIsConvertToDealOpen(true); setOpenActionMenu(null); }}
+                      onClick={() => { setSelectedConvertLead(lead); setIsConvertToDealOpen(true); setOpenActionMenu(null); }}
                     >
                       <img src={coinIcon} alt="Convert to deal" width={20} height={20} />
                       <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Convert to deal</span>
@@ -684,7 +781,7 @@ const Leads = () => {
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
                       onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setIsEditLeadOpen(true); setOpenActionMenu(null); }}
+                      onClick={() => { setSelectedLeadId(lead.id); setIsEditLeadOpen(true); setOpenActionMenu(null); }}
                     >
                       <img src={editIcon} alt="Edit info" width={20} height={20} />
                       <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Edit info</span>
@@ -693,13 +790,14 @@ const Leads = () => {
                 )}
               </div>
             </div>
-          ))}
+          ))
+        )}
         </div>
       </div>
 
       {/* ── Pagination ── */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-        <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} totalPages={leadsData?.pagination?.totalPages || 1} onPageChange={setCurrentPage} />
       </div>
 
       {/* ── Modals ── */}
@@ -708,14 +806,20 @@ const Leads = () => {
           <Add_new_lead onClose={() => setIsAddLeadOpen(false)} />
         </ModalOverlay>
       )}
-      {isEditLeadOpen && (
-        <ModalOverlay onClose={() => setIsEditLeadOpen(false)}>
-          <Edit_lead_info onClose={() => setIsEditLeadOpen(false)} />
+      {isEditLeadOpen && selectedLeadId && (
+        <ModalOverlay onClose={() => { setIsEditLeadOpen(false); setSelectedLeadId(null); }}>
+          <Edit_lead_info leadId={selectedLeadId} onClose={() => { setIsEditLeadOpen(false); setSelectedLeadId(null); }} />
         </ModalOverlay>
       )}
       {isConvertToDealOpen && (
-        <ModalOverlay onClose={() => setIsConvertToDealOpen(false)}>
-          <Convert_to_deal onClose={() => setIsConvertToDealOpen(false)} />
+        <ModalOverlay onClose={() => { setIsConvertToDealOpen(false); setSelectedConvertLead(null); }}>
+          <Convert_to_deal
+            onClose={() => { setIsConvertToDealOpen(false); setSelectedConvertLead(null); }}
+            leadId={selectedConvertLead?.id}
+            leadName={selectedConvertLead?.name}
+            companyName={selectedConvertLead?.company}
+            currentStatus={selectedConvertLead?.status}
+          />
         </ModalOverlay>
       )}
       {isLeadFormOpen && (
@@ -724,8 +828,12 @@ const Leads = () => {
         </ModalOverlay>
       )}
       {isNotesOpen && (
-        <ModalOverlay onClose={() => setIsNotesOpen(false)}>
-          <Notes onClose={() => setIsNotesOpen(false)} />
+        <ModalOverlay onClose={() => { setIsNotesOpen(false); setSelectedLeadId(null); }}>
+          <Notes 
+            leadId={selectedLeadId || undefined} 
+            leadName={leads.find(l => l.id === selectedLeadId)?.name} 
+            onClose={() => { setIsNotesOpen(false); setSelectedLeadId(null); }} 
+          />
         </ModalOverlay>
       )}
       {isMessagesOpen && (

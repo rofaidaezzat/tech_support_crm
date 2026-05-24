@@ -4,6 +4,11 @@ import "../../styles/task-modal-mobile.css";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
+import { useCreateTaskMutation } from "../../app/service/crudtasks";
+import { useGetLeadsQuery } from "../../app/service/crudleads";
+import { toast } from "sonner";
+import { validateTask } from "../../validation";
+
 
 interface AddNewTaskProps {
   onClose?: () => void;
@@ -48,25 +53,35 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
+const errorTextStyle: React.CSSProperties = {
+  fontFamily: "Inter, sans-serif",
+  fontSize: 12,
+  color: "#E03131",
+  marginTop: 4,
+  lineHeight: "1.4",
+};
+
 const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   const [title, setTitle] = useState("");
   const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">("Lead");
   const [selectedLead, setSelectedLead] = useState("");
+  const [selectedLeadId, setSelectedLeadId] = useState("");
   const [isLeadDropdownOpen, setIsLeadDropdownOpen] = useState(false);
   const [leadSearchText, setLeadSearchText] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const mockLeads = [
-    { id: 1, name: "Lead name", phone: "*******2222" },
-    { id: 2, name: "Lead name", phone: "*******2222" },
-    { id: 3, name: "Lead name", phone: "*******2222" },
-    { id: 4, name: "Lead name", phone: "*******2222" },
-    { id: 5, name: "Lead name", phone: "*******2222" },
-  ];
+  const { data: leadsResponse, isLoading: isLoadingLeads } = useGetLeadsQuery();
+  const leads = leadsResponse?.data || [];
+  const filteredLeads = leads.filter((lead) =>
+    lead.name.toLowerCase().includes(leadSearchText.toLowerCase())
+  );
 
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "">("");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "">("" );
   const [dueDate, setDueDate] = useState("");
   const [reminderDate, setReminderDate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createTask] = useCreateTaskMutation();
 
   const isSaveEnabled =
     title.trim() !== "" &&
@@ -74,10 +89,46 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
     priority !== "" &&
     dueDate.trim() !== "";
 
-  const handleSave = () => {
-    if (!isSaveEnabled) return;
-    if (onSave) {
-      onSave({ title, relatedTo, selectedLead, description, priority, dueDate, reminderDate });
+  const handleSave = async () => {
+    if (isSubmitting) return;
+    
+    // Perform robust backend-compatible validation
+    const validation = validateTask({
+      title,
+      description,
+      due_date: dueDate || undefined,
+      lead_id: selectedLeadId || undefined,
+    });
+
+    if (!validation.isValid) {
+      setFormErrors(validation.errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const priorityMap: Record<string, "LOW" | "MEDIUM" | "HIGH"> = {
+        Low: "LOW", Medium: "MEDIUM", High: "HIGH",
+      };
+      await createTask({
+        title: title.trim(),
+        description: description.trim(),
+        lead_id: selectedLeadId || undefined,
+        due_date: new Date(dueDate).toISOString(),
+        reminder_at: reminderDate ? new Date(reminderDate).toISOString() : undefined,
+        priority: priorityMap[priority as string] ?? "MEDIUM",
+      }).unwrap();
+      onSave?.({ title, relatedTo, selectedLead, description, priority, dueDate, reminderDate });
+      onClose?.();
+    } catch (err: any) {
+      console.error("Failed to create task:", err);
+      let errMsg = err?.data?.message || err?.message || "Failed to create task.";
+      if (Array.isArray(errMsg)) {
+        errMsg = errMsg.join(", ");
+      }
+      toast.error(errMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -192,62 +243,20 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              style={inputStyle}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setFormErrors((prev) => ({ ...prev, title: undefined }));
+              }}
+              style={{ ...inputStyle, borderColor: formErrors.title ? "#E03131" : undefined }}
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
+            {formErrors.title && <span style={errorTextStyle}>{formErrors.title}</span>}
           </div>
 
           {/* Related To */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <label style={{ ...labelStyle, marginBottom: 0 }}>Related to</label>
-              <div
-                style={{
-                  display: "flex",
-                  background: "rgba(237, 239, 242, 0.7)",
-                  borderRadius: 16,
-                  padding: 2,
-                  border: "1px solid rgba(212, 213, 216, 0.4)",
-                }}
-              >
-                <button
-                  onClick={() => setRelatedTo("Lead")}
-                  style={{
-                    background: relatedTo === "Lead" ? "#fff" : "transparent",
-                    border: relatedTo === "Lead" ? "1px solid rgba(212, 213, 216, 1)" : "none",
-                    borderRadius: 14,
-                    padding: "4px 12px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: relatedTo === "Lead" ? "#141414" : "#6B7280",
-                    cursor: "pointer",
-                    boxShadow: relatedTo === "Lead" ? "0px 1px 2px rgba(0,0,0,0.05)" : "none",
-                  }}
-                >
-                  Lead
-                </button>
-                <button
-                  onClick={() => setRelatedTo("Deal")}
-                  style={{
-                    background: relatedTo === "Deal" ? "#fff" : "transparent",
-                    border: relatedTo === "Deal" ? "1px solid rgba(212, 213, 216, 1)" : "none",
-                    borderRadius: 14,
-                    padding: "4px 12px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: relatedTo === "Deal" ? "#141414" : "#6B7280",
-                    cursor: "pointer",
-                    boxShadow: relatedTo === "Deal" ? "0px 1px 2px rgba(0,0,0,0.05)" : "none",
-                  }}
-                >
-                  Deal
-                </button>
-              </div>
-            </div>
+            <label style={labelStyle}>Related to Lead</label>
             <div style={{ position: "relative", width: "100%" }}>
               <div
                 onClick={() => setIsLeadDropdownOpen(!isLeadDropdownOpen)}
@@ -257,6 +266,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  borderColor: formErrors.lead_id ? "#E03131" : undefined,
                 }}
               >
                 <span style={{ color: selectedLead ? "#141414" : "#9CA3AF" }}>
@@ -318,39 +328,52 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                       gap: 4,
                     }}
                   >
-                    {mockLeads.map((lead) => (
-                      <div
-                        key={lead.id}
-                        onClick={() => {
-                          setSelectedLead(lead.name);
-                          setIsLeadDropdownOpen(false);
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
-                        style={{
-                          display: "flex",
-                          padding: 8,
-                          alignItems: "center",
-                          gap: 8,
-                          background: selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
-                          cursor: "pointer",
-                          borderRadius: 8,
-                        }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                          <path d="M1 19.1124C1 15.3369 4.15429 12.2762 10.6 12.2762C17.0457 12.2762 20.2 15.3369 20.2 19.1124C20.2 19.7131 19.7618 20.2 19.2212 20.2H1.97882C1.43823 20.2 1 19.7131 1 19.1124Z" stroke="#464646" strokeWidth="2"/>
-                          <path d="M14.2 4.6C14.2 6.58822 12.5882 8.2 10.6 8.2C8.61177 8.2 7 6.58822 7 4.6C7 2.61177 8.61177 1 10.6 1C12.5882 1 14.2 2.61177 14.2 4.6Z" stroke="#464646" strokeWidth="2"/>
-                        </svg>
-                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                          <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>{lead.name}</span>
-                          <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280", marginTop: -2 }}>{lead.phone}</span>
-                        </div>
+                    {isLoadingLeads ? (
+                      <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
+                        Loading leads...
                       </div>
-                    ))}
+                    ) : filteredLeads.length === 0 ? (
+                      <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
+                        No leads found
+                      </div>
+                    ) : (
+                      filteredLeads.map((lead) => (
+                        <div
+                          key={lead.id}
+                          onClick={() => {
+                            setSelectedLead(lead.name);
+                            setSelectedLeadId(lead.id);
+                            setIsLeadDropdownOpen(false);
+                            setFormErrors((prev) => ({ ...prev, lead_id: undefined }));
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
+                          style={{
+                            display: "flex",
+                            padding: 8,
+                            alignItems: "center",
+                            gap: 8,
+                            background: selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                            cursor: "pointer",
+                            borderRadius: 8,
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                            <path d="M1 19.1124C1 15.3369 4.15429 12.2762 10.6 12.2762C17.0457 12.2762 20.2 15.3369 20.2 19.1124C20.2 19.7131 19.7618 20.2 19.2212 20.2H1.97882C1.43823 20.2 1 19.7131 1 19.1124Z" stroke="#464646" strokeWidth="2"/>
+                            <path d="M14.2 4.6C14.2 6.58822 12.5882 8.2 10.6 8.2C8.61177 8.2 7 6.58822 7 4.6C7 2.61177 8.61177 1 10.6 1C12.5882 1 14.2 2.61177 14.2 4.6Z" stroke="#464646" strokeWidth="2"/>
+                          </svg>
+                          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>{lead.name}</span>
+                            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280", marginTop: -2 }}>{lead.phone}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}
             </div>
+            {formErrors.lead_id && <span style={errorTextStyle}>{formErrors.lead_id}</span>}
           </div>
 
           {/* Description */}
@@ -360,11 +383,15 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             </label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              style={textareaStyle}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                setFormErrors((prev) => ({ ...prev, description: undefined }));
+              }}
+              style={{ ...textareaStyle, borderColor: formErrors.description ? "#E03131" : undefined }}
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
+            {formErrors.description && <span style={errorTextStyle}>{formErrors.description}</span>}
           </div>
 
           {/* Priority */}
@@ -416,12 +443,23 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                   paddingRight: 48,
                   caretColor: "transparent",
                   cursor: "pointer",
+                  borderColor: formErrors.due_date ? "#E03131" : undefined,
                 }}
               />
               <input
                 type="date"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                onChange={(e) => {
+                  setDueDate(e.target.value);
+                  setFormErrors((prev) => ({ ...prev, due_date: undefined }));
+                }}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker();
+                  } catch (err) {
+                    console.warn("showPicker not supported", err);
+                  }
+                }}
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -445,6 +483,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                 }}
               />
             </div>
+            {formErrors.due_date && <span style={errorTextStyle}>{formErrors.due_date}</span>}
           </div>
 
           {/* Reminder date */}
@@ -468,6 +507,13 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                 type="date"
                 value={reminderDate}
                 onChange={(e) => setReminderDate(e.target.value)}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker();
+                  } catch (err) {
+                    console.warn("showPicker not supported", err);
+                  }
+                }}
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -514,7 +560,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
           <button
             className="task-modal-footer-btn"
             onClick={handleSave}
-            disabled={!isSaveEnabled}
+            disabled={!isSaveEnabled || isSubmitting}
             style={{
               width: 422,
               height: 48,
@@ -535,7 +581,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               boxSizing: "border-box",
             }}
           >
-            Save
+            {isSubmitting ? "Saving..." : "Save"}
           </button>
         </div>
       </div>

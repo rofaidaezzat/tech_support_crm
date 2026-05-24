@@ -1,10 +1,179 @@
 import React, { useState } from 'react';
 import closeIcon from '../../assets/x-02.svg';
 import "../../styles/leads-modal-mobile.css";
+import { 
+  useGetNotesForLeadQuery, 
+  useCreateNoteMutation, 
+  useUpdateNoteMutation, 
+  useDeleteNoteMutation,
+  Note 
+} from '../../app/service/crudnote';
+import { validateNote } from '../../validation';
 
-const Notes = ({ onClose }: { onClose?: () => void }) => {
+interface NotesProps {
+  onClose?: () => void;
+  leadId?: string;
+  leadName?: string;
+}
+
+const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
   const [noteText, setNoteText] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [activeTab, setActiveTab] = useState<'PRIVATE' | 'PUBLIC'>('PRIVATE');
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [contentError, setContentError] = useState<string>("");
+
+  // RTK Query API Hooks (skipped if leadId is not provided)
+  const { data: notesResponse } = useGetNotesForLeadQuery(leadId || "", { skip: !leadId });
+  const [createNote] = useCreateNoteMutation();
+  const [updateNote] = useUpdateNoteMutation();
+  const [deleteNote] = useDeleteNoteMutation();
+
+  // Local state mockup fallbacks when not loaded dynamically
+  const [localNotes, setLocalNotes] = useState<Note[]>(() => [
+    {
+      id: "mock-1",
+      tenant_id: "mock-tenant",
+      lead_id: "",
+      author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
+      content: "Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.",
+      note_type: "PRIVATE",
+      pinned: false,
+      pinned_at: null,
+      created_at: "2026-03-25T07:22:00.057Z",
+      updated_at: "2026-03-25T07:22:00.057Z"
+    },
+    {
+      id: "mock-2",
+      tenant_id: "mock-tenant",
+      lead_id: "",
+      author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
+      content: "Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.",
+      note_type: "PRIVATE",
+      pinned: false,
+      pinned_at: null,
+      created_at: "2026-03-25T07:22:00.057Z",
+      updated_at: "2026-03-25T07:22:00.057Z"
+    },
+    {
+      id: "mock-3",
+      tenant_id: "mock-tenant",
+      lead_id: "",
+      author: { id: "2", first_name: "Jane", last_name: "Smith", email: "" },
+      content: "Had a callback with the client. Discussed budget and pricing tiers.",
+      note_type: "PUBLIC",
+      pinned: false,
+      pinned_at: null,
+      created_at: "2026-03-25T08:30:00.000Z",
+      updated_at: "2026-03-25T08:30:00.000Z"
+    }
+  ]);
+
+  // Derived notes list filtered by selected activeTab
+  const activeNotes = leadId 
+    ? (notesResponse?.data || []).filter(note => note.note_type === activeTab)
+    : localNotes.filter(note => note.note_type === activeTab);
+
+  // Handle Note Submission (Create or Edit)
+  const handleSubmitNote = async () => {
+    // Validate content before submitting
+    const validation = validateNote({ content: noteText });
+    if (!validation.isValid) {
+      setContentError(validation.errors.content || 'Invalid note content');
+      return;
+    }
+    setContentError("");
+
+    if (editingNoteId) {
+      if (leadId) {
+        try {
+          await updateNote({
+            id: editingNoteId,
+            body: { content: noteText }
+          }).unwrap();
+          setNoteText("");
+          setEditingNoteId(null);
+          setIsSubmitted(true);
+          setTimeout(() => setIsSubmitted(false), 2000);
+        } catch (err) {
+          console.error("Failed to edit note:", err);
+        }
+      } else {
+        setLocalNotes(prev => prev.map(n => n.id === editingNoteId ? { ...n, content: noteText, updated_at: new Date().toISOString() } : n));
+        setNoteText("");
+        setEditingNoteId(null);
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 2000);
+      }
+    } else {
+      if (leadId) {
+        try {
+          await createNote({
+            lead_id: leadId,
+            content: noteText,
+            note_type: activeTab,
+          }).unwrap();
+          setNoteText("");
+          setIsSubmitted(true);
+          setTimeout(() => setIsSubmitted(false), 2000);
+        } catch (err) {
+          console.error("Failed to create note:", err);
+        }
+      } else {
+        const newNote: Note = {
+          id: `mock-${Date.now()}`,
+          tenant_id: "mock-tenant",
+          lead_id: "",
+          author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
+          content: noteText,
+          note_type: activeTab,
+          pinned: false,
+          pinned_at: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        setLocalNotes(prev => [newNote, ...prev]);
+        setNoteText("");
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 2000);
+      }
+    }
+  };
+
+  // Handle Note Deletion
+  const handleDeleteNote = async (id: string) => {
+    if (leadId) {
+      try {
+        await deleteNote(id).unwrap();
+      } catch (err) {
+        console.error("Failed to delete note:", err);
+      }
+    } else {
+      setLocalNotes(prev => prev.filter(note => note.id !== id));
+    }
+  };
+
+  // Handle Pin/Unpin Note Toggle
+  const handleTogglePin = async (note: Note) => {
+    if (leadId) {
+      try {
+        await updateNote({
+          id: note.id,
+          body: { pinned: !note.pinned }
+        }).unwrap();
+      } catch (err) {
+        console.error("Failed to pin note:", err);
+      }
+    } else {
+      setLocalNotes(prev => prev.map(n => n.id === note.id ? { ...n, pinned: !n.pinned } : n));
+    }
+  };
+
+  // Handle Edit Action Click
+  const handleEditClick = (note: Note) => {
+    setEditingNoteId(note.id);
+    setNoteText(note.content);
+  };
 
   return (
     <div
@@ -15,8 +184,10 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
         display: "flex",
         flexDirection: "column",
         fontFamily: "Inter, sans-serif",
-        boxShadow: "0px 4px 6px -1px rgba(0, 0, 0, 0.1)", // Default shadow for modals
+        boxShadow: "0px 4px 6px -1px rgba(0, 0, 0, 0.1)",
         borderRadius: 12,
+        background: "rgba(245, 246, 250, 1)",
+        overflow: "hidden",
       }}
     >
       {/* ── First Part (Header) ── */}
@@ -32,21 +203,40 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
-          padding: 20,
+          padding: "20px 24px",
           boxSizing: "border-box",
         }}
       >
-        <span
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 700,
-            fontSize: 19,
-            color: "#141414",
-            lineHeight: "100%",
-          }}
-        >
-          Notes
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Chat bubble icon */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M8 10H16M8 14H13M21 12C21 16.9706 16.9706 21 12 21C10.1554 21 8.44857 20.4433 7.03159 19.4891L3 21L4.51094 16.9684C3.55668 15.5514 3 13.8446 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <span
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 700,
+                fontSize: 19,
+                color: "#141414",
+                lineHeight: "100%",
+              }}
+            >
+              Notes
+            </span>
+            <span
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 400,
+                fontSize: 13,
+                color: "rgba(116, 116, 116, 1)",
+                lineHeight: "100%",
+              }}
+            >
+              for "{leadName || "leads name"}"
+            </span>
+          </div>
+        </div>
 
         {/* Close Button */}
         <div
@@ -67,94 +257,215 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
         </div>
       </div>
 
+      {/* ── Tab Bar ── */}
+      <div
+        style={{
+          width: 462,
+          height: 48,
+          background: "rgba(245, 246, 250, 1)",
+          display: "flex",
+          borderBottom: "1px solid rgba(212, 213, 216, 1)",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          onClick={() => { setActiveTab('PRIVATE'); setEditingNoteId(null); setNoteText(""); }}
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            fontFamily: "Inter, sans-serif",
+            fontSize: 14,
+            fontWeight: activeTab === 'PRIVATE' ? 600 : 400,
+            color: activeTab === 'PRIVATE' ? "#00236F" : "rgba(116, 116, 116, 1)",
+            borderBottom: activeTab === 'PRIVATE' ? "2px solid #00236F" : "none",
+            height: "100%",
+            boxSizing: "border-box",
+            transition: "color 0.2s, border-bottom 0.2s",
+          }}
+        >
+          Private
+        </div>
+        <div
+          onClick={() => { setActiveTab('PUBLIC'); setEditingNoteId(null); setNoteText(""); }}
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            fontFamily: "Inter, sans-serif",
+            fontSize: 14,
+            fontWeight: activeTab === 'PUBLIC' ? 600 : 400,
+            color: activeTab === 'PUBLIC' ? "#00236F" : "rgba(116, 116, 116, 1)",
+            borderBottom: activeTab === 'PUBLIC' ? "2px solid #00236F" : "none",
+            height: "100%",
+            boxSizing: "border-box",
+            transition: "color 0.2s, border-bottom 0.2s",
+          }}
+        >
+          Public
+        </div>
+      </div>
+
       {/* ── Second Section (Body) ── */}
       <div
         className="leads-modal-body"
         style={{
           background: "rgba(245, 246, 250, 1)",
           width: 462,
-          height: 437,
-          minHeight: 437,
+          height: 389,
+          minHeight: 389,
           borderBottomLeftRadius: 12,
           borderBottomRightRadius: 12,
           flexDirection: "column",
           boxSizing: "border-box",
-          padding: "32px 20px 24px 20px",
+          padding: "24px 20px 24px 20px",
           position: "relative",
           display: "flex",
+          flex: 1,
         }}
       >
-        {/* Message Card */}
+        {/* Scrollable list of Note Cards */}
         <div
           style={{
-            className: "leads-modal-inner",
-            boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.059)", // Approximation of #0000000F
-            background: "#FFFFFF",
-            width: "100%",
-            height: 132,
-            borderRadius: 12,
-            padding: 12,
             display: "flex",
             flexDirection: "column",
             gap: 12,
-            boxSizing: "border-box",
-            opacity: 1,
+            overflowY: "auto",
+            paddingRight: 4,
+            height: "260px",
+            maxHeight: "260px",
+            paddingBottom: 8,
           }}
         >
-          {/* Header of card */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            {/* Timestamp */}
+          {activeNotes.length === 0 ? (
             <div
               style={{
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                fontSize: 13,
-                lineHeight: "140%",
-                color: "rgba(116, 116, 116, 1)",
-                height: 18,
+                textAlign: "center",
+                color: "#9CA3AF",
+                fontSize: 14,
+                marginTop: 40,
+                fontFamily: "Inter, sans-serif"
               }}
             >
-              25/03/2026 , 07:22
+              No {activeTab.toLowerCase()} notes yet.
             </div>
+          ) : (
+            activeNotes.map((note) => (
+              <div
+                key={note.id}
+                style={{
+                  boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.059)",
+                  background: "#FFFFFF",
+                  width: "100%",
+                  borderRadius: 12,
+                  padding: 12,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  boxSizing: "border-box",
+                  opacity: 1,
+                  position: "relative",
+                }}
+              >
+                {/* Header of card */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  {/* Timestamp */}
+                  <div
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 400,
+                      fontSize: 13,
+                      lineHeight: "140%",
+                      color: "rgba(116, 116, 116, 1)",
+                      height: 18,
+                    }}
+                  >
+                    {new Date(note.created_at).toLocaleDateString('en-GB')} , {new Date(note.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                  </div>
 
-            {/* Action Icons Group */}
-            <div style={{ display: "flex", gap: 8, width: 88, height: 24 }}>
-              {/* Flag Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ cursor: "pointer" }}>
-                <path d="M3 21H7.90909M5.45455 12.3913V3H21L18.5455 7.69565L21 12.3913H5.45455ZM5.45455 12.3913V20.2174" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              {/* Edit Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ cursor: "pointer" }}>
-                <path d="M13.7992 19.5514H19.7992M4.19922 19.5514L8.5652 18.6717C8.79698 18.625 9.0098 18.5109 9.17694 18.3437L18.9506 8.56461C19.4192 8.09576 19.4189 7.33577 18.9499 6.86731L16.8795 4.79923C16.4107 4.33097 15.6511 4.33129 15.1827 4.79995L5.40798 14.58C5.24117 14.7469 5.12727 14.9593 5.08052 15.1906L4.19922 19.5514Z" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              {/* Trash Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ cursor: "pointer" }}>
-                <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
+                  {/* Action Icons Group */}
+                  <div style={{ display: "flex", gap: 8, width: 88, height: 24, justifyContent: "flex-end" }}>
+                    {/* Flag/Pin Icon */}
+                    <svg
+                      onClick={() => handleTogglePin(note)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill={note.pinned ? "#00236F" : "none"}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path d="M3 21H7.90909M5.45455 12.3913V3H21L18.5455 7.69565L21 12.3913H5.45455ZM5.45455 12.3913V20.2174" stroke={note.pinned ? "#00236F" : "#141414"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {/* Edit Icon */}
+                    <svg
+                      onClick={() => handleEditClick(note)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path d="M13.7992 19.5514H19.7992M4.19922 19.5514L8.5652 18.6717C8.79698 18.625 9.0098 18.5109 9.17694 18.3437L18.9506 8.56461C19.4192 8.09576 19.4189 7.33577 18.9499 6.86731L16.8795 4.79923C16.4107 4.33097 15.6511 4.33129 15.1827 4.79995L5.40798 14.58C5.24117 14.7469 5.12727 14.9593 5.08052 15.1906L4.19922 19.5514Z" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {/* Trash/Delete Icon */}
+                    <svg
+                      onClick={() => handleDeleteNote(note.id)}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
 
-          {/* Text Content */}
-          <div
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 400,
-              fontSize: 13,
-              lineHeight: "140%",
-              color: "rgba(70, 70, 70, 1)",
-              width: "100%",
-              flex: 1,
-            }}
-          >
-            Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.
-          </div>
+                {/* Text Content */}
+                <div
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 400,
+                    fontSize: 13,
+                    lineHeight: "140%",
+                    color: "rgba(70, 70, 70, 1)",
+                    width: "100%",
+                  }}
+                >
+                  {note.content}
+                </div>
+
+                {/* Author Info */}
+                <div
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 400,
+                    fontSize: 12,
+                    color: "rgba(116, 116, 116, 1)",
+                    marginTop: -4,
+                  }}
+                >
+                  By {note.author ? `${note.author.first_name} ${note.author.last_name}` : "Unknown"}
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* ── Input Box / Success Bar ── */}
         <div
           style={{
-            marginTop: "auto",
-            width: "100%",
+            position: "absolute",
+            bottom: 24,
+            left: 20,
+            width: 422,
             height: isSubmitted ? 48 : 85,
             boxSizing: "border-box",
             transition: "height 0.2s",
@@ -176,21 +487,25 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
               }}
             >
               <span style={{ color: "#fff", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
-                Save
+                {editingNoteId ? "Changes Saved" : "Save"}
               </span>
             </div>
           ) : (
             <>
               <textarea
                 value={noteText}
-                onChange={(e) => setNoteText(e.target.value)}
-                placeholder="Add note..."
+                onChange={(e) => { setNoteText(e.target.value); if (contentError) setContentError(""); }}
+                placeholder={editingNoteId ? "Edit note..." : `Add ${activeTab.toLowerCase()} note...`}
                 style={{
                   width: "100%",
                   height: "100%",
                   borderRadius: noteText ? 8 : 12,
-                  border: noteText ? "1px solid #00236F" : "1px solid rgba(212, 213, 216, 1)",
-                  padding: "12px 16px",
+                  border: contentError
+                    ? "1px solid #E03131"
+                    : noteText
+                    ? "1px solid #00236F"
+                    : "1px solid rgba(212, 213, 216, 1)",
+                  padding: "12px 56px 12px 16px",
                   outline: "none",
                   fontFamily: "Inter, sans-serif",
                   fontSize: 14,
@@ -200,9 +515,23 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
                   transition: "border 0.2s, border-radius 0.2s",
                 }}
               />
+              {contentError && (
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: -20,
+                    left: 0,
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12,
+                    color: "#E03131",
+                  }}
+                >
+                  {contentError}
+                </span>
+              )}
               {noteText && (
                 <div
-                  onClick={() => setIsSubmitted(true)}
+                  onClick={handleSubmitNote}
                   style={{
                     position: "absolute",
                     top: "50%",

@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from './baseQuery';
 
 export interface LeadInfo {
   id: string;
@@ -76,16 +77,7 @@ export interface UnassignLeadResponse {
 
 export const leadsAssignmentsApi = createApi({
   reducerPath: 'leadsAssignmentsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://crm-v1-otu8.vercel.app/',
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['LeadAssignment'],
   endpoints: (builder) => ({
     assignLead: builder.mutation<AssignLeadResponse, AssignLeadRequest>({

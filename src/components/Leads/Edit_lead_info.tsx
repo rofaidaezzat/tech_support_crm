@@ -1,24 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useGetLeadQuery, useUpdateLeadMutation } from "../../app/service/crudleads";
+import { toast } from "sonner";
 import editIcon from "../../assets/edit-contained.svg";
 import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
 import "../../styles/leads-modal-mobile.css";
+import { validateLead } from "../../validation";
 
 interface EditLeadInfoProps {
-  leadsName?: string;
-  initialData?: {
-    leadName?: string;
-    companyName?: string;
-    phoneNumber?: string;
-    nextFollowup?: string;
-  };
+  leadId: string;
   onClose?: () => void;
-  onSave?: (data: {
-    leadName: string;
-    companyName: string;
-    phoneNumber: string;
-    nextFollowup: string;
-  }) => void;
+  onSave?: () => void;
   slot?: string;
 }
 
@@ -47,32 +39,73 @@ const labelStyle: React.CSSProperties = {
 };
 
 const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
-  leadsName = "leads name",
-  initialData = {
-    leadName: "John Dorghamasadsad",
-    companyName: "John Dorghamasadsad",
-    phoneNumber: "+201121504065",
-    nextFollowup: "2026-05-24",
-  },
+  leadId,
   onClose,
   onSave,
   slot = "Modified",
 }) => {
-  const [leadName, setLeadName] = useState(initialData.leadName ?? "");
-  const [companyName, setCompanyName] = useState(initialData.companyName ?? "");
-  const [phoneNumber, setPhoneNumber] = useState(initialData.phoneNumber ?? "");
-  const [nextFollowup, setNextFollowup] = useState(initialData.nextFollowup ?? "");
+  const { data: leadResponse, isLoading: isGetLoading } = useGetLeadQuery(leadId, { skip: !leadId });
+  const [updateLead, { isLoading: isUpdateLoading }] = useUpdateLeadMutation();
+
+  const [leadName, setLeadName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [nextFollowup, setNextFollowup] = useState("");
+
+  useEffect(() => {
+    if (leadResponse?.data) {
+      const lead = leadResponse.data;
+      setLeadName(lead.name || "");
+      setCompanyName(lead.company_name || "");
+      setPhoneNumber(lead.phone || "");
+      if (lead.next_follow_up) {
+        setNextFollowup(lead.next_follow_up.substring(0, 10));
+      } else {
+        setNextFollowup("");
+      }
+    }
+  }, [leadResponse]);
 
   const isSaveEnabled =
     leadName.trim() !== "" &&
-    companyName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
-    nextFollowup.trim() !== "";
+    !isUpdateLoading &&
+    !isGetLoading;
 
-  const handleSave = () => {
-    if (!isSaveEnabled) return;
-    if (onSave) {
-      onSave({ leadName, companyName, phoneNumber, nextFollowup });
+  const handleSave = async () => {
+    if (isUpdateLoading || isGetLoading) return;
+    
+    // Perform robust backend-compatible validation
+    const validation = validateLead({
+      name: leadName,
+      phone: phoneNumber,
+      source: leadResponse?.data?.source || "FACEBOOK",
+      next_follow_up: nextFollowup || null,
+    });
+
+    if (!validation.isValid) {
+      const firstError = Object.values(validation.errors)[0];
+      toast.error(firstError);
+      return;
+    }
+
+    try {
+      await updateLead({
+        id: leadId,
+        body: {
+          name: leadName,
+          phone: phoneNumber,
+          source: leadResponse?.data?.source || "FACEBOOK",
+        },
+      }).unwrap();
+
+      toast.success("Lead updated successfully!");
+      if (onSave) onSave();
+      if (onClose) onClose();
+    } catch (err: any) {
+      console.error("Failed to update lead:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to update lead.";
+      toast.error(errMsg);
     }
   };
 
@@ -149,7 +182,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               paddingLeft: 2,
             }}
           >
-            for &quot;{leadsName}&quot;
+            for &quot;{leadResponse?.data?.name || "leads name"}&quot;
           </span>
         </div>
 
@@ -194,146 +227,152 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            width: 422,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
-        {/* Lead name */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={labelStyle}>
-            Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
-          </label>
-          <input
-            type="text"
-            value={leadName}
-            onChange={(e) => setLeadName(e.target.value)}
-            placeholder="Enter lead name"
-            style={inputStyle}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
-        </div>
-
-        {/* Company name */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={labelStyle}>
-            Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
-          </label>
-          <input
-            type="text"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            placeholder="Enter company name"
-            style={inputStyle}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
-        </div>
-
-        {/* Phone number */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={labelStyle}>
-            Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
-          </label>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="+20xxxxxxxxxx"
-            style={inputStyle}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
-        </div>
-
-        {/* Next followup */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label style={labelStyle}>
-            Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
-          </label>
-          <div style={{ position: "relative", width: "100%" }}>
-            {/* Display formatted date as read-only overlay */}
-            <input
-              type="text"
-              readOnly
-              value={formatDate(nextFollowup)}
-              placeholder="DD/MM/YYYY"
-              style={{
-                ...inputStyle,
-                paddingRight: 48,
-                caretColor: "transparent",
-                cursor: "pointer",
-              }}
-            />
-            {/* Hidden date picker */}
-            <input
-              type="date"
-              value={nextFollowup}
-              onChange={(e) => setNextFollowup(e.target.value)}
-              style={{
-                position: "absolute",
-                inset: 0,
-                opacity: 0,
-                cursor: "pointer",
-                width: "100%",
-                height: "100%",
-              }}
-            />
-            {/* Calendar icon */}
-            <img
-              src={calendarPlusIcon}
-              alt="Pick date"
-              width={22}
-              height={22}
-              style={{
-                position: "absolute",
-                right: 14,
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-              }}
-            />
+        {isGetLoading ? (
+          <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+            Loading lead info...
           </div>
-        </div>
-
-          {/* Save button */}
-          <button
-            onClick={handleSave}
-            disabled={!isSaveEnabled}
+        ) : (
+          <div
             style={{
-              marginTop: 40,
-            alignSelf: "center",
-            width: 422,
-            height: 48,
-            borderRadius: 12,
-            border: "none",
-            background: isSaveEnabled
-              ? "rgba(0, 35, 111, 1)"
-              : "rgba(212, 213, 216, 1)",
-            color: isSaveEnabled ? "#fff" : "#9CA3AF",
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 600,
-            fontSize: 15,
-            cursor: isSaveEnabled ? "pointer" : "not-allowed",
-            transition: "background 0.2s, color 0.2s",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            paddingTop: 8,
-            paddingBottom: 8,
-            paddingLeft: 24,
-            paddingRight: 24,
-            boxSizing: "border-box",
-          }}
-        >
-          Save
-          </button>
-        </div>
+              width: 422,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            {/* Lead name */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={labelStyle}>
+                Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={leadName}
+                onChange={(e) => setLeadName(e.target.value)}
+                placeholder="Enter lead name"
+                style={inputStyle}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            {/* Company name */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={labelStyle}>
+                Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                placeholder="Enter company name"
+                style={inputStyle}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            {/* Phone number */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={labelStyle}>
+                Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              </label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+20xxxxxxxxxx"
+                style={inputStyle}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            {/* Next followup */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={labelStyle}>
+                Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              </label>
+              <div style={{ position: "relative", width: "100%" }}>
+                {/* Display formatted date as read-only overlay */}
+                <input
+                  type="text"
+                  readOnly
+                  value={formatDate(nextFollowup)}
+                  placeholder="DD/MM/YYYY"
+                  style={{
+                    ...inputStyle,
+                    paddingRight: 48,
+                    caretColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                />
+                {/* Hidden date picker */}
+                <input
+                  type="date"
+                  value={nextFollowup}
+                  onChange={(e) => setNextFollowup(e.target.value)}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: 0,
+                    cursor: "pointer",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+                {/* Calendar icon */}
+                <img
+                  src={calendarPlusIcon}
+                  alt="Pick date"
+                  width={22}
+                  height={22}
+                  style={{
+                    position: "absolute",
+                    right: 14,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    pointerEvents: "none",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Save button */}
+            <button
+              onClick={handleSave}
+              disabled={!isSaveEnabled}
+              style={{
+                marginTop: 40,
+                alignSelf: "center",
+                width: 422,
+                height: 48,
+                borderRadius: 12,
+                border: "none",
+                background: isSaveEnabled
+                  ? "rgba(0, 35, 111, 1)"
+                  : "rgba(212, 213, 216, 1)",
+                color: isSaveEnabled ? "#fff" : "#9CA3AF",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 600,
+                fontSize: 15,
+                cursor: isSaveEnabled ? "pointer" : "not-allowed",
+                transition: "background 0.2s, color 0.2s",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 24,
+                paddingRight: 24,
+                boxSizing: "border-box",
+              }}
+            >
+              {isUpdateLoading ? "Saving..." : "Save"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

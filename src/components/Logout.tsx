@@ -1,4 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router";
+import { useLogoutMutation } from "../app/service/crudauth";
+import { toast } from "sonner";
 import "../styles/leads-modal-mobile.css";
 
 interface LogoutProps {
@@ -7,6 +10,22 @@ interface LogoutProps {
 }
 
 const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
+  const navigate = useNavigate();
+  const [logout, { isLoading }] = useLogoutMutation();
+
+  const handleLogoutClick = async () => {
+    try {
+      await logout().unwrap();
+    } catch (err: any) {
+      console.error("Logout error:", err);
+      const errMsg = err?.data?.message || err?.message || "Logout failed.";
+      toast.error(errMsg);
+    } finally {
+      if (onLogout) onLogout();
+      navigate("/login");
+    }
+  };
+
   return (
     <div
       className="leads-modal-root"
@@ -161,22 +180,23 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
           </button>
           {/* Logout Button */}
           <button
-            onClick={onLogout}
+            onClick={handleLogoutClick}
+            disabled={isLoading}
             style={{
               flex: 1,
               height: 48,
               borderRadius: 12,
               border: "none",
-              background: "rgba(0, 35, 111, 1)",
+              background: isLoading ? "rgba(0, 35, 111, 0.6)" : "rgba(0, 35, 111, 1)",
               padding: "8px 24px",
               color: "#FFFFFF",
               fontFamily: "Inter, sans-serif",
               fontSize: 16,
               fontWeight: 500,
-              cursor: "pointer",
+              cursor: isLoading ? "not-allowed" : "pointer",
             }}
           >
-            Logout
+            {isLoading ? "Logging out..." : "Logout"}
           </button>
         </div>
       </div>

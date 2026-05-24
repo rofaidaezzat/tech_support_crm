@@ -25,18 +25,18 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
 
       {/* second part */}
       <div className="leads-tw-modal-body w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative flex flex-col items-center">
-        
+
         {/* top tab section */}
         <div className="w-[462px] h-[35px] border-b-[1px] border-[rgba(212,213,216,1)] flex items-center px-[32px] mt-[16px]">
           <span className="text-[#374151] font-medium text-[14px]">type="private"</span>
         </div>
 
         {/* Notes list */}
-        <div className="flex flex-col w-[398px] mt-[16px] gap-[12px]"> 
+        <div className="flex flex-col w-[398px] mt-[16px] gap-[12px]">
           {/* date and icon */}
           <div className="w-[398px] h-[24px] flex justify-between items-center opacity-100">
             <span className="text-[#6B7280] text-[12px] font-medium font-['Inter']">12 April, 2026</span>
-            
+
             {/* and the icon only */}
             <div className="w-[88px] h-[24px] flex gap-[8px] opacity-100">
               <button className="w-[24px] h-[24px] flex items-center justify-center bg-white border border-[#D4D5D8] rounded-[4px] shadow-sm"><img src={messageText021} alt="Message" /></button>
@@ -54,11 +54,11 @@ const Notes = ({ onClose }: { onClose?: () => void }) => {
 
         {/* last input */}
         <div className="w-[422px] h-[85px] flex gap-[8px] opacity-100 absolute top-[332px] left-[20px] bg-white border border-[rgba(212,213,216,1)] rounded-[12px] focus-within:border-[rgba(0,35,111,1)] p-[12px] transition-colors">
-          <textarea 
+          <textarea
             className="flex-1 h-full resize-none outline-none bg-transparent font-['Inter'] text-[14px]"
             placeholder="Type your note..."
           />
-          
+
           {/* the button */}
           <button className="w-[36px] h-[36px] opacity-100 rounded-[12px] bg-[rgba(0,35,111,1)] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.11)] flex items-center justify-center self-end shrink-0">
             <img src={chevronRight} alt="Submit" />

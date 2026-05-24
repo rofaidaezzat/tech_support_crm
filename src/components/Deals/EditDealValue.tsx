@@ -1,22 +1,63 @@
 import React, { useState } from "react";
+import { useUpdateDealMutation } from "../../app/service/cruddeals";
+import { toast } from "sonner";
 import closeIcon from "../../assets/x-02.svg";
 import "../../styles/leads-modal-mobile.css";
 
 interface EditDealValueProps {
   onClose?: () => void;
-  onSave?: (value: string) => void;
-  initialValue?: string;
+  onSave?: (value: number) => void;
+  dealId: string;
+  initialValue: number;
 }
 
-const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialValue = "120,000,00" }) => {
-  const [value, setValue] = useState(initialValue);
+const errorTextStyle: React.CSSProperties = {
+  fontFamily: "Inter, sans-serif",
+  fontSize: 12,
+  color: "#E03131",
+  marginTop: 4,
+  lineHeight: "1.4",
+};
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave(value);
+const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, dealId, initialValue }) => {
+  const [value, setValue] = useState(initialValue.toString());
+  const [validationError, setValidationError] = useState("");
+  const [updateDeal, { isLoading }] = useUpdateDealMutation();
+
+  const handleSave = async () => {
+    if (isLoading) return;
+
+    if (!value.trim()) {
+      setValidationError("Deal value is required");
+      return;
     }
-    if (onClose) {
-      onClose();
+
+    const parsedVal = Number(value);
+    if (isNaN(parsedVal) || parsedVal <= 0) {
+      setValidationError("Please provide a valid value for the deal");
+      return;
+    }
+
+    setValidationError("");
+
+    try {
+      const response = await updateDeal({
+        id: dealId,
+        body: { value: parsedVal },
+      }).unwrap();
+
+      toast.success(response?.message || "Deal updated successfully");
+
+      if (onSave) {
+        onSave(parsedVal);
+      }
+      if (onClose) {
+        onClose();
+      }
+    } catch (err: any) {
+      console.error("Failed to update deal value:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to update deal value.";
+      toast.error(errMsg);
     }
   };
 
@@ -106,15 +147,19 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
             Deal Value*
           </label>
           <input
-            type="text"
+            type="number"
             className="leads-modal-inner"
+            min="1"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (validationError) setValidationError("");
+            }}
             style={{
               width: "100%",
               height: 48,
               borderRadius: 8,
-              border: "1px solid #00236F",
+              border: validationError ? "1px solid #E03131" : "1px solid #00236F",
               padding: 12,
               display: "flex",
               alignItems: "center",
@@ -127,11 +172,13 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
               outline: "none",
             }}
           />
+          {validationError && <span style={errorTextStyle}>{validationError}</span>}
         </div>
 
         <button
           className="leads-modal-footer-btn"
           onClick={handleSave}
+          disabled={isLoading}
           style={{
             marginTop: 59,
             width: "100%",
@@ -148,11 +195,12 @@ const EditDealValue: React.FC<EditDealValueProps> = ({ onClose, onSave, initialV
             fontWeight: 600,
             fontSize: 15,
             border: "none",
-            cursor: "pointer",
+            cursor: isLoading ? "not-allowed" : "pointer",
             boxSizing: "border-box",
+            opacity: isLoading ? 0.7 : 1,
           }}
         >
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </button>
       </div>
     </div>

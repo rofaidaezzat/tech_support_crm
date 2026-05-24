@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router';
 import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useResetPasswordMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
+import { validateResetPassword } from '../validation';
 
 const Update_Password: React.FC = () => {
   const navigate = useNavigate();
@@ -24,14 +25,18 @@ const Update_Password: React.FC = () => {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 12) {
-      toast.error("Password must be at least 12 characters.");
+    
+    const validation = validateResetPassword({
+      email,
+      password: newPassword,
+      confirmPassword,
+    });
+    if (!validation.isValid) {
+      const firstError = Object.values(validation.errors)[0];
+      toast.error(firstError);
       return;
     }
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
-      return;
-    }
+
     try {
       await resetPassword({ email, password: newPassword }).unwrap();
       toast.success("Password updated successfully!");

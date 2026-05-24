@@ -673,7 +673,10 @@ const Overview = () => {
       {/* Action Modals */}
       {activeModal.type === "notes" && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
-          <Notes onClose={() => setActiveModal({ type: null, leadId: null })} />
+          <Notes 
+            leadName="John Dorghamasadsad" 
+            onClose={() => setActiveModal({ type: null, leadId: null })} 
+          />
         </div>
       )}
       {activeModal.type === "lead" && (
