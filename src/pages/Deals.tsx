@@ -29,6 +29,69 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
   </div>
 );
 
+const getPresetDateRange = (preset: string) => {
+  const today = new Date();
+  let start = new Date();
+  let end = new Date();
+
+  switch (preset) {
+    case "Today":
+      start = today;
+      end = today;
+      break;
+    case "Yesterday":
+      start = new Date(today);
+      start.setDate(today.getDate() - 1);
+      end = new Date(start);
+      break;
+    case "This week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "Last week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day - 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "This month": {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      break;
+    }
+    case "Last month": {
+      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      end = new Date(today.getFullYear(), today.getMonth(), 0);
+      break;
+    }
+    case "This year": {
+      start = new Date(today.getFullYear(), 0, 1);
+      end = new Date(today.getFullYear(), 11, 31);
+      break;
+    }
+    default:
+      break;
+  }
+
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    startDate: formatLocalDate(start),
+    endDate: formatLocalDate(end)
+  };
+};
+
 const Deals = () => {
   const [activeFilter, setActiveFilter] = useState<'date' | 'value' | 'sort' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,12 +109,28 @@ const Deals = () => {
   
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
 
+  // Calculate start_date and end_date for API based on dateFilter
+  let start_date: string | undefined = undefined;
+  let end_date: string | undefined = undefined;
+  if (dateFilter) {
+    if (dateFilter.preset) {
+      const range = getPresetDateRange(dateFilter.preset);
+      start_date = range.startDate;
+      end_date = range.endDate;
+    } else {
+      if (dateFilter.startDate) start_date = dateFilter.startDate;
+      if (dateFilter.endDate) end_date = dateFilter.endDate;
+    }
+  }
+
   // RTK Query hooks
   const { data: dealsResponse, isLoading } = useGetDealsQuery({
     page: currentPage,
     limit: 10,
     search: searchQuery || undefined,
     sort: sortQuery || undefined,
+    start_date,
+    end_date,
   });
 
   const [deleteDeal] = useDeleteDealMutation();
@@ -75,25 +154,13 @@ const Deals = () => {
   const pagination = dealsResponse?.pagination;
   const totalPages = pagination?.totalPages || 1;
 
-  // Apply client-side filters (Value and Date) if set
+  // Apply client-side filters (Value) if set
   const filteredDeals = rawDeals.filter((deal) => {
     // 1. Value Filter
     if (valueFilter) {
       const val = deal.value;
       if (valueFilter.from && val < Number(valueFilter.from)) return false;
       if (valueFilter.to && val > Number(valueFilter.to)) return false;
-    }
-    // 2. Date Filter
-    if (dateFilter) {
-      const dealDate = new Date(deal.created_at).getTime();
-      if (dateFilter.startDate) {
-        const start = new Date(dateFilter.startDate).setHours(0, 0, 0, 0);
-        if (dealDate < start) return false;
-      }
-      if (dateFilter.endDate) {
-        const end = new Date(dateFilter.endDate).setHours(23, 59, 59, 999);
-        if (dealDate > end) return false;
-      }
     }
     return true;
   });
@@ -106,6 +173,7 @@ const Deals = () => {
     else if (sortVal === "z-a") apiSort = "-value";
     
     setSortQuery(apiSort);
+    setCurrentPage(1);
     setActiveFilter(null);
   };
 
@@ -209,7 +277,10 @@ const Deals = () => {
               type="text"
               placeholder="Filter by details, name, phone..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               style={{
                 border: "none",
                 background: "transparent",
@@ -252,8 +323,17 @@ const Deals = () => {
                   onClose={() => setActiveFilter(null)}
                   onApply={(data) => {
                     setDateFilter(data);
+                    setCurrentPage(1);
                     setActiveFilter(null);
                   }}
+                  onClear={() => {
+                    setDateFilter(null);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  initialPreset={dateFilter?.preset}
+                  initialStartDate={dateFilter?.startDate}
+                  initialEndDate={dateFilter?.endDate}
                 />
               </div>
             )}
@@ -288,13 +368,17 @@ const Deals = () => {
                 <Value
                   onApply={(vals) => {
                     setValueFilter(vals);
+                    setCurrentPage(1);
                     setActiveFilter(null);
                   }}
                   onClear={() => {
                     setValueFilter(null);
+                    setCurrentPage(1);
                     setActiveFilter(null);
                   }}
                   onClose={() => setActiveFilter(null)}
+                  initialFrom={valueFilter?.from}
+                  initialTo={valueFilter?.to}
                 />
               </div>
             )}
@@ -333,6 +417,12 @@ const Deals = () => {
                 isOpen={true}
                 onClose={() => setActiveFilter(null)}
                 onApply={handleSortApply}
+                defaultValue={
+                  sortQuery === "created_at" ? "oldest" :
+                  sortQuery === "-created_at" ? "newest" :
+                  sortQuery === "value" ? "a-z" :
+                  sortQuery === "-value" ? "z-a" : "newest"
+                }
               />
             </div>
           )}

@@ -11,10 +11,11 @@ interface PriorityProps {
   onApply?: (selected: string[]) => void;
   onClear?: () => void;
   onClose?: () => void;
+  initialSelected?: string[];
 }
 
-const Priority: React.FC<PriorityProps> = ({ onApply, onClear, onClose }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+const Priority: React.FC<PriorityProps> = ({ onApply, onClear, onClose, initialSelected }) => {
+  const [selected, setSelected] = useState<string[]>(initialSelected || []);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -100,8 +100,199 @@ const formatDate = (isoString?: string | null) => {
   return `${day}/${month}/${year}`;
 };
 
+const getPresetDateRange = (preset: string) => {
+  const today = new Date();
+  let start = new Date();
+  let end = new Date();
+
+  switch (preset) {
+    case "Today":
+      start = today;
+      end = today;
+      break;
+    case "Yesterday":
+      start = new Date(today);
+      start.setDate(today.getDate() - 1);
+      end = new Date(start);
+      break;
+    case "This week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "Last week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day - 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "This month": {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      break;
+    }
+    case "Last month": {
+      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      end = new Date(today.getFullYear(), today.getMonth(), 0);
+      break;
+    }
+    case "This year": {
+      start = new Date(today.getFullYear(), 0, 1);
+      end = new Date(today.getFullYear(), 11, 31);
+      break;
+    }
+    default:
+      break;
+  }
+
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    startDate: formatLocalDate(start),
+    endDate: formatLocalDate(end)
+  };
+};
+
+const getFollowUpDateRange = (preset: string) => {
+  const today = new Date();
+  let start: Date | null = new Date();
+  let end: Date | null = new Date();
+  let presetName: string | null = null;
+
+  switch (preset.toLowerCase()) {
+    case "today":
+      start = today;
+      end = today;
+      break;
+    case "tomorrow":
+      start = new Date(today);
+      start.setDate(today.getDate() + 1);
+      end = new Date(start);
+      break;
+    case "this week":
+    case "this-week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "next week":
+    case "next-week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day + 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "no followup":
+    case "no-followup":
+      start = null;
+      end = null;
+      presetName = "no-followup";
+      break;
+    case "missed":
+      start = new Date(1970, 0, 1);
+      end = new Date(today);
+      end.setDate(today.getDate() - 1);
+      presetName = "missed";
+      break;
+    default:
+      break;
+  }
+
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    startDate: start ? formatLocalDate(start) : undefined,
+    endDate: end ? formatLocalDate(end) : undefined,
+    presetName: presetName || undefined
+  };
+};
+
 const Leads = () => {
-  const { data: leadsData, isLoading } = useGetLeadsQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState<{ preset: string | null; startDate: string; endDate: string } | null>(null);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [followUpFilter, setFollowUpFilter] = useState<{ preset: string | null; startDate: string; endDate: string } | null>(null);
+  const [sortQuery, setSortQuery] = useState("-created_at");
+
+  // Construct search params to pass to query
+  const queryParams: any = {
+    page: currentPage,
+    limit: 10,
+  };
+
+  if (searchQuery) {
+    queryParams.search = searchQuery;
+  }
+
+  // Date Filter
+  if (dateFilter) {
+    if (dateFilter.preset) {
+      const { startDate, endDate } = getPresetDateRange(dateFilter.preset);
+      queryParams.start_date = startDate;
+      queryParams.end_date = endDate;
+    } else {
+      if (dateFilter.startDate) queryParams.start_date = dateFilter.startDate;
+      if (dateFilter.endDate) queryParams.end_date = dateFilter.endDate;
+    }
+  }
+
+  // Status Filter
+  if (selectedStatuses.length > 0) {
+    queryParams.status = selectedStatuses.map(s => STATUS_TO_API[s] || s).join(',');
+  }
+
+  // Priority Filter
+  if (selectedPriorities.length > 0) {
+    queryParams.priority = selectedPriorities.map(p => p.toUpperCase()).join(',');
+  }
+
+  // Source Filter
+  if (selectedSources.length > 0) {
+    queryParams.source = selectedSources.join(',');
+  }
+
+  // Follow Up Filter
+  if (followUpFilter) {
+    if (followUpFilter.preset) {
+      const { startDate, endDate, presetName } = getFollowUpDateRange(followUpFilter.preset);
+      if (startDate) queryParams.next_follow_up_start = startDate;
+      if (endDate) queryParams.next_follow_up_end = endDate;
+      if (presetName) queryParams.next_follow_up_preset = presetName;
+    } else {
+      if (followUpFilter.startDate) queryParams.next_follow_up_start = followUpFilter.startDate;
+      if (followUpFilter.endDate) queryParams.next_follow_up_end = followUpFilter.endDate;
+    }
+  }
+
+  // Sort Filter
+  if (sortQuery) {
+    queryParams.sort = sortQuery;
+  }
+
+  const { data: leadsData, isLoading } = useGetLeadsQuery(queryParams);
   const [updateLeadStatus] = useUpdateLeadStatusMutation();
   const [leads, setLeads] = useState<any[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
@@ -139,7 +330,6 @@ const Leads = () => {
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [isStatusTimelineOpen, setIsStatusTimelineOpen] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -286,6 +476,11 @@ const Leads = () => {
             <input
               type="text"
               placeholder="Filter by date, name,..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               style={{
                 border: "none",
                 background: "transparent",
@@ -307,7 +502,7 @@ const Leads = () => {
               style={{
                 display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
                 borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: activeFilter === 'date' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: (activeFilter === 'date' || dateFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
                 cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
@@ -316,7 +511,22 @@ const Leads = () => {
             </button>
             {activeFilter === 'date' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <DateFilter onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+                <DateFilter
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(data) => {
+                    setDateFilter(data);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setDateFilter(null);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  initialPreset={dateFilter?.preset}
+                  initialStartDate={dateFilter?.startDate}
+                  initialEndDate={dateFilter?.endDate}
+                />
               </div>
             )}
           </div>
@@ -328,7 +538,7 @@ const Leads = () => {
               style={{
                 display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
                 borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: activeFilter === 'status' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: (activeFilter === 'status' || selectedStatuses.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
                 cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
@@ -337,7 +547,20 @@ const Leads = () => {
             </button>
             {activeFilter === 'status' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Status onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
+                <Status
+                  onApply={(selected) => {
+                    setSelectedStatuses(selected);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setSelectedStatuses([]);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                  initialSelected={selectedStatuses}
+                />
               </div>
             )}
           </div>
@@ -349,7 +572,7 @@ const Leads = () => {
               style={{
                 display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
                 borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: activeFilter === 'priority' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: (activeFilter === 'priority' || selectedPriorities.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
                 cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
@@ -358,7 +581,20 @@ const Leads = () => {
             </button>
             {activeFilter === 'priority' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Priority onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
+                <Priority
+                  onApply={(selected) => {
+                    setSelectedPriorities(selected);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setSelectedPriorities([]);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                  initialSelected={selectedPriorities}
+                />
               </div>
             )}
           </div>
@@ -370,7 +606,7 @@ const Leads = () => {
               style={{
                 display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
                 borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: activeFilter === 'source' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: (activeFilter === 'source' || selectedSources.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
                 cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
@@ -379,7 +615,20 @@ const Leads = () => {
             </button>
             {activeFilter === 'source' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <Source onApply={() => setActiveFilter(null)} onClear={() => setActiveFilter(null)} onClose={() => setActiveFilter(null)} />
+                <Source
+                  onApply={(selected) => {
+                    setSelectedSources(selected);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setSelectedSources([]);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                  initialSelected={selectedSources}
+                />
               </div>
             )}
           </div>
@@ -391,7 +640,7 @@ const Leads = () => {
               style={{
                 display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
                 borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: activeFilter === 'followup' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: (activeFilter === 'followup' || followUpFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
                 cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
               }}
             >
@@ -400,7 +649,23 @@ const Leads = () => {
             </button>
             {activeFilter === 'followup' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
-                <FollowUp isOpen={true} onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+                <FollowUp
+                  isOpen={true}
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(data) => {
+                    setFollowUpFilter({ preset: data.filterType, startDate: data.startDate, endDate: data.endDate });
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setFollowUpFilter(null);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  defaultFilter={followUpFilter?.preset || undefined}
+                  defaultStartDate={followUpFilter?.startDate}
+                  defaultEndDate={followUpFilter?.endDate}
+                />
               </div>
             )}
           </div>
@@ -432,7 +697,27 @@ const Leads = () => {
           </button>
           {activeFilter === 'sort' && (
             <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}>
-              <Sort isOpen={true} onClose={() => setActiveFilter(null)} onApply={() => setActiveFilter(null)} />
+              <Sort
+                isOpen={true}
+                onClose={() => setActiveFilter(null)}
+                onApply={(val) => {
+                  let apiSort = "-created_at";
+                  if (val === "oldest") apiSort = "created_at";
+                  else if (val === "newest") apiSort = "-created_at";
+                  else if (val === "a-z") apiSort = "name";
+                  else if (val === "z-a") apiSort = "-name";
+                  
+                  setSortQuery(apiSort);
+                  setCurrentPage(1);
+                  setActiveFilter(null);
+                }}
+                defaultValue={
+                  sortQuery === "created_at" ? "oldest" :
+                  sortQuery === "-created_at" ? "newest" :
+                  sortQuery === "name" ? "a-z" :
+                  sortQuery === "-name" ? "z-a" : "newest"
+                }
+              />
             </div>
           )}
         </div>

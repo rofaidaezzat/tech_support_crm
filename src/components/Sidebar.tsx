@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logout from "./Logout";
+import { getCookie } from "../app/service/baseQuery";
 
 interface SidebarProps {
   onNavigate?: (page: string) => void;
@@ -31,6 +32,25 @@ const DealsIcon = ({ color }: { color: string }) => (
     <path
       d="M7.85737 7.63627C8.63242 4.62496 11.366 2.3999 14.6192 2.3999C18.4752 2.3999 21.601 5.52577 21.601 9.38172C21.601 12.4559 19.6142 15.0661 16.8545 15.9981M7.85737 17.1256H9.38123M9.38123 17.1256H10.7994M9.38123 17.1256V11.5619C9.38123 11.5619 8.31742 12.2933 7.63578 12.7619M16.363 14.6181C16.363 18.474 13.2372 21.5999 9.38123 21.5999C5.52528 21.5999 2.39941 18.474 2.39941 14.6181C2.39941 10.7621 5.52528 7.63627 9.38123 7.63627C13.2372 7.63627 16.363 10.7621 16.363 14.6181Z"
       stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const SalesIcon = ({ color }: { color: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="19.2"
+    height="17.142"
+    viewBox="0 0 22 20"
+    fill="none"
+    style={{ color }}
+  >
+    <path
+      d="M14.6254 18.1416L14.6257 14.9279C14.6259 13.1527 13.1868 11.7135 11.4116 11.7135H4.21442C2.43948 11.7135 1.00056 13.1523 1.00036 14.9272L1 18.1416M20.1997 18.1418L20.2 14.928C20.2002 13.1529 18.7611 11.7137 16.9859 11.7137M14.0063 1.63141C14.7956 2.21705 15.3072 3.1559 15.3072 4.21423C15.3072 5.27256 14.7956 6.21142 14.0063 6.79705M11.0938 4.21406C11.0938 5.98913 9.65482 7.42811 7.87974 7.42811C6.10467 7.42811 4.66569 5.98913 4.66569 4.21406C4.66569 2.43898 6.10467 1 7.87974 1C9.65482 1 11.0938 2.43898 11.0938 4.21406Z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
@@ -67,26 +87,38 @@ const LogoutIcon = ({ color }: { color: string }) => (
   </svg>
 );
 
-// ── Nav Items ─────────────────────────────────────────────────────────────────
-
-const NAV_ITEMS = [
-  { id: "overview",  label: "Overview",  Icon: OverviewIcon  },
-  { id: "leads",    label: "Leads",     Icon: LeadsIcon     },
-  { id: "deals",    label: "Deals",     Icon: DealsIcon     },
-  { id: "reports",  label: "Reports",   Icon: ReportsIcon   },
-  { id: "settings", label: "Settings",  Icon: SettingsIcon  },
-];
-
 // ── Sidebar Component ─────────────────────────────────────────────────────────
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage = "overview", onNavigate }) => {
   const [activeItem, setActiveItem] = useState(currentPage);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  useEffect(() => {
+    setActiveItem(currentPage);
+  }, [currentPage]);
+
   const handleNav = (id: string) => {
     setActiveItem(id);
     if (onNavigate) onNavigate(id);
   };
+
+  const userType = getCookie("user_type");
+  const isSalesManager = userType?.toUpperCase() === "SALES_MANAGER";
+
+  const navItems = [
+    { id: "overview",  label: "Overview",  Icon: OverviewIcon  },
+    { id: "leads",    label: "Leads",     Icon: LeadsIcon     },
+    { id: "deals",    label: "Deals",     Icon: DealsIcon     },
+  ];
+
+  if (isSalesManager) {
+    navItems.push({ id: "sales", label: "Sales", Icon: SalesIcon });
+  }
+
+  navItems.push(
+    { id: "reports",  label: "Reports",   Icon: ReportsIcon   },
+    { id: "settings", label: "Settings",  Icon: SettingsIcon  }
+  );
 
   return (
     <>
@@ -128,7 +160,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage = "overview", onNavigate 
 
         {/* Nav Items */}
         <div style={{ display: "flex", flexDirection: "column", gap: 0, paddingTop: 16 }}>
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = activeItem === item.id;
             const iconColor = isActive
               ? "var(--Foundation-brand-brand-500, #00236F)"

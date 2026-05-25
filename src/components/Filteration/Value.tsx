@@ -5,11 +5,13 @@ interface ValueProps {
   onApply?: (values: { from: string; to: string }) => void;
   onClear?: () => void;
   onClose?: () => void;
+  initialFrom?: string;
+  initialTo?: string;
 }
 
-const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose }) => {
-  const [fromValue, setFromValue] = useState("");
-  const [toValue, setToValue] = useState("");
+const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, initialTo }) => {
+  const [fromValue, setFromValue] = useState(initialFrom || "");
+  const [toValue, setToValue] = useState(initialTo || "");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

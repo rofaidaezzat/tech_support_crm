@@ -9,6 +9,7 @@ interface FollowUpProps {
     startDate: string;
     endDate: string;
   }) => void;
+  onClear?: () => void;
   defaultFilter?: string;
   defaultStartDate?: string;
   defaultEndDate?: string;
@@ -23,10 +24,18 @@ const followUpOptions = [
   { value: 'missed', label: 'Missed', count: 200 },
 ];
 
-export const FollowUp: React.FC<FollowUpProps> = ({ isOpen, onClose, onApply }) => {
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+export const FollowUp: React.FC<FollowUpProps> = ({
+  isOpen,
+  onClose,
+  onApply,
+  onClear,
+  defaultFilter,
+  defaultStartDate,
+  defaultEndDate,
+}) => {
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(defaultFilter || null);
+  const [startDate, setStartDate] = useState(defaultStartDate || "");
+  const [endDate, setEndDate] = useState(defaultEndDate || "");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,6 +53,7 @@ export const FollowUp: React.FC<FollowUpProps> = ({ isOpen, onClose, onApply }) 
     setSelectedPreset(null);
     setStartDate("");
     setEndDate("");
+    onClear?.();
     onClose?.();
   };
 

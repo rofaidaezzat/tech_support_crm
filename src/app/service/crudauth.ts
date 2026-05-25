@@ -80,6 +80,9 @@ export const authApi = createApi({
           if (data?.data?.access_token) {
             setCookie('token', data.data.access_token);
           }
+          if (data?.data?.user?.user_type) {
+            setCookie('user_type', data.data.user.user_type);
+          }
         } catch (error) {
           console.error('Login failed:', error);
         }
@@ -94,10 +97,12 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
           deleteCookie('token');
+          deleteCookie('user_type');
         } catch (error) {
           console.error('Logout failed:', error);
           // Still clean token in case of failure
           deleteCookie('token');
+          deleteCookie('user_type');
         }
       },
     }),

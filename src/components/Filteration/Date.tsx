@@ -18,6 +18,10 @@ interface DateFilterProps {
     startDate: string;
     endDate: string;
   }) => void;
+  onClear?: () => void;
+  initialPreset?: DatePreset;
+  initialStartDate?: string;
+  initialEndDate?: string;
 }
 
 const PRESETS: { label: DatePreset & string; count: number }[] = [
@@ -30,10 +34,17 @@ const PRESETS: { label: DatePreset & string; count: number }[] = [
   { label: "This year", count: 200 },
 ];
 
-const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
-  const [selectedPreset, setSelectedPreset] = useState<DatePreset>(null);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+const DateFilter: React.FC<DateFilterProps> = ({
+  onClose,
+  onApply,
+  onClear,
+  initialPreset,
+  initialStartDate,
+  initialEndDate,
+}) => {
+  const [selectedPreset, setSelectedPreset] = useState<DatePreset>(initialPreset || null);
+  const [startDate, setStartDate] = useState(initialStartDate || "");
+  const [endDate, setEndDate] = useState(initialEndDate || "");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,6 +61,7 @@ const DateFilter: React.FC<DateFilterProps> = ({ onClose, onApply }) => {
     setSelectedPreset(null);
     setStartDate("");
     setEndDate("");
+    onClear?.();
     onClose?.();
   };
 

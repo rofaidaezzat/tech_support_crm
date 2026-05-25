@@ -77,13 +77,39 @@ export interface DeleteLeadResponse {
   message: string;
 }
 
+export interface GetLeadsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  start_date?: string;
+  end_date?: string;
+  status?: string;
+  priority?: string;
+  source?: string;
+  next_follow_up_start?: string;
+  next_follow_up_end?: string;
+  next_follow_up_preset?: string;
+  sort?: string;
+}
+
 export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Lead'],
   endpoints: (builder) => ({
-    getLeads: builder.query<GetLeadsResponse, void>({
-      query: () => 'api/v1/leads/',
+    getLeads: builder.query<GetLeadsResponse, GetLeadsParams | void>({
+      query: (params) => {
+        const urlParams = new URLSearchParams();
+        if (params) {
+          Object.entries(params).forEach(([key, val]) => {
+            if (val !== undefined && val !== null && val !== '') {
+              urlParams.append(key, val.toString());
+            }
+          });
+        }
+        const queryString = urlParams.toString();
+        return `api/v1/leads/${queryString ? `?${queryString}` : ''}`;
+      },
       providesTags: (result) =>
         result
           ? [

@@ -13,10 +13,11 @@ interface SourceProps {
   onApply?: (selected: string[]) => void;
   onClear?: () => void;
   onClose?: () => void;
+  initialSelected?: string[];
 }
 
-const Source: React.FC<SourceProps> = ({ onApply, onClear, onClose }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+const Source: React.FC<SourceProps> = ({ onApply, onClear, onClose, initialSelected }) => {
+  const [selected, setSelected] = useState<string[]>(initialSelected || []);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

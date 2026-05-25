@@ -62,6 +62,7 @@ export const baseQueryWithReauth: BaseQueryFn<
           const payload = refreshResult.data as any;
           console.log('Refresh token response payload:', payload);
           const newToken =
+            payload?.data?.newAccessToken ||
             (typeof payload?.data === 'string' ? payload.data : null) ||
             payload?.data?.access_token ||
             payload?.data?.token ||
@@ -76,14 +77,17 @@ export const baseQueryWithReauth: BaseQueryFn<
           } else {
             // Refresh succeeded but returned no token — session truly expired
             deleteCookie('token');
+            deleteCookie('user_type');
           }
         } else {
           // Refresh token itself is expired / invalid
           deleteCookie('token');
+          deleteCookie('user_type');
         }
       } catch (err) {
         console.error('Refresh token request threw:', err);
         deleteCookie('token');
+        deleteCookie('user_type');
       }
     }
   }

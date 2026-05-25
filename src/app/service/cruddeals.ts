@@ -87,7 +87,7 @@ export const dealsApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Deal'],
   endpoints: (builder) => ({
-    getDeals: builder.query<GetDealsResponse, { page?: number; limit?: number; search?: string; sort?: string } | void>({
+    getDeals: builder.query<GetDealsResponse, { page?: number; limit?: number; search?: string; sort?: string; start_date?: string; end_date?: string } | void>({
       query: (params) => {
         const urlParams = new URLSearchParams();
         if (params) {
@@ -95,6 +95,8 @@ export const dealsApi = createApi({
           if (params.limit !== undefined) urlParams.append('limit', params.limit.toString());
           if (params.search) urlParams.append('search', params.search);
           if (params.sort) urlParams.append('sort', params.sort);
+          if (params.start_date) urlParams.append('start_date', params.start_date);
+          if (params.end_date) urlParams.append('end_date', params.end_date);
         }
         const queryString = urlParams.toString();
         return `api/v1/deals${queryString ? `?${queryString}` : ''}`;
