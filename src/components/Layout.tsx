@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import Task_drawer from "./Navbar/Task_drawer";
 import Add_New_Task from "./Navbar/Add_New_Task";
 import Edit_Task from "./Navbar/Edit_Task";
+import { getCookie } from "../app/service/baseQuery";
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const Layout: React.FC = () => {
         onNavigate={(page) => {
           if (page === "logout") {
             console.log("Logout clicked");
+          } else if (page === "overview" && getCookie("user_type") === "SALES_MANAGER") {
+            navigate("/overview-manager");
           } else {
             navigate(`/${page}`);
           }
@@ -183,6 +186,8 @@ const Layout: React.FC = () => {
               setIsMobileMenuOpen(false);
               if (page === "logout") {
                 console.log("Logout clicked");
+              } else if (page === "overview" && getCookie("user_type") === "SALES_MANAGER") {
+                navigate("/overview-manager");
               } else {
                 navigate(`/${page}`);
               }

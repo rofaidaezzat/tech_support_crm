@@ -75,7 +75,7 @@ type ViewMode = 'grid' | 'list';
 
 const Sales: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [activeTab, setActiveTab] = useState<'This month' | 'Last month' | 'This year'>('This month');
+  const [activeTab, setActiveTab] = useState<TimeRangeTab>('This month');
   const [currentPage, setCurrentPage] = useState(1);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
   const [isPauseAccountOpen, setIsPauseAccountOpen] = useState(false);
@@ -524,7 +524,6 @@ const Sales: React.FC = () => {
               key={item} 
               onAssignTask={() => setIsAddNewTaskOpen(true)} 
               onPauseAccount={() => setIsPauseAccountOpen(true)}
-              onEditTarget={() => setIsEditTargetOpen(true)}
               onViewTasks={() => setIsSalesTasksOpen(true)}
             />
           ))}
@@ -555,7 +554,6 @@ const Sales: React.FC = () => {
           <div style={{ width: 65, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#4B5563", textAlign: "center" }}>Deals</div>
           <div style={{ width: 96, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#4B5563", textAlign: "right" }}>Revenue (EGP)</div>
           <div style={{ width: 64, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#4B5563", textAlign: "right" }}>Reports</div>
-          <div style={{ width: 140, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#4B5563" }}>Target Progress</div>
           <div style={{ width: 104, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#4B5563" }}>Actions</div>
         </div>
 
@@ -573,6 +571,7 @@ const Sales: React.FC = () => {
               borderBottom: "1px solid #E6E9F1",
               background: "#FFF",
               boxSizing: "border-box",
+              // Target Progress column has been removed
             }}
           >
             <div style={{ width: 32, flexShrink: 0 }}>
@@ -609,13 +608,6 @@ const Sales: React.FC = () => {
             {/* Reports */}
             <div style={{ width: 64, flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563", textAlign: "right" }}>
               20
-            </div>
-            {/* Target Progress */}
-            <div style={{ width: 140, flexShrink: 0, display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 80, height: 8, borderRadius: 4, background: "#E5E7EB", position: "relative" }}>
-                <div style={{ width: "30%", height: "100%", borderRadius: 4, background: "#00236F" }} />
-              </div>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#4B5563" }}>30%</span>
             </div>
             {/* Actions */}
             <div className="action-menu-container" style={{ width: 104, flexShrink: 0, display: "flex", alignItems: "center", gap: 12, position: "relative" }}>

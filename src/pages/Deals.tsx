@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, ChevronDown, ArrowDownUp, Trash2 } from 'lucide-react';
+import { Plus, ChevronDown, ArrowDownUp } from 'lucide-react';
+import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
 import filterIcon from '../assets/filter.svg';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
@@ -93,6 +94,7 @@ const getPresetDateRange = (preset: string) => {
 };
 
 const Deals = () => {
+  const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
   const [activeFilter, setActiveFilter] = useState<'date' | 'value' | 'sort' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -100,7 +102,7 @@ const Deals = () => {
 
   // Local filter states for client-side filtering
   const [valueFilter, setValueFilter] = useState<{ from: string; to: string } | null>(null);
-  const [dateFilter, setDateFilter] = useState<{ startDate: string; endDate: string } | null>(null);
+  const [dateFilter, setDateFilter] = useState<{ preset: any; startDate: string; endDate: string } | null>(null);
 
   const [isAddDealOpen, setIsAddDealOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -460,6 +462,7 @@ const Deals = () => {
         >
           {[
             { label: "Date",          width: 70   },
+            ...(isSalesManager ? [{ label: "Created by", width: 146 }] : []),
             { label: "Customer Info", width: 146  },
             { label: "Phone number",  width: 99   },
             { label: "City",          width: 99   },
@@ -531,6 +534,24 @@ const Deals = () => {
                   >
                     {formattedDate}
                   </div>
+
+                  {/* Created by (SALES_MANAGER only) */}
+                  {isSalesManager && (
+                    <div style={{ width: 146, flexShrink: 0 }}>
+                      <span
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: 13,
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "normal",
+                          color: "var(--Foundation-neutral-neutral-800, #464646)",
+                        }}
+                      >
+                        {deal.author ? `${deal.author.first_name} ${deal.author.last_name}`.trim() : "—"}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Customer Info */}
                   <div style={{ width: 146, flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
@@ -664,12 +685,6 @@ const Deals = () => {
                         setSelectedDeal(deal);
                         setIsNotesOpen(true);
                       }}
-                    />
-                    <Trash2
-                      size={20}
-                      color="#A80D0B"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleDelete(deal.id)}
                     />
                   </div>
                 </div>

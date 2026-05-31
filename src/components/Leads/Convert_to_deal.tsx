@@ -11,6 +11,8 @@ interface ConvertToDealProps {
   onConvert?: (data: { value: string; city: string; serviceDetails: string }) => void;
   leadName?: string;
   companyName?: string;
+  leadId?: any;
+  currentStatus?: any;
 }
 
 const inputStyle: React.CSSProperties = {

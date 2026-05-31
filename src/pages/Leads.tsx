@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
 import { useGetLeadsQuery, useUpdateLeadStatusMutation } from '../app/service/crudleads';
 import { toast } from 'sonner';
+import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
@@ -88,7 +89,7 @@ const INITIAL_LEADS = [
   { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
 ];
 
-const COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"];
+const BASE_COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"];
 
 const formatDate = (isoString?: string | null) => {
   if (!isoString) return "";
@@ -228,9 +229,13 @@ const getFollowUpDateRange = (preset: string) => {
 };
 
 const Leads = () => {
+  const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
+  const COL_HEADERS = isSalesManager
+    ? ["Date", "Lead info", "Assigned to", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"]
+    : BASE_COL_HEADERS;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateFilter, setDateFilter] = useState<{ preset: string | null; startDate: string; endDate: string } | null>(null);
+  const [dateFilter, setDateFilter] = useState<{ preset: any; startDate: string; endDate: string } | null>(null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
@@ -310,6 +315,8 @@ const Leads = () => {
         priority: lead.priority ? lead.priority.charAt(0).toUpperCase() + lead.priority.slice(1).toLowerCase() : "",
         source: lead.source,
         followup: formatDate(lead.next_follow_up),
+        assignedToName: lead.assigned_to ? `${lead.assigned_to.first_name} ${lead.assigned_to.last_name}`.trim() : "",
+        assignedToDate: formatDate(lead.updated_at),
       }));
       setLeads(mappedLeads);
     }
@@ -329,6 +336,8 @@ const Leads = () => {
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [isStatusTimelineOpen, setIsStatusTimelineOpen] = useState(false);
+  const [isAISearchOpen, setIsAISearchOpen] = useState(false);
+  const [aiQuery, setAiQuery] = useState("");
 
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -455,44 +464,112 @@ const Leads = () => {
         }}
       >
         <div className="filter-bar-left" style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              padding: "8px 12px",
-              height: 40,
-              gap: 8,
-              background: "transparent",
-              width: 406,
-              boxSizing: "border-box",
-              opacity: 1,
-              transform: "rotate(0deg)",
-            }}
-          >
-            <img src={filterIcon} alt="filter" width={24} height={24} />
-            <input
-              type="text"
-              placeholder="Filter by date, name,..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
+          {isAISearchOpen ? (
+            <div
               style={{
-                border: "none",
-                background: "transparent",
-                outline: "none",
-                flex: 1,
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                color: "#141414",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "8px 12px",
+                height: 40,
+                gap: 8,
+                background: "#EDEFF2",
+                width: 406,
+                boxSizing: "border-box",
+                opacity: 1,
               }}
-            />
-            <img src={starsIcon} alt="stars" width={24} height={24} />
-          </div>
+            >
+              <input
+                type="text"
+                placeholder="Describe what you want..."
+                value={aiQuery}
+                onChange={(e) => setAiQuery(e.target.value)}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  outline: "none",
+                  flex: 1,
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 16,
+                  fontWeight: 400,
+                  color: "var(--Foundation-neutral-neutral-800, #464646)",
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--Foundation-neutral-neutral-800, #464646)",
+                  whiteSpace: "nowrap",
+                  marginRight: 4,
+                  userSelect: "none"
+                }}
+              >
+                (0/5) AI limit
+              </span>
+              <svg
+                onClick={() => setIsAISearchOpen(false)}
+                xmlns="http://www.w3.org/2000/svg"
+                width="19.2"
+                height="19.2"
+                viewBox="0 0 20 20"
+                fill="none"
+                style={{ cursor: "pointer", flexShrink: 0 }}
+              >
+                <path d="M12.4235 0L14.2538 4.94621L19.2 6.77647L14.2538 8.60673L12.4235 13.5529L10.5933 8.60673L5.64706 6.77647L10.5933 4.94621L12.4235 0Z" fill="var(--Foundation-brand-brand-500, #00236F)"/>
+                <path d="M3.95294 11.2941L5.55177 13.6482L7.90588 15.2471L5.55177 16.8459L3.95294 19.2L2.35411 16.8459L0 15.2471L2.35411 13.6482L3.95294 11.2941Z" fill="var(--Foundation-brand-brand-500, #00236F)"/>
+              </svg>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: searchQuery ? "1px solid var(--Foundation-brand-brand-500, #00236F)" : "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "8px 12px",
+                height: 40,
+                gap: 8,
+                background: "transparent",
+                width: 406,
+                boxSizing: "border-box",
+                opacity: 1,
+                transform: "rotate(0deg)",
+              }}
+            >
+              <img src={filterIcon} alt="filter" width={24} height={24} />
+              <input
+                type="text"
+                placeholder="Filter by date, name,..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  outline: "none",
+                  flex: 1,
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 14,
+                  color: "#141414",
+                }}
+              />
+              <img
+                src={starsIcon}
+                alt="stars"
+                width={24}
+                height={24}
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsAISearchOpen(true)}
+              />
+            </div>
+          )}
 
 
           {/* Date */}
@@ -756,6 +833,7 @@ const Leads = () => {
             const widthMap: Record<string, number> = {
               "Date": 70,
               "Lead info": 146,
+              "Assigned to": 162,
               "Status": 112,
               "Phone number": 99,
               "Message": 58,
@@ -828,6 +906,23 @@ const Leads = () => {
                   {lead.company}
                 </span>
               </div>
+
+              {/* Assigned to (SALES_MANAGER only) */}
+              {isSalesManager && (
+                <div style={{ width: 162, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "var(--Foundation-neutral-neutral-800, #464646)", lineHeight: "140%" }}>
+                      {lead.assignedToName || "—"}
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                      <path d="M7 10L12.0008 14.58L17 10" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "var(--Foundation-neutral-neutral-600, #747474)", lineHeight: "140%" }}>
+                    {lead.assignedToDate}
+                  </span>
+                </div>
+              )}
 
               {/* Status with dropdown */}
               <div
@@ -1011,9 +1106,12 @@ const Leads = () => {
               </div>
 
               {/* Actions */}
-              <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, position: "relative" }} ref={(el) => (actionMenuRefs.current[i] = el)}>
+              <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, position: "relative" }} ref={(el) => { actionMenuRefs.current[i] = el; }}>
+                {/* Phone call icon — FIRST */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="19.2" height="19.2" viewBox="0 0 22 22" fill="none" style={{ cursor: "pointer", flexShrink: 0 }}>
+                  <path d="M11.4711 4.92605C12.671 5.12715 13.7609 5.69387 14.6311 6.56224C15.5012 7.4306 16.0645 8.51834 16.2706 9.71577M11.6543 1.00012C13.7884 1.36118 15.7348 2.37122 17.2827 3.91143C18.8307 5.4562 19.8382 7.3986 20.2 9.52838M18.533 18.0018C18.533 18.0018 17.3743 19.1398 17.0903 19.4734C16.6278 19.967 16.0828 20.2001 15.3684 20.2001C15.2997 20.2001 15.2264 20.2001 15.1577 20.1955C13.7975 20.1087 12.5336 19.5786 11.5856 19.1261C8.99344 17.8738 6.71733 16.096 4.82592 13.8428C3.26424 11.9644 2.22007 10.2276 1.52854 8.36294C1.10263 7.22492 0.946916 6.33828 1.01561 5.5019C1.06141 4.96717 1.26749 4.52385 1.64761 4.14451L3.20929 2.58603C3.43369 2.37579 3.67184 2.26153 3.9054 2.26153C4.19392 2.26153 4.42749 2.43521 4.57404 2.58146C4.57862 2.58603 4.5832 2.5906 4.58778 2.59517C4.86714 2.85568 5.13276 3.12533 5.41212 3.41326C5.55409 3.55951 5.70064 3.70576 5.84719 3.85658L7.09745 5.10428C7.5829 5.58874 7.5829 6.03663 7.09745 6.52109C6.96464 6.65363 6.83641 6.78617 6.7036 6.91414C6.3189 7.30719 6.6211 7.0056 6.22267 7.36209C6.21351 7.37123 6.20435 7.3758 6.19977 7.38494C5.80591 7.77799 5.87919 8.1619 5.96162 8.42241C5.9662 8.43612 5.97078 8.44983 5.97536 8.46354C6.30052 9.24964 6.75849 9.99004 7.4546 10.8721L7.45918 10.8767C8.72318 12.4306 10.0559 13.6417 11.526 14.5695C11.7137 14.6883 11.9061 14.7843 12.0893 14.8757C12.2541 14.958 12.4098 15.0357 12.5426 15.118C12.561 15.1271 12.5793 15.1408 12.5976 15.1499C12.7533 15.2276 12.8999 15.2642 13.051 15.2642C13.4311 15.2642 13.6693 15.0265 13.7471 14.9489L14.6448 14.053C14.8005 13.8976 15.0478 13.7102 15.3363 13.7102C15.6203 13.7102 15.8538 13.8885 15.9958 14.0439C16.0004 14.0484 16.0004 14.0484 16.005 14.053L18.5284 16.5713C19.0001 17.0374 18.533 18.0018 18.533 18.0018Z" stroke="#00236F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} />
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => { setSelectedLeadId(lead.id); setIsNotesOpen(true); }} />
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
                 
                 {/* Three dots menu */}
@@ -1037,6 +1135,17 @@ const Leads = () => {
                     alignItems: "flex-start",
                     gap: 4
                   }}>
+                    {/* Note */}
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { setSelectedLeadId(lead.id); setIsNotesOpen(true); setOpenActionMenu(null); }}
+                    >
+                      <img src={mailIcon} alt="Note" width={20} height={20} style={{ stroke: "#464646" }} />
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Note</span>
+                    </div>
+
                     {/* Status timeline */}
                     <div 
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}

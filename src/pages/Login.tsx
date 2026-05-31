@@ -23,8 +23,13 @@ const Login: React.FC = () => {
     }
 
     try {
-      await login({ email, password }).unwrap();
-      navigate('/overview');
+      const result = await login({ email, password }).unwrap();
+      const userType = result?.data?.user?.user_type;
+      if (userType === 'SALES_MANAGER') {
+        navigate('/overview-manager');
+      } else {
+        navigate('/overview');
+      }
     } catch (err: any) {
       console.error('Login error:', err);
       const errMsg = err?.data?.message || err?.message || 'Login failed. Please check your credentials.';

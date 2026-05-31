@@ -1,6 +1,7 @@
 import { ArrowDownUp, ChevronDown, Plus } from 'lucide-react'
 import filterIcon from '../assets/filter.svg';
 import { useState } from 'react';
+import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
 import mailIcon from '../assets/message-text-02 (1).svg';
 import Pagination from '../components/Pagination';
@@ -11,6 +12,7 @@ import Value from '../components/Filteration/Value';
 import { Sort } from '../components/Filteration/Sort';
 
 const Reports = () => {
+    const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
     const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
@@ -290,6 +292,7 @@ const Reports = () => {
         >
           {[
             { label: "Date",                 width: 70 },
+            ...(isSalesManager ? [{ label: "Created by", width: 146 }] : []),
             { label: "Calls",                width: 41 },
             { label: "Contacts",             width: 59 },
             { label: "Followups",            width: 65 },
@@ -305,11 +308,12 @@ const Reports = () => {
                 flexShrink: 0,
                 fontFamily: "Inter, sans-serif",
                 fontSize: 13,
-                fontWeight: 600,
-                color: "#141414",
+                fontWeight: label === "Created by" ? 700 : 600,
+                color: label === "Created by" ? "var(--Foundation-neutral-neutral-800, #464646)" : "#141414",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                lineHeight: label === "Created by" ? "normal" : undefined,
               }}
             >
               {label}
@@ -320,16 +324,16 @@ const Reports = () => {
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
           {[
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
           ].map((report, i, arr) => (
             <div
               key={i}
@@ -349,6 +353,25 @@ const Reports = () => {
               <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
                 {report.date}
               </div>
+
+              {/* Created by */}
+              {isSalesManager && (
+                <div style={{
+                  color: "var(--Foundation-neutral-neutral-800, #464646)",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: 13,
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "140%",
+                  width: 146,
+                  flexShrink: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}>
+                  {report.createdBy}
+                </div>
+              )}
 
               {/* Calls */}
               <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>

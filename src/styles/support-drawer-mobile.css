@@ -1,0 +1,86 @@
+/* =============================================
+   Support Drawer Mobile Responsive Styles
+   Only applies on screens ≤ 768px
+   Desktop / laptop inline styles are UNTOUCHED
+   ============================================= */
+
+@media (max-width: 768px) {
+
+  /* ── Drawer panel itself ── */
+  .support-drawer-panel {
+    width: 100vw !important;
+    padding: 24px 16px 16px 16px !important;
+  }
+
+  /* ── Header row (title + close button) ── */
+  .support-drawer-header {
+    width: 100% !important;
+  }
+
+  /* ── Inner content column (filters + cards) ── */
+  .support-drawer-inner {
+    width: 100% !important;
+  }
+
+  /* ── Each ticket card ── */
+  .support-drawer-card {
+    width: 100% !important;
+  }
+
+  /* ── Card body column ── */
+  .support-drawer-card-body {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* ── Title + Badge row: allow wrapping on very small screens ── */
+  .support-drawer-card-title-row {
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+  }
+
+  /* ── Title text: release fixed maxWidth, let it truncate freely ── */
+  .support-drawer-card-title {
+    max-width: 100% !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+
+  /* ── Status badge: never shrink or wrap ── */
+  .support-drawer-card-badge {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* ── Description: release fixed maxWidth, truncate to full card width ── */
+  .support-drawer-card-desc {
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  /* ── CREATE view: Send button container ── */
+  .support-drawer-send-container {
+    width: 100% !important;
+  }
+
+  /* ── CREATE view: Send button itself ── */
+  .support-drawer-send-btn {
+    width: 100% !important;
+  }
+
+  /* ── DETAILS view: message bubble ── */
+  .support-drawer-message-bubble {
+    width: 100% !important;
+  }
+
+  /* ── DETAILS view: header breadcrumb ── */
+  .support-drawer-details-header {
+    width: 100% !important;
+  }
+
+  /* ── Reply textarea container ── */
+  .support-drawer-reply-form {
+    width: 100% !important;
+  }
+}
