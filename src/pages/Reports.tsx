@@ -12,11 +12,11 @@ import Value from '../components/Filteration/Value';
 import { Sort } from '../components/Filteration/Sort';
 
 const Reports = () => {
-    const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
-    const [activeFilter, setActiveFilter] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
-    const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   return (
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
@@ -93,7 +93,7 @@ const Reports = () => {
         }}
       >
         {/* Left group */}
-        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", width: 644 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {/* Filter input */}
           <div
             style={{
@@ -127,7 +127,7 @@ const Reports = () => {
                 fontSize: 14,
                 color: "#141414",
               }}
-            />       
+            />
           </div>
 
           {/* Date dropdown */}
@@ -213,52 +213,71 @@ const Reports = () => {
               </div>
             )}
           </div>
-        </div>
 
-        {/* Sort by dropdown */}
-        <div className="filter-bar-right" style={{ position: "relative" }}>
+          {/* Reset Filters */}
           <button
-            onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
+            onClick={() => {
+              setActiveFilter(null);
+            }}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              paddingRight: 12,
-              paddingLeft: 12,
-              height: 40,
-              width: 108,
-              gap: 8,
               background: "transparent",
+              border: "none",
               cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
+              color: "var(--Foundation-brand-brand-500, #00236F)",
+              fontFamily: "Inter",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "normal",
+              padding: 0,
+              whiteSpace: "nowrap",
             }}
           >
-            <span style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 400,
-              fontSize: 16,
-              lineHeight: "100%",
-              color: "rgba(70, 70, 70, 1)",
-              verticalAlign: "middle"
-            }}>
-              Sort by
-            </span>
-            <ArrowDownUp size={16} color="#4B5563" />
+            Reset Filters
           </button>
-          {activeFilter === "sort" && (
-            <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, zIndex: 50 }}>
-              <Sort 
-                isOpen={true} 
-                onClose={() => setActiveFilter(null)} 
-                onApply={(sortData) => { console.log(sortData); setActiveFilter(null); }} 
-              />
-            </div>
-          )}
+        </div>
+
+        {/* Right group: Sort by */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* Sort by dropdown */}
+          <div className="filter-bar-right" style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                paddingRight: 12,
+                paddingLeft: 12,
+                height: 40,
+                width: 108,
+                gap: 8,
+                background: activeFilter === "sort" ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+              }}
+            >
+              Sort by
+              <ArrowDownUp size={16} color="#4B5563" />
+            </button>
+            {activeFilter === "sort" && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, zIndex: 50 }}
+              >
+                <Sort
+                  isOpen={true}
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(sortData) => { console.log(sortData); setActiveFilter(null); }}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {/* ── Table ── */}
@@ -291,14 +310,14 @@ const Reports = () => {
           }}
         >
           {[
-            { label: "Date",                 width: 70 },
+            { label: "Date", width: 70 },
             ...(isSalesManager ? [{ label: "Created by", width: 146 }] : []),
-            { label: "Calls",                width: 41 },
-            { label: "Contacts",             width: 59 },
-            { label: "Followups",            width: 65 },
-            { label: "Meetings",             width: 60 },
-            { label: "Deals",                width: 41 },
-            { label: "Revenue (EGP)",        width: 96 },
+            { label: "Calls", width: 41 },
+            { label: "Contacts", width: 59 },
+            { label: "Followups", width: 65 },
+            { label: "Meetings", width: 60 },
+            { label: "Deals", width: 41 },
+            { label: "Revenue (EGP)", width: 96 },
             { label: "Top Priority & notes", width: 125 },
           ].map(({ label, width }) => (
             <div

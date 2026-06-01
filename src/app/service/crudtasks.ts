@@ -87,6 +87,7 @@ export interface UpdateTaskRequest {
   body: {
     title?: string;
     description?: string;
+    lead_id?: string | null;
     sales_id?: string;
     due_date?: string;
     reminder_at?: string | null;

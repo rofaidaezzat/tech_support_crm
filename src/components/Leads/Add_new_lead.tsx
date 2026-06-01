@@ -41,20 +41,11 @@ const labelStyle: React.CSSProperties = {
 };
 
 const SOURCE_OPTIONS: { label: string; value: string }[] = [
-  { label: "Ads",       value: "ADS" },
-  { label: "Website",   value: "WEBSITE" },
   { label: "Organic",   value: "ORGANIC" },
   { label: "Referral",  value: "REFERRAL" },
+  { label: "Ads",       value: "ADS" },
+  { label: "Website",   value: "WEBSITE" },
   { label: "Farmer",    value: "FARMER" },
-  { label: "Facebook",  value: "FACEBOOK" },
-  { label: "TikTok",    value: "TIKTOK" },
-  { label: "Instagram", value: "INSTAGRAM" },
-  { label: "WhatsApp",  value: "WHATSAPP" },
-  { label: "Telegram",  value: "TELEGRAM" },
-  { label: "LinkedIn",  value: "LINKEDIN" },
-  { label: "Twitter",   value: "TWITTER" },
-  { label: "YouTube",   value: "YOUTUBE" },
-  { label: "Other",     value: "OTHER" },
 ];
 
 // Phone: 7–20 digits, allows +, spaces, hyphens, parentheses
@@ -97,6 +88,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
     try {
       await createLead({
         name: leadName,
+        company_name: companyName,
         phone: phoneNumber,
         source: leadSource,
       }).unwrap();

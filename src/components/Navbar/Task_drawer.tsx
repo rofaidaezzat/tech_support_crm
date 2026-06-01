@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import checkSquareIcon from "../../assets/check-square-broken.svg";
 import checkIcon from "../../assets/check-02.svg";
-import starIcon from "../../assets/stars.svg";
 import editIcon from "../../assets/edit-03.svg";
 import bellIcon from "../../assets/bell-ringing-04.svg";
 import calendarIcon from "../../assets/calendar-03.svg";
@@ -56,7 +55,8 @@ const TaskCard = ({
 
   const handleComplete = async () => {
     try {
-      await updateTask({ id: task.id, body: { status: "COMPLETED" } }).unwrap();
+      const newStatus = task.status === "COMPLETED" ? "OPEN" : "COMPLETED";
+      await updateTask({ id: task.id, body: { status: newStatus } }).unwrap();
     } catch (err: any) {
       console.error("Failed to mark task complete:", err);
       let errMsg = err?.data?.message || err?.message || "Failed to mark task complete.";
@@ -100,7 +100,9 @@ const TaskCard = ({
       {/* Header */}
       <div className="task-card-header" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src={starIcon} alt="Star" width={24} height={24} />
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M9.57912 2.26159C9.75126 1.9128 10.2486 1.9128 10.4208 2.26159L12.6491 6.77669C12.7174 6.9152 12.8496 7.0112 13.0024 7.03341L17.9851 7.75744C18.3701 7.81337 18.5237 8.28639 18.2452 8.55788L14.6397 12.0724C14.5291 12.1802 14.4786 12.3355 14.5047 12.4878L15.3559 17.4504C15.4216 17.8337 15.0193 18.126 14.675 17.9451L10.2183 15.602C10.0816 15.5302 9.91828 15.5302 9.78156 15.602L5.32489 17.9451C4.98062 18.126 4.57824 17.8337 4.64399 17.4504L5.49514 12.4878C5.52125 12.3355 5.47078 12.1802 5.36018 12.0724L1.75466 8.55788C1.47613 8.28639 1.62982 7.81337 2.01474 7.75744L6.99745 7.03341C7.1503 7.0112 7.28243 6.9152 7.35078 6.77669L9.57912 2.26159Z" stroke="#464646" strokeWidth="1.66667" strokeLinejoin="round"/>
+          </svg>
           <span
             style={{
               fontFamily: "Inter, sans-serif",

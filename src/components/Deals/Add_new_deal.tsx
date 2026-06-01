@@ -43,19 +43,11 @@ const errorTextStyle: React.CSSProperties = {
 };
 
 const SOURCE_OPTIONS = [
-  { label: "Ads",       value: "ADS" },
-  { label: "Website",   value: "WEBSITE" },
   { label: "Organic",   value: "ORGANIC" },
   { label: "Referral",  value: "REFERRAL" },
+  { label: "Ads",       value: "ADS" },
+  { label: "Website",   value: "WEBSITE" },
   { label: "Farmer",    value: "FARMER" },
-  { label: "Facebook",  value: "FACEBOOK" },
-  { label: "TikTok",    value: "TIKTOK" },
-  { label: "Instagram", value: "INSTAGRAM" },
-  { label: "WhatsApp",  value: "WHATSAPP" },
-  { label: "Telegram",  value: "TELEGRAM" },
-  { label: "LinkedIn",  value: "LINKEDIN" },
-  { label: "Twitter",   value: "TWITTER" },
-  { label: "YouTube",   value: "YOUTUBE" },
 ];
 
 const CITY_OPTIONS = [

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import checkSquareIcon from "../../assets/check-square-broken.svg";
 import closeIcon from "../../assets/x-02.svg";
 import "../../styles/leads-modal-mobile.css";
+import { useUpdateLeadMutation } from "../../app/service/crudleads";
+import { toast } from "sonner";
 
 import addressIcon from "../../assets/Address.svg";
 import searchIcon from "../../assets/search-01.svg";
@@ -60,7 +62,10 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
   onConvert,
   leadName = "John Dorghamasadsad",
   companyName = "Elshayeeb inc.",
+  leadId,
 }) => {
+  const [updateLead, { isLoading }] = useUpdateLeadMutation();
+
   const [value, setValue] = useState("");
   const [city, setCity] = useState("");
   const [serviceDetails, setServiceDetails] = useState("");
@@ -68,12 +73,29 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
   const [citySearch, setCitySearch] = useState("");
 
   const isConvertEnabled =
+    !isLoading &&
     value.trim() !== "" && city.trim() !== "" && serviceDetails.trim() !== "";
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (!isConvertEnabled) return;
-    if (onConvert) {
-      onConvert({ value, city, serviceDetails });
+    if (!leadId) {
+      toast.error("Lead ID is missing.");
+      return;
+    }
+    try {
+      await updateLead({
+        id: leadId,
+        status: "DEAL",
+        body: {},
+      }).unwrap();
+      toast.success("Lead converted to deal successfully!");
+      if (onConvert) {
+        onConvert({ value, city, serviceDetails });
+      }
+      if (onClose) onClose();
+    } catch (err: any) {
+      const errMsg = err?.data?.message || err?.message || "Failed to convert lead.";
+      toast.error(errMsg);
     }
   };
 
@@ -402,7 +424,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
             boxSizing: "border-box",
           }}
         >
-          Convert
+          {isLoading ? "Converting..." : "Convert"}
         </button>
       </div>
     </div>

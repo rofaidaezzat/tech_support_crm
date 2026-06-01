@@ -51,16 +51,25 @@ export interface CreateLeadRequest {
   source?: string;
   status?: string;
   assigned_to_id?: string;
+  company_name?: string;
+  next_follow_up?: string | null;
 }
 
 export interface UpdateLeadRequest {
   id: string;
+  status?: string;
+  priority?: string;
   body: {
     name?: string;
     phone?: string;
     source?: string;
     status?: string;
     assigned_to_id?: string;
+    company_name?: string;
+    next_follow_up?: string | null;
+    value?: string;
+    city?: string;
+    service_details?: string;
   };
 }
 
@@ -131,11 +140,17 @@ export const leadsApi = createApi({
       invalidatesTags: [{ type: 'Lead', id: 'LIST' }],
     }),
     updateLead: builder.mutation<GetLeadResponse, UpdateLeadRequest>({
-      query: ({ id, body }) => ({
-        url: `api/v1/leads/${id}`,
-        method: 'PATCH',
-        body,
-      }),
+      query: ({ id, body, status, priority }) => {
+        const queryParams = new URLSearchParams();
+        if (status) queryParams.append('status', status);
+        if (priority) queryParams.append('priority', priority);
+        const queryString = queryParams.toString();
+        return {
+          url: `api/v1/leads/${id}${queryString ? `?${queryString}` : ''}`,
+          method: 'PATCH',
+          body,
+        };
+      },
       invalidatesTags: (result, error, { id }) => [
         { type: 'Lead', id },
         { type: 'Lead', id: 'LIST' },

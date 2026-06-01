@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useGetLeadQuery, useUpdateLeadMutation } from "../../app/service/crudleads";
 import { toast } from "sonner";
 import editIcon from "../../assets/edit-contained.svg";
@@ -52,6 +52,16 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [nextFollowup, setNextFollowup] = useState("");
 
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDatePickerClick = () => {
+    try {
+      dateInputRef.current?.showPicker();
+    } catch (e) {
+      console.warn("showPicker is not supported or failed", e);
+    }
+  };
+
   useEffect(() => {
     if (leadResponse?.data) {
       const lead = leadResponse.data;
@@ -94,7 +104,9 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         id: leadId,
         body: {
           name: leadName,
+          company_name: companyName,
           phone: phoneNumber,
+          next_follow_up: nextFollowup || null,
           source: leadResponse?.data?.source || "FACEBOOK",
         },
       }).unwrap();
@@ -293,7 +305,10 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               <label style={labelStyle}>
                 Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
-              <div style={{ position: "relative", width: "100%" }}>
+              <div 
+                onClick={handleDatePickerClick}
+                style={{ position: "relative", width: "100%", cursor: "pointer" }}
+              >
                 {/* Display formatted date as read-only overlay */}
                 <input
                   type="text"
@@ -309,6 +324,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                 />
                 {/* Hidden date picker */}
                 <input
+                  ref={dateInputRef}
                   type="date"
                   value={nextFollowup}
                   onChange={(e) => setNextFollowup(e.target.value)}
@@ -319,6 +335,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                     cursor: "pointer",
                     width: "100%",
                     height: "100%",
+                    zIndex: -1,
                   }}
                 />
                 {/* Calendar icon */}

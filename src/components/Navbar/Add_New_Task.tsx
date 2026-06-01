@@ -332,42 +332,74 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                       <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
                         Loading leads...
                       </div>
-                    ) : filteredLeads.length === 0 ? (
-                      <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
-                        No leads found
-                      </div>
                     ) : (
-                      filteredLeads.map((lead) => (
-                        <div
-                          key={lead.id}
-                          onClick={() => {
-                            setSelectedLead(lead.name);
-                            setSelectedLeadId(lead.id);
-                            setIsLeadDropdownOpen(false);
-                            setFormErrors((prev) => ({ ...prev, lead_id: undefined }));
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
-                          style={{
-                            display: "flex",
-                            padding: 8,
-                            alignItems: "center",
-                            gap: 8,
-                            background: selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
-                            cursor: "pointer",
-                            borderRadius: 8,
-                          }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-                            <path d="M1 19.1124C1 15.3369 4.15429 12.2762 10.6 12.2762C17.0457 12.2762 20.2 15.3369 20.2 19.1124C20.2 19.7131 19.7618 20.2 19.2212 20.2H1.97882C1.43823 20.2 1 19.7131 1 19.1124Z" stroke="#464646" strokeWidth="2"/>
-                            <path d="M14.2 4.6C14.2 6.58822 12.5882 8.2 10.6 8.2C8.61177 8.2 7 6.58822 7 4.6C7 2.61177 8.61177 1 10.6 1C12.5882 1 14.2 2.61177 14.2 4.6Z" stroke="#464646" strokeWidth="2"/>
-                          </svg>
-                          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>{lead.name}</span>
-                            <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280", marginTop: -2 }}>{lead.phone}</span>
+                      <>
+                        {filteredLeads.map((lead) => (
+                          <div
+                            key={lead.id}
+                            onClick={() => {
+                              setSelectedLead(lead.name);
+                              setSelectedLeadId(lead.id);
+                              setIsLeadDropdownOpen(false);
+                              setFormErrors((prev) => ({ ...prev, lead_id: undefined }));
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
+                            style={{
+                              display: "flex",
+                              padding: 8,
+                              alignItems: "center",
+                              gap: 8,
+                              background: selectedLead === lead.name ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                              cursor: "pointer",
+                              borderRadius: 8,
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                              <path d="M1 19.1124C1 15.3369 4.15429 12.2762 10.6 12.2762C17.0457 12.2762 20.2 15.3369 20.2 19.1124C20.2 19.7131 19.7618 20.2 19.2212 20.2H1.97882C1.43823 20.2 1 19.7131 1 19.1124Z" stroke="#464646" strokeWidth="2"/>
+                              <path d="M14.2 4.6C14.2 6.58822 12.5882 8.2 10.6 8.2C8.61177 8.2 7 6.58822 7 4.6C7 2.61177 8.61177 1 10.6 1C12.5882 1 14.2 2.61177 14.2 4.6Z" stroke="#464646" strokeWidth="2"/>
+                            </svg>
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>{lead.name}</span>
+                              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280", marginTop: -2 }}>{lead.phone}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))}
+                        {(!leadSearchText || "none".includes(leadSearchText.toLowerCase())) && (
+                          <div
+                            onClick={() => {
+                              setSelectedLead("None");
+                              setSelectedLeadId("");
+                              setIsLeadDropdownOpen(false);
+                              setFormErrors((prev) => ({ ...prev, lead_id: undefined }));
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = selectedLead === "None" ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
+                            style={{
+                              display: "flex",
+                              padding: 8,
+                              alignItems: "center",
+                              gap: 8,
+                              background: selectedLead === "None" ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                              cursor: "pointer",
+                              borderRadius: 8,
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                            </svg>
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>None</span>
+                            </div>
+                          </div>
+                        )}
+                        {filteredLeads.length === 0 && leadSearchText && !"none".includes(leadSearchText.toLowerCase()) && (
+                          <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
+                            No leads found
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

@@ -253,7 +253,7 @@ const Deals = () => {
         }}
       >
         {/* Left group */}
-        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", width: 644 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {/* Filter input */}
           <div
             style={{
@@ -385,49 +385,80 @@ const Deals = () => {
               </div>
             )}
           </div>
-        </div>
 
-        {/* Sort by button (Right group) */}
-        <div className="filter-bar-right" style={{ position: "relative" }}>
+          {/* Reset Filters */}
           <button
-            onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+            onClick={() => {
+              setDateFilter(null);
+              setValueFilter(null);
+              setCurrentPage(1);
+              setActiveFilter(null);
+            }}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              paddingRight: 12,
-              paddingLeft: 12,
-              height: 40,
-              width: 108,
-              gap: 8,
-              background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+              background: "transparent",
+              border: "none",
               cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
+              color: "var(--Foundation-brand-brand-500, #00236F)",
+              fontFamily: "Inter",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "normal",
+              padding: 0,
+              whiteSpace: "nowrap",
             }}
           >
-            Sort by
-            <ArrowDownUp size={16} color="#4B5563" />
+            Reset Filters
           </button>
-          {activeFilter === 'sort' && (
-            <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}>
-              <Sort
-                isOpen={true}
-                onClose={() => setActiveFilter(null)}
-                onApply={handleSortApply}
-                defaultValue={
-                  sortQuery === "created_at" ? "oldest" :
-                  sortQuery === "-created_at" ? "newest" :
-                  sortQuery === "value" ? "a-z" :
-                  sortQuery === "-value" ? "z-a" : "newest"
-                }
-              />
-            </div>
-          )}
+        </div>
+
+        {/* Right group: Sort by */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* Sort by button */}
+          <div className="filter-bar-right" style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                paddingRight: 12,
+                paddingLeft: 12,
+                height: 40,
+                width: 108,
+                gap: 8,
+                background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+              }}
+            >
+              Sort by
+              <ArrowDownUp size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'sort' && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}
+              >
+                <Sort
+                  isOpen={true}
+                  onClose={() => setActiveFilter(null)}
+                  onApply={handleSortApply}
+                  defaultValue={
+                    sortQuery === "created_at" ? "oldest" :
+                    sortQuery === "-created_at" ? "newest" :
+                    sortQuery === "value" ? "a-z" :
+                    sortQuery === "-value" ? "z-a" : "newest"
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

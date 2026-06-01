@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
-import { useGetLeadsQuery, useUpdateLeadStatusMutation } from '../app/service/crudleads';
+import { useGetLeadsQuery, useUpdateLeadMutation } from '../app/service/crudleads';
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
@@ -42,6 +42,40 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
     <div onClick={(e) => e.stopPropagation()}>{children}</div>
   </div>
 );
+
+const PRIORITY_OPTIONS = ["None", "Low", "Medium", "High", "Critical"];
+
+const getPriorityStyle = (priority: string) => {
+  const p = (priority || "").toLowerCase();
+  if (p === "critical") {
+    return {
+      dotColor: "#E03131",
+      textColor: "#E03131",
+    };
+  }
+  if (p === "high") {
+    return {
+      dotColor: "#E8590C",
+      textColor: "#E8590C",
+    };
+  }
+  if (p === "medium") {
+    return {
+      dotColor: "rgba(140, 106, 4, 1)",
+      textColor: "rgba(140, 106, 4, 1)",
+    };
+  }
+  if (p === "low") {
+    return {
+      dotColor: "#0CA678",
+      textColor: "#0CA678",
+    };
+  }
+  return {
+    dotColor: "#748899",
+    textColor: "#748899",
+  };
+};
 
 const STATUS_OPTIONS = [
   "Fresh",
@@ -298,9 +332,10 @@ const Leads = () => {
   }
 
   const { data: leadsData, isLoading } = useGetLeadsQuery(queryParams);
-  const [updateLeadStatus] = useUpdateLeadStatusMutation();
+  const [updateLead] = useUpdateLeadMutation();
   const [leads, setLeads] = useState<any[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [openPriorityDropdown, setOpenPriorityDropdown] = useState<number | null>(null);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
 
   useEffect(() => {
@@ -312,7 +347,7 @@ const Leads = () => {
         company: lead.company_name || "",
         status: STATUS_FROM_API[lead.status] || lead.status,
         phone: lead.phone,
-        priority: lead.priority ? lead.priority.charAt(0).toUpperCase() + lead.priority.slice(1).toLowerCase() : "",
+        priority: lead.priority ? lead.priority.charAt(0).toUpperCase() + lead.priority.slice(1).toLowerCase() : "None",
         source: lead.source,
         followup: formatDate(lead.next_follow_up),
         assignedToName: lead.assigned_to ? `${lead.assigned_to.first_name} ${lead.assigned_to.last_name}`.trim() : "",
@@ -340,6 +375,7 @@ const Leads = () => {
   const [aiQuery, setAiQuery] = useState("");
 
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const priorityDropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Close dropdown when clicking outside
@@ -351,6 +387,12 @@ const Leads = () => {
           setOpenDropdown(null);
         }
       }
+      if (openPriorityDropdown !== null) {
+        const ref = priorityDropdownRefs.current[openPriorityDropdown];
+        if (ref && !ref.contains(e.target as Node)) {
+          setOpenPriorityDropdown(null);
+        }
+      }
       if (openActionMenu !== null) {
         const ref = actionMenuRefs.current[openActionMenu];
         if (ref && !ref.contains(e.target as Node)) {
@@ -360,7 +402,7 @@ const Leads = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openDropdown, openActionMenu]);
+  }, [openDropdown, openPriorityDropdown, openActionMenu]);
 
   const handleStatusChange = async (leadIndex: number, newStatus: string) => {
     // "Deal" opens the Convert to Deal modal instead of calling the status API
@@ -378,9 +420,10 @@ const Leads = () => {
     );
     setOpenDropdown(null);
     try {
-      await updateLeadStatus({
+      await updateLead({
         id: lead.id,
-        body: { status: STATUS_TO_API[newStatus] || newStatus },
+        status: STATUS_TO_API[newStatus] || newStatus,
+        body: {},
       }).unwrap();
     } catch (err: any) {
       // Revert optimistic update on error
@@ -388,6 +431,31 @@ const Leads = () => {
         prev.map((l, i) => (i === leadIndex ? { ...l, status: lead.status } : l))
       );
       let errMsg = err?.data?.message || err?.message || "Failed to update status.";
+      if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
+      toast.error(errMsg);
+    }
+  };
+
+  const handlePriorityChange = async (leadIndex: number, newPriority: string) => {
+    const lead = leads[leadIndex];
+    if (!lead?.id) return;
+    // Optimistic local update
+    setLeads((prev) =>
+      prev.map((l, i) => (i === leadIndex ? { ...l, priority: newPriority } : l))
+    );
+    setOpenPriorityDropdown(null);
+    try {
+      await updateLead({
+        id: lead.id,
+        priority: newPriority === "None" ? "NONE" : newPriority.toUpperCase(),
+        body: {},
+      }).unwrap();
+    } catch (err: any) {
+      // Revert optimistic update on error
+      setLeads((prev) =>
+        prev.map((l, i) => (i === leadIndex ? { ...l, priority: lead.priority } : l))
+      );
+      let errMsg = err?.data?.message || err?.message || "Failed to update priority.";
       if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
       toast.error(errMsg);
     }
@@ -746,57 +814,91 @@ const Leads = () => {
               </div>
             )}
           </div>
-        </div>
 
-        <div className="filter-bar-right" style={{ position: "relative" }}>
+          {/* Reset Filters */}
           <button
-            onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+            onClick={() => {
+              setDateFilter(null);
+              setSelectedStatuses([]);
+              setSelectedPriorities([]);
+              setSelectedSources([]);
+              setFollowUpFilter(null);
+              setCurrentPage(1);
+              setActiveFilter(null);
+            }}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(212, 213, 216, 1)",
-              borderRadius: 12,
-              padding: "0 12px",
-              height: 40,
-              width: 108,
-              gap: 8,
-              background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+              background: "transparent",
+              border: "none",
               cursor: "pointer",
-              fontFamily: "Inter, sans-serif",
-              fontSize: 14,
-              color: "#4B5563",
-              boxSizing: "border-box",
+              color: "var(--Foundation-brand-brand-500, #00236F)",
+              fontFamily: "Inter",
+              fontSize: 16,
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "normal",
+              padding: 0,
+              whiteSpace: "nowrap",
             }}
           >
-            Sort by
-            <ArrowDownUp size={16} color="#4B5563" />
+            Reset Filters
           </button>
-          {activeFilter === 'sort' && (
-            <div style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}>
-              <Sort
-                isOpen={true}
-                onClose={() => setActiveFilter(null)}
-                onApply={(val) => {
-                  let apiSort = "-created_at";
-                  if (val === "oldest") apiSort = "created_at";
-                  else if (val === "newest") apiSort = "-created_at";
-                  else if (val === "a-z") apiSort = "name";
-                  else if (val === "z-a") apiSort = "-name";
-                  
-                  setSortQuery(apiSort);
-                  setCurrentPage(1);
-                  setActiveFilter(null);
-                }}
-                defaultValue={
-                  sortQuery === "created_at" ? "oldest" :
-                  sortQuery === "-created_at" ? "newest" :
-                  sortQuery === "name" ? "a-z" :
-                  sortQuery === "-name" ? "z-a" : "newest"
-                }
-              />
-            </div>
-          )}
+        </div>
+
+        {/* Right group: Sort by */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div className="filter-bar-right" style={{ position: "relative" }}>
+            <button
+              onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(212, 213, 216, 1)",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                width: 108,
+                gap: 8,
+                background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+              }}
+            >
+              Sort by
+              <ArrowDownUp size={16} color="#4B5563" />
+            </button>
+            {activeFilter === 'sort' && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}
+              >
+                <Sort
+                  isOpen={true}
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(val) => {
+                    let apiSort = "-created_at";
+                    if (val === "oldest") apiSort = "created_at";
+                    else if (val === "newest") apiSort = "-created_at";
+                    else if (val === "a-z") apiSort = "name";
+                    else if (val === "z-a") apiSort = "-name";
+                    
+                    setSortQuery(apiSort);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  defaultValue={
+                    sortQuery === "created_at" ? "oldest" :
+                    sortQuery === "-created_at" ? "newest" :
+                    sortQuery === "name" ? "a-z" :
+                    sortQuery === "-name" ? "z-a" : "newest"
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1045,33 +1147,120 @@ const Leads = () => {
               <div style={{ width: 58, flexShrink: 0, display: "flex", alignItems: "center" }}>
                 <img src={mail04Icon} alt="Message" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsMessagesOpen(true)} />
               </div>
+
               {/* Priority */}
-              <div style={{ width: 60, flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}>
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: "rgba(140, 106, 4, 1)",
-                    display: "inline-block",
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    width: 50,
-                    height: 18,
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    lineHeight: "140%",
-                    letterSpacing: "0%",
-                    color: "rgba(140, 106, 4, 1)",
-                    whiteSpace: "nowrap",
-                  }}
+              <div 
+                style={{ width: 60, flexShrink: 0, position: "relative" }}
+                ref={(el) => { priorityDropdownRefs.current[i] = el; }}
+              >
+                <div
+                  onClick={() => setOpenPriorityDropdown(openPriorityDropdown === i ? null : i)}
+                  style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}
                 >
-                  {lead.priority}
-                </span>
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: getPriorityStyle(lead.priority).dotColor,
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      width: 50,
+                      height: 18,
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 400,
+                      fontSize: 13,
+                      lineHeight: "140%",
+                      letterSpacing: "0%",
+                      color: getPriorityStyle(lead.priority).textColor,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {lead.priority}
+                  </span>
+                </div>
+
+                {/* Priority Dropdown */}
+                {openPriorityDropdown === i && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
+                      borderRadius: 12,
+                      background: "var(--Foundation-neutral-white, #FFF)",
+                      boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
+                      display: "inline-flex",
+                      flexDirection: "column",
+                      padding: 12,
+                      alignItems: "flex-start",
+                      gap: 4,
+                      minWidth: 130,
+                      border: "1px solid rgba(212, 213, 216, 1)",
+                    }}
+                  >
+                    {PRIORITY_OPTIONS.map((option) => {
+                      const isSelected = lead.priority === option;
+                      return (
+                        <div
+                          key={option}
+                          onClick={() => handlePriorityChange(i, option)}
+                          style={{
+                            display: "inline-flex",
+                            height: 40,
+                            padding: 8,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 8,
+                            alignSelf: "stretch",
+                            cursor: "pointer",
+                            borderRadius: 8,
+                            transition: "background 0.2s ease",
+                            background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent";
+                          }}
+                        >
+                          {/* Radio circle */}
+                          <div
+                            style={{
+                              width: 18,
+                              height: 18,
+                              borderRadius: "50%",
+                              border: isSelected
+                                ? "5px solid rgba(0, 35, 111, 1)"
+                                : "2px solid rgba(212, 213, 216, 1)",
+                              boxSizing: "border-box",
+                              background: "#fff",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span
+                            style={{
+                              fontFamily: "Inter, sans-serif",
+                              fontSize: 14,
+                              fontWeight: 400,
+                              color: isSelected ? "rgba(0, 35, 111, 1)" : "rgba(70, 70, 70, 1)",
+                              userSelect: "none",
+                            }}
+                          >
+                            {option}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Lead Source */}
@@ -1082,18 +1271,17 @@ const Leads = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     background: "rgba(231, 253, 253, 1)",
-                    width: 58,
                     height: 24,
                     borderRadius: 12,
-                    padding: 4,
-                    gap: 8,
+                    padding: "4px 8px",
                     boxSizing: "border-box",
                     fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 12,
+                    fontWeight: 500,
+                    fontSize: 9,
                     color: "#0E7490",
                     whiteSpace: "nowrap",
                     flexShrink: 0,
+                    maxWidth: "100%",
                   }}
                 >
                   {lead.source}
