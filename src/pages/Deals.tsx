@@ -8,6 +8,7 @@ import mailIcon from '../assets/message-text-02 (1).svg';
 import editPenIcon from '../assets/edit-04.svg';
 import Pagination from '../components/Pagination';
 import Add_new_deal from '../components/Deals/Add_new_deal';
+import Empty_table from '../components/Empty_table';
 import Notes from '../components/Deals/Notes';
 import Service_details from '../components/Deals/Service_details';
 import EditDealValue from '../components/Deals/EditDealValue';
@@ -527,7 +528,7 @@ const Deals = () => {
           {isLoading ? (
             <div style={{ padding: "20px", textAlign: "center", color: "#6B7280" }}>Loading deals...</div>
           ) : filteredDeals.length === 0 ? (
-            <div style={{ padding: "20px", textAlign: "center", color: "#6B7280" }}>No deals found.</div>
+            <Empty_table message="No deals added yet..." />
           ) : (
             filteredDeals.map((deal, i, arr) => {
               const formattedDate = new Date(deal.created_at).toLocaleDateString('en-GB');

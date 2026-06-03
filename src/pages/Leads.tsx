@@ -18,6 +18,7 @@ import Add_new_lead from '../components/Leads/Add_new_lead';
 import Edit_lead_info from '../components/Leads/Edit_lead_info';
 import Convert_to_deal from '../components/Leads/Convert_to_deal';
 import Lead_form from '../components/Leads/Lead_form';
+import Empty_table from '../components/Empty_table';
 import Notes from '../components/Deals/Notes';
 import Leads_messages from '../components/Leads/Leads_messages';
 import StatusTimeline from '../components/Leads/StatusTimeline';
@@ -1030,9 +1031,7 @@ const Leads = () => {
               Loading leads...
             </div>
           ) : leads.length === 0 ? (
-            <div style={{ padding: "40px", textAlign: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
-              No leads found.
-            </div>
+            <Empty_table message="No leads added yet..." />
           ) : (
             leads.map((lead, i) => (
               <div

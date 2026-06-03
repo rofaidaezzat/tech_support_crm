@@ -10,6 +10,7 @@ import Top_Periority_notes from '../components/Reports/Top_Periority_notes';
 import DateFilter from '../components/Filteration/Date';
 import Value from '../components/Filteration/Value';
 import { Sort } from '../components/Filteration/Sort';
+import Empty_table from '../components/Empty_table';
 
 const Reports = () => {
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
@@ -17,6 +18,20 @@ const Reports = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+
+  const reports = [
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
+  ];
+
   return (
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
       {/* ── Header ── */}
@@ -342,92 +357,85 @@ const Reports = () => {
 
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
-          {[
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-            { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-          ].map((report, i, arr) => (
-            <div
-              key={i}
-              className="responsive-table-row"
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px 12px",
-                boxSizing: "border-box",
-                height: 72,
-                borderBottom: i < arr.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
-              }}
-            >
-              {/* Date */}
-              <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                {report.date}
-              </div>
-
-              {/* Created by */}
-              {isSalesManager && (
-                <div style={{
-                  color: "var(--Foundation-neutral-neutral-800, #464646)",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 13,
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "140%",
-                  width: 146,
-                  flexShrink: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}>
-                  {report.createdBy}
+          {reports.length === 0 ? (
+            <Empty_table message="No reports added yet..." />
+          ) : (
+            reports.map((report, i, arr) => (
+              <div
+                key={i}
+                className="responsive-table-row"
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "16px 12px",
+                  boxSizing: "border-box",
+                  height: 72,
+                  borderBottom: i < arr.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
+                }}
+              >
+                {/* Date */}
+                <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  {report.date}
                 </div>
-              )}
 
-              {/* Calls */}
-              <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                66666
-              </div>
+                {/* Created by */}
+                {isSalesManager && (
+                  <div style={{
+                    color: "var(--Foundation-neutral-neutral-800, #464646)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 13,
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "140%",
+                    width: 146,
+                    flexShrink: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {report.createdBy}
+                  </div>
+                )}
 
-              {/* Contacts */}
-              <div style={{ width: 59, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                888
-              </div>
+                {/* Calls */}
+                <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  66666
+                </div>
 
-              {/* Followups */}
-              <div style={{ width: 65, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                444
-              </div>
+                {/* Contacts */}
+                <div style={{ width: 59, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  888
+                </div>
 
-              {/* Meetings */}
-              <div style={{ width: 60, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                888
-              </div>
+                {/* Followups */}
+                <div style={{ width: 65, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  444
+                </div>
 
-              {/* Deals */}
-              <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                888
-              </div>
+                {/* Meetings */}
+                <div style={{ width: 60, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  888
+                </div>
 
-              {/* Deals Value */}
-              <div style={{ width: 96, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                120,000,000
-              </div>
+                {/* Deals */}
+                <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  888
+                </div>
 
-              {/* Top Priority & notes */}
-              <div style={{ width: 125, flexShrink: 0, display: "flex", alignItems: "center" }}>
-                <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesModalOpen(true)} />
+                {/* Deals Value */}
+                <div style={{ width: 96, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
+                  120,000,000
+                </div>
+
+                {/* Top Priority & notes */}
+                <div style={{ width: 125, flexShrink: 0, display: "flex", alignItems: "center" }}>
+                  <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesModalOpen(true)} />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
