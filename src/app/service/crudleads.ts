@@ -15,6 +15,7 @@ export interface Lead {
   name: string;
   phone: string;
   email: string | null;
+  company_name: string | null;
   source: string;
   status: string;
   next_follow_up: string | null;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import closeIcon from '../../assets/x-02.svg';
 import "../../styles/leads-modal-mobile.css";
 import { 
@@ -22,60 +22,28 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
   const [activeTab, setActiveTab] = useState<'PRIVATE' | 'PUBLIC'>('PRIVATE');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [contentError, setContentError] = useState<string>("");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   // RTK Query API Hooks (skipped if leadId is not provided)
-  const { data: notesResponse } = useGetNotesForLeadQuery(leadId || "", { skip: !leadId });
+  const { data: notesResponse, error: fetchError } = useGetNotesForLeadQuery(leadId || "", { skip: !leadId });
   const [createNote] = useCreateNoteMutation();
   const [updateNote] = useUpdateNoteMutation();
   const [deleteNote] = useDeleteNoteMutation();
 
-  // Local state mockup fallbacks when not loaded dynamically
-  const [localNotes, setLocalNotes] = useState<Note[]>(() => [
-    {
-      id: "mock-1",
-      tenant_id: "mock-tenant",
-      lead_id: "",
-      author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
-      content: "Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.",
-      note_type: "PRIVATE",
-      pinned: false,
-      pinned_at: null,
-      created_at: "2026-03-25T07:22:00.057Z",
-      updated_at: "2026-03-25T07:22:00.057Z"
-    },
-    {
-      id: "mock-2",
-      tenant_id: "mock-tenant",
-      lead_id: "",
-      author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
-      content: "Lorem ipsum dolor sit amet consectetur. Nec enim morbi tristique amet urna. Commodo venenatis libero in id aliquet morbi purus. Interdum commodo at amet eget. Tempor morbi tristique dapibus a dolor blandit.",
-      note_type: "PRIVATE",
-      pinned: false,
-      pinned_at: null,
-      created_at: "2026-03-25T07:22:00.057Z",
-      updated_at: "2026-03-25T07:22:00.057Z"
-    },
-    {
-      id: "mock-3",
-      tenant_id: "mock-tenant",
-      lead_id: "",
-      author: { id: "2", first_name: "Jane", last_name: "Smith", email: "" },
-      content: "Had a callback with the client. Discussed budget and pricing tiers.",
-      note_type: "PUBLIC",
-      pinned: false,
-      pinned_at: null,
-      created_at: "2026-03-25T08:30:00.000Z",
-      updated_at: "2026-03-25T08:30:00.000Z"
+  // If the query returns a 403 error, we set isUnauthorized to true
+  useEffect(() => {
+    if (fetchError && 'status' in fetchError && fetchError.status === 403) {
+      setIsUnauthorized(true);
     }
-  ]);
+  }, [fetchError]);
 
   // Derived notes list filtered by selected activeTab
-  const activeNotes = leadId 
-    ? (notesResponse?.data || []).filter(note => note.note_type === activeTab)
-    : localNotes.filter(note => note.note_type === activeTab);
+  const activeNotes = (notesResponse?.data || []).filter(note => note.note_type === activeTab);
 
   // Handle Note Submission (Create or Edit)
   const handleSubmitNote = async () => {
+    if (isUnauthorized) return;
+
     // Validate content before submitting
     const validation = validateNote({ content: noteText });
     if (!validation.isValid) {
@@ -95,15 +63,12 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           setEditingNoteId(null);
           setIsSubmitted(true);
           setTimeout(() => setIsSubmitted(false), 2000);
-        } catch (err) {
+        } catch (err: any) {
           console.error("Failed to edit note:", err);
+          if (err?.status === 403) {
+            setIsUnauthorized(true);
+          }
         }
-      } else {
-        setLocalNotes(prev => prev.map(n => n.id === editingNoteId ? { ...n, content: noteText, updated_at: new Date().toISOString() } : n));
-        setNoteText("");
-        setEditingNoteId(null);
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 2000);
       }
     } else {
       if (leadId) {
@@ -116,61 +81,52 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           setNoteText("");
           setIsSubmitted(true);
           setTimeout(() => setIsSubmitted(false), 2000);
-        } catch (err) {
+        } catch (err: any) {
           console.error("Failed to create note:", err);
+          if (err?.status === 403) {
+            setIsUnauthorized(true);
+          }
         }
-      } else {
-        const newNote: Note = {
-          id: `mock-${Date.now()}`,
-          tenant_id: "mock-tenant",
-          lead_id: "",
-          author: { id: "1", first_name: "Ahmed", last_name: "Yassin", email: "" },
-          content: noteText,
-          note_type: activeTab,
-          pinned: false,
-          pinned_at: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        setLocalNotes(prev => [newNote, ...prev]);
-        setNoteText("");
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 2000);
       }
     }
   };
 
   // Handle Note Deletion
   const handleDeleteNote = async (id: string) => {
+    if (isUnauthorized) return;
     if (leadId) {
       try {
         await deleteNote(id).unwrap();
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to delete note:", err);
+        if (err?.status === 403) {
+          setIsUnauthorized(true);
+        }
       }
-    } else {
-      setLocalNotes(prev => prev.filter(note => note.id !== id));
     }
   };
 
   // Handle Pin/Unpin Note Toggle
   const handleTogglePin = async (note: Note) => {
+    if (isUnauthorized) return;
     if (leadId) {
       try {
         await updateNote({
           id: note.id,
           body: { pinned: !note.pinned }
         }).unwrap();
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to pin note:", err);
+        if (err?.status === 403) {
+          setIsUnauthorized(true);
+        }
       }
-    } else {
-      setLocalNotes(prev => prev.map(n => n.id === note.id ? { ...n, pinned: !n.pinned } : n));
     }
   };
 
   // Handle Edit Action Click
   const handleEditClick = (note: Note) => {
+    if (isUnauthorized) return;
     setEditingNoteId(note.id);
     setNoteText(note.content);
   };
@@ -391,37 +347,46 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
                   <div style={{ display: "flex", gap: 8, width: 88, height: 24, justifyContent: "flex-end" }}>
                     {/* Flag/Pin Icon */}
                     <svg
-                      onClick={() => handleTogglePin(note)}
+                      onClick={isUnauthorized ? undefined : () => handleTogglePin(note)}
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill={note.pinned ? "#00236F" : "none"}
-                      style={{ cursor: "pointer" }}
+                      style={{ 
+                        cursor: isUnauthorized ? "not-allowed" : "pointer", 
+                        opacity: isUnauthorized ? 0.5 : 1 
+                      }}
                     >
                       <path d="M3 21H7.90909M5.45455 12.3913V3H21L18.5455 7.69565L21 12.3913H5.45455ZM5.45455 12.3913V20.2174" stroke={note.pinned ? "#00236F" : "#141414"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     {/* Edit Icon */}
                     <svg
-                      onClick={() => handleEditClick(note)}
+                      onClick={isUnauthorized ? undefined : () => handleEditClick(note)}
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill="none"
-                      style={{ cursor: "pointer" }}
+                      style={{ 
+                        cursor: isUnauthorized ? "not-allowed" : "pointer", 
+                        opacity: isUnauthorized ? 0.5 : 1 
+                      }}
                     >
                       <path d="M13.7992 19.5514H19.7992M4.19922 19.5514L8.5652 18.6717C8.79698 18.625 9.0098 18.5109 9.17694 18.3437L18.9506 8.56461C19.4192 8.09576 19.4189 7.33577 18.9499 6.86731L16.8795 4.79923C16.4107 4.33097 15.6511 4.33129 15.1827 4.79995L5.40798 14.58C5.24117 14.7469 5.12727 14.9593 5.08052 15.1906L4.19922 19.5514Z" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     {/* Trash/Delete Icon */}
                     <svg
-                      onClick={() => handleDeleteNote(note.id)}
+                      onClick={isUnauthorized ? undefined : () => handleDeleteNote(note.id)}
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill="none"
-                      style={{ cursor: "pointer" }}
+                      style={{ 
+                        cursor: isUnauthorized ? "not-allowed" : "pointer", 
+                        opacity: isUnauthorized ? 0.5 : 1 
+                      }}
                     >
                       <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -493,9 +458,10 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           ) : (
             <>
               <textarea
+                disabled={isUnauthorized}
                 value={noteText}
                 onChange={(e) => { setNoteText(e.target.value); if (contentError) setContentError(""); }}
-                placeholder={editingNoteId ? "Edit note..." : `Add ${activeTab.toLowerCase()} note...`}
+                placeholder={isUnauthorized ? "You do not have permission to add or edit notes" : (editingNoteId ? "Edit note..." : `Add ${activeTab.toLowerCase()} note...`)}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -511,7 +477,8 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
                   fontSize: 14,
                   resize: "none",
                   boxSizing: "border-box",
-                  background: "#fff",
+                  background: isUnauthorized ? "#E9ECEF" : "#fff",
+                  cursor: isUnauthorized ? "not-allowed" : "text",
                   transition: "border 0.2s, border-radius 0.2s",
                 }}
               />
@@ -529,7 +496,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
                   {contentError}
                 </span>
               )}
-              {noteText && (
+              {noteText && !isUnauthorized && (
                 <div
                   onClick={handleSubmitNote}
                   style={{

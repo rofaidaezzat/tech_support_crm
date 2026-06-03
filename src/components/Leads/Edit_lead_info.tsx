@@ -38,6 +38,14 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
+const SOURCE_OPTIONS: { label: string; value: string }[] = [
+  { label: "Organic",   value: "ORGANIC" },
+  { label: "Referral",  value: "REFERRAL" },
+  { label: "Ads",       value: "ADS" },
+  { label: "Website",   value: "WEBSITE" },
+  { label: "Farmer",    value: "FARMER" },
+];
+
 const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
   leadId,
   onClose,
@@ -50,7 +58,9 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
   const [leadName, setLeadName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [leadSource, setLeadSource] = useState("");
   const [nextFollowup, setNextFollowup] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -68,6 +78,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
       setLeadName(lead.name || "");
       setCompanyName(lead.company_name || "");
       setPhoneNumber(lead.phone || "");
+      setLeadSource(lead.source || "");
       if (lead.next_follow_up) {
         setNextFollowup(lead.next_follow_up.substring(0, 10));
       } else {
@@ -79,6 +90,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
   const isSaveEnabled =
     leadName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
+    leadSource.trim() !== "" &&
     !isUpdateLoading &&
     !isGetLoading;
 
@@ -89,7 +101,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
     const validation = validateLead({
       name: leadName,
       phone: phoneNumber,
-      source: leadResponse?.data?.source || "FACEBOOK",
+      source: leadSource,
       next_follow_up: nextFollowup || null,
     });
 
@@ -107,7 +119,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           company_name: companyName,
           phone: phoneNumber,
           next_follow_up: nextFollowup || null,
-          source: leadResponse?.data?.source || "FACEBOOK",
+          source: leadSource,
         },
       }).unwrap();
 
@@ -140,7 +152,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
       className="leads-modal-root"
       style={{
         width: 462,
-        height: 587,
+        height: 650,
         opacity: 1,
         display: "flex",
         flexDirection: "column",
@@ -224,11 +236,11 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         className="leads-modal-body"
         style={{
           width: 462,
-          height: 496,
+          height: 559,
           background: "rgba(245, 246, 250, 1)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
-          paddingTop: 32,
+          paddingTop: 24,
           paddingLeft: 20,
           paddingRight: 20,
           paddingBottom: 24,
@@ -236,7 +248,8 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          overflow: "hidden",
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         {isGetLoading ? (
@@ -246,10 +259,11 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         ) : (
           <div
             style={{
-              width: 422,
+              width: "100%",
               display: "flex",
               flexDirection: "column",
               gap: 16,
+              boxSizing: "border-box",
             }}
           >
             {/* Lead name */}
@@ -298,6 +312,118 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                 onFocus={handleFocus}
                 onBlur={handleBlur}
               />
+            </div>
+
+            {/* Lead Source */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={labelStyle}>
+                Lead Source<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+              </label>
+              <div style={{ position: "relative", width: "100%" }}>
+                {/* Custom Select Box */}
+                <div
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  style={{
+                    ...inputStyle,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    color: leadSource ? "#141414" : "#6B7280",
+                    cursor: "pointer",
+                    userSelect: "none",
+                    borderColor: "rgba(212, 213, 216, 1)",
+                  }}
+                >
+                  <span>{SOURCE_OPTIONS.find(o => o.value === leadSource)?.label || "Choose a lead source"}</span>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{
+                      transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.2s",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      marginTop: 8,
+                      background: "#fff",
+                      border: "1px solid rgba(212, 213, 216, 1)",
+                      borderRadius: 8,
+                      boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)",
+                      zIndex: 10,
+                      padding: "8px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      maxHeight: 200,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {SOURCE_OPTIONS.map(({ label, value }) => (
+                      <div
+                        key={value}
+                        onClick={() => {
+                          setLeadSource(value);
+                          setIsDropdownOpen(false);
+                        }}
+                        style={{
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          cursor: "pointer",
+                          background: leadSource === value ? "rgba(245, 246, 250, 1)" : "#fff",
+                          transition: "background 0.2s",
+                          boxSizing: "border-box",
+                          width: "100%",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
+                        onMouseLeave={(e) => {
+                          if (leadSource !== value) {
+                            e.currentTarget.style.background = "#fff";
+                          }
+                        }}
+                      >
+                        {/* Radio Button */}
+                        <div
+                          style={{
+                            width: 18,
+                            height: 18,
+                            borderRadius: "50%",
+                            border: leadSource === value ? "5px solid #00236F" : "2px solid #8B909A",
+                            boxSizing: "border-box",
+                            flexShrink: 0,
+                            transition: "border 0.2s",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: 14,
+                            color: leadSource === value ? "#00236F" : "#141414",
+                            fontWeight: leadSource === value ? 500 : 400,
+                          }}
+                        >
+                          {label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Next followup */}
@@ -362,7 +488,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               style={{
                 marginTop: 40,
                 alignSelf: "center",
-                width: 422,
+                width: "100%",
                 height: 48,
                 borderRadius: 12,
                 border: "none",

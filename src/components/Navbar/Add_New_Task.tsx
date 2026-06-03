@@ -8,6 +8,7 @@ import { useCreateTaskMutation } from "../../app/service/crudtasks";
 import { useGetLeadsQuery } from "../../app/service/crudleads";
 import { toast } from "sonner";
 import { validateTask } from "../../validation";
+import { getCookie } from "../../app/service/baseQuery";
 
 
 interface AddNewTaskProps {
@@ -62,6 +63,8 @@ const errorTextStyle: React.CSSProperties = {
 };
 
 const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
+  const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
+
   const [title, setTitle] = useState("");
   const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">("Lead");
   const [selectedLead, setSelectedLead] = useState("");
@@ -70,10 +73,25 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   const [leadSearchText, setLeadSearchText] = useState("");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
+  // Assign to (Sales Manager only)
+  const [selectedSalesName, setSelectedSalesName] = useState("");
+  const [selectedSalesId, setSelectedSalesId] = useState("");
+  const [isSalesDropdownOpen, setIsSalesDropdownOpen] = useState(false);
+  const [salesSearchText, setSalesSearchText] = useState("");
+
   const { data: leadsResponse, isLoading: isLoadingLeads } = useGetLeadsQuery();
   const leads = leadsResponse?.data || [];
   const filteredLeads = leads.filter((lead) =>
     lead.name.toLowerCase().includes(leadSearchText.toLowerCase())
+  );
+
+  const isLoadingSales = false;
+  const salesMembers = [
+    { id: "1", first_name: "Yasser", last_name: "Abdelhameed", email: "yasser@architectcrm.com" },
+    { id: "2", first_name: "Ahmed", last_name: "Galaal", email: "ahmedgalaal@architectcrm.com" },
+  ];
+  const filteredSales = salesMembers.filter((s) =>
+    `${s.first_name} ${s.last_name}`.toLowerCase().includes(salesSearchText.toLowerCase())
   );
 
   const [description, setDescription] = useState("");
@@ -114,6 +132,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
         title: title.trim(),
         description: description.trim(),
         lead_id: selectedLeadId || undefined,
+        sales_id: isSalesManager && selectedSalesId ? selectedSalesId : undefined,
         due_date: new Date(dueDate).toISOString(),
         reminder_at: reminderDate ? new Date(reminderDate).toISOString() : undefined,
         priority: priorityMap[priority as string] ?? "MEDIUM",
@@ -254,9 +273,137 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             {formErrors.title && <span style={errorTextStyle}>{formErrors.title}</span>}
           </div>
 
+          {/* Assign To — SALES_MANAGER only */}
+          {isSalesManager && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={labelStyle}>Assign to</label>
+              <div style={{ position: "relative", width: "100%" }}>
+                <div
+                  onClick={() => setIsSalesDropdownOpen(!isSalesDropdownOpen)}
+                  style={{
+                    ...inputStyle,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span style={{ color: selectedSalesName ? "#141414" : "#9CA3AF" }}>
+                    {selectedSalesName || "Select sales name"}
+                  </span>
+                  <ChevronDown size={16} color="#6B7280" />
+                </div>
+                {isSalesDropdownOpen && (
+                  <div
+                    className="task-modal-dropdown"
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      marginTop: 4,
+                      width: 425,
+                      height: 280,
+                      background: "rgba(255, 255, 255, 1)",
+                      borderRadius: 12,
+                      boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+                      padding: 12,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 16,
+                      zIndex: 100,
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {/* Search */}
+                    <div className="task-modal-dropdown-inner" style={{ position: "relative", width: 401, height: 40, flexShrink: 0 }}>
+                      <Search size={18} color="#9CA3AF" style={{ position: "absolute", left: 12, top: 11 }} />
+                      <input
+                        type="text"
+                        placeholder="Search by sales name"
+                        value={salesSearchText}
+                        onChange={(e) => setSalesSearchText(e.target.value)}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          border: "1px solid rgba(212, 213, 216, 1)",
+                          borderRadius: 12,
+                          padding: "8px 12px 8px 38px",
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: 14,
+                          outline: "none",
+                          boxSizing: "border-box",
+                          background: "transparent",
+                          color: "#141414",
+                        }}
+                      />
+                    </div>
+                    {/* List */}
+                    <div
+                      className="task-modal-dropdown-inner"
+                      style={{
+                        width: 401,
+                        flex: 1,
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                      }}
+                    >
+                      {isLoadingSales ? (
+                        <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
+                          Loading...
+                        </div>
+                      ) : filteredSales.length === 0 ? (
+                        <div style={{ padding: "12px", textAlign: "center", color: "#6B7280", fontFamily: "Inter, sans-serif", fontSize: 13 }}>
+                          No sales members found
+                        </div>
+                      ) : (
+                        filteredSales.map((member) => {
+                          const fullName = `${member.first_name} ${member.last_name}`;
+                          const isSelected = selectedSalesId === member.id;
+                          return (
+                            <div
+                              key={member.id}
+                              onClick={() => {
+                                setSelectedSalesName(fullName);
+                                setSelectedSalesId(member.id);
+                                setIsSalesDropdownOpen(false);
+                                setSalesSearchText("");
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-50, #E6E9F1)")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent")}
+                              style={{
+                                display: "flex",
+                                padding: 8,
+                                alignItems: "center",
+                                gap: 8,
+                                background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                                cursor: "pointer",
+                                borderRadius: 8,
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                                <path d="M1 19.1124C1 15.3369 4.15429 12.2762 10.6 12.2762C17.0457 12.2762 20.2 15.3369 20.2 19.1124C20.2 19.7131 19.7618 20.2 19.2212 20.2H1.97882C1.43823 20.2 1 19.7131 1 19.1124Z" stroke="#464646" strokeWidth="2"/>
+                                <path d="M14.2 4.6C14.2 6.58822 12.5882 8.2 10.6 8.2C8.61177 8.2 7 6.58822 7 4.6C7 2.61177 8.61177 1 10.6 1C12.5882 1 14.2 2.61177 14.2 4.6Z" stroke="#464646" strokeWidth="2"/>
+                              </svg>
+                              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#141414", fontWeight: 400 }}>{fullName}</span>
+                                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280", marginTop: -2 }}>{member.email}</span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Related To */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <label style={labelStyle}>Related to Lead</label>
+            <label style={labelStyle}>{isSalesManager ? "Related to" : "Related to Lead"}</label>
             <div style={{ position: "relative", width: "100%" }}>
               <div
                 onClick={() => setIsLeadDropdownOpen(!isLeadDropdownOpen)}

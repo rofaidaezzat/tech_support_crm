@@ -1339,7 +1339,7 @@ const Leads = () => {
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
                       onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setIsStatusTimelineOpen(true); setOpenActionMenu(null); }}
+                      onClick={() => { setSelectedLeadId(lead.id); setIsStatusTimelineOpen(true); setOpenActionMenu(null); }}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 16" fill="none">
                         <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1423,9 +1423,13 @@ const Leads = () => {
           <Leads_messages onClose={() => setIsMessagesOpen(false)} />
         </ModalOverlay>
       )}
-      {isStatusTimelineOpen && (
-        <ModalOverlay onClose={() => setIsStatusTimelineOpen(false)}>
-          <StatusTimeline onClose={() => setIsStatusTimelineOpen(false)} leadName="John Dorghamasadsad" />
+      {isStatusTimelineOpen && selectedLeadId && (
+        <ModalOverlay onClose={() => { setIsStatusTimelineOpen(false); setSelectedLeadId(null); }}>
+          <StatusTimeline 
+            onClose={() => { setIsStatusTimelineOpen(false); setSelectedLeadId(null); }} 
+            leadId={selectedLeadId}
+            leadName={leads.find(l => l.id === selectedLeadId)?.name || ""}
+          />
         </ModalOverlay>
       )}
 

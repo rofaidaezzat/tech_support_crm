@@ -8,6 +8,7 @@ import thumbUpIcon from "../../assets/thumb up.svg";
 import meetingIcon from "../../assets/team meeting.svg";
 import dealIcon from "../../assets/Deal.svg";
 import vectorIcon from "../../assets/Vector.svg";
+import { useGetAssignmentHistoryQuery } from "../../app/service/crudAssignment_lead";
 
 interface TimelineEntry {
   status: string;
@@ -21,6 +22,7 @@ interface StatusTimelineProps {
   onClose?: () => void;
   leadName?: string;
   entries?: TimelineEntry[];
+  leadId?: string;
 }
 
 const DEFAULT_ENTRIES: TimelineEntry[] = [
@@ -31,11 +33,76 @@ const DEFAULT_ENTRIES: TimelineEntry[] = [
   { status: "Deal",           date: "20/4/2025", person: "Mohammed Yasser", icon: dealIcon, color: "#00236F" },
 ];
 
+const formatDate = (isoString?: string | null) => {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return "";
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const getStatusConfig = (status: string) => {
+  const normalized = (status || "").toUpperCase();
+  switch (normalized) {
+    case "FRESH":
+      return { label: "Fresh", icon: vectorIcon };
+    case "INTERESTED":
+      return { label: "Interested", icon: thumbUpIcon };
+    case "NOT_INTERESTED":
+      return { label: "Not interested", icon: thumbDownIcon };
+    case "MEETING":
+      return { label: "Meeting", icon: meetingIcon };
+    case "AFTER_MEETING_FOLLOWUP":
+      return { label: "After meeting followup", icon: meetingIcon };
+    case "WRONG_NUMBER":
+      return { label: "Wrong number", icon: thumbDownIcon };
+    case "NO_ANSWER":
+      return { label: "No answer", icon: thumbDownIcon };
+    case "DEAL":
+      return { label: "Deal", icon: dealIcon, color: "#00236F" };
+    default:
+      return { label: status, icon: vectorIcon };
+  }
+};
+
+const getPersonName = (assignment: any) => {
+  if (assignment.sales) {
+    return `${assignment.sales.first_name} ${assignment.sales.last_name}`.trim();
+  }
+  if (assignment.assigned_by_user) {
+    return `${assignment.assigned_by_user.first_name} ${assignment.assigned_by_user.last_name}`.trim();
+  }
+  return "Unknown";
+};
+
 const StatusTimeline: React.FC<StatusTimelineProps> = ({
   onClose,
   leadName = "leads name",
-  entries = DEFAULT_ENTRIES,
+  entries: propEntries,
+  leadId,
 }) => {
+  const { data: historyData, isLoading } = useGetAssignmentHistoryQuery(leadId || "", {
+    skip: !leadId,
+  });
+
+  const entries = React.useMemo(() => {
+    if (propEntries) return propEntries;
+    if (!leadId || !historyData?.data) return DEFAULT_ENTRIES;
+
+    return historyData.data.map((item: any) => {
+      const config = getStatusConfig(item.status);
+      return {
+        status: config.label,
+        date: formatDate(item.assigned_at),
+        person: getPersonName(item),
+        icon: config.icon,
+        color: config.color,
+      };
+    });
+  }, [propEntries, historyData, leadId]);
+
   return (
     <div
       className="leads-modal-root"
@@ -50,6 +117,16 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        .skeleton-pulse {
+          animation: pulse 1.5s ease-in-out infinite;
+          background-color: #E2E8F0;
+        }
+      `}</style>
       {/* ── Header ── */}
       <div
         className="leads-modal-header"
@@ -134,86 +211,166 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 0, position: "relative" }}>
-          {entries.map((entry, idx) => (
-            <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
-              {/* Icon column + connecting dashed line */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  flexShrink: 0,
-                  width: 48,
-                }}
-              >
-                {/* Icon circle */}
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: "50%",
-                    background: "#EDEFF2",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    paddingRight: 0,
-                  }}
-                >
-                  <img
-                    src={entry.icon}
-                    alt={entry.status}
-                    style={{
-                      width: 24,
-                      height: 24,
-                      transform: "rotate(-90deg)",
-                      paddingRight: 0,
-                    }}
-                  />
-                </div>
-                {/* Dashed connector line (hide on last item) */}
-                {idx < entries.length - 1 && (
+          {isLoading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {[0, 1, 2].map((idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+                  {/* Icon column + connecting dashed line */}
                   <div
                     style={{
-                      width: 0,
-                      flexGrow: 1,
-                      minHeight: 28,
-                      borderLeft: "2px dashed #D4D5D8",
-                      margin: "4px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      flexShrink: 0,
+                      width: 48,
                     }}
-                  />
-                )}
-              </div>
+                  >
+                    {/* Icon circle placeholder */}
+                    <div
+                      className="skeleton-pulse"
+                      style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: "50%",
+                        flexShrink: 0,
+                      }}
+                    />
+                    {/* Dashed connector line placeholder (hide on last item) */}
+                    {idx < 2 && (
+                      <div
+                        style={{
+                          width: 0,
+                          flexGrow: 1,
+                          minHeight: 28,
+                          borderLeft: "2px dashed #D4D5D8",
+                          margin: "4px 0",
+                        }}
+                      />
+                    )}
+                  </div>
 
-              {/* Content */}
-              <div style={{ paddingBottom: idx < entries.length - 1 ? 28 : 0 }}>
-                <span
+                  {/* Content placeholder */}
+                  <div style={{ paddingBottom: idx < 2 ? 28 : 0, display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+                    {/* Status placeholder */}
+                    <div
+                      className="skeleton-pulse"
+                      style={{
+                        width: 120,
+                        height: 16,
+                        borderRadius: 4,
+                        marginTop: 4,
+                      }}
+                    />
+                    {/* Date placeholder */}
+                    <div
+                      className="skeleton-pulse"
+                      style={{
+                        width: 80,
+                        height: 12,
+                        borderRadius: 4,
+                        marginTop: 4,
+                      }}
+                    />
+                    {/* Person placeholder */}
+                    <div
+                      className="skeleton-pulse"
+                      style={{
+                        width: 100,
+                        height: 12,
+                        borderRadius: 4,
+                        marginTop: 4,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : entries.length === 0 ? (
+            <div style={{ padding: "40px", textAlign: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+              No timeline history found.
+            </div>
+          ) : (
+            entries.map((entry, idx) => (
+              <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+                {/* Icon column + connecting dashed line */}
+                <div
                   style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: entry.color ?? "#141414",
-                    display: "block",
-                    marginBottom: 6,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    flexShrink: 0,
+                    width: 48,
                   }}
                 >
-                  {entry.status}
-                </span>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                  <img src={calendarIcon} alt="Date" width={16} height={16} />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#6B7280" }}>
-                    {entry.date}
-                  </span>
+                  {/* Icon circle */}
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: "#EDEFF2",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      paddingRight: 0,
+                    }}
+                  >
+                    <img
+                      src={entry.icon}
+                      alt={entry.status}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        transform: "rotate(-90deg)",
+                        paddingRight: 0,
+                      }}
+                    />
+                  </div>
+                  {/* Dashed connector line (hide on last item) */}
+                  {idx < entries.length - 1 && (
+                    <div
+                      style={{
+                        width: 0,
+                        flexGrow: 1,
+                        minHeight: 28,
+                        borderLeft: "2px dashed #D4D5D8",
+                        margin: "4px 0",
+                      }}
+                    />
+                  )}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <img src={userIcon} alt="Person" width={16} height={16} />
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#6B7280" }}>
-                    {entry.person}
+
+                {/* Content */}
+                <div style={{ paddingBottom: idx < entries.length - 1 ? 28 : 0 }}>
+                  <span
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: entry.color ?? "#141414",
+                      display: "block",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {entry.status}
                   </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                    <img src={calendarIcon} alt="Date" width={16} height={16} />
+                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#6B7280" }}>
+                      {entry.date}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <img src={userIcon} alt="Person" width={16} height={16} />
+                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#6B7280" }}>
+                      {entry.person}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
