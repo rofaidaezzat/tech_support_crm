@@ -12,7 +12,7 @@ const OTP_Verification: React.FC = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
-  const [timer, setTimer] = useState(40);
+  const [timer, setTimer] = useState(30);
 
   const isOtpComplete = otp.every(digit => digit !== '');
 
@@ -34,7 +34,7 @@ const OTP_Verification: React.FC = () => {
     try {
       await resendOtp({ email, type: 'VERIFICATION' }).unwrap();
       toast.success("Verification code resent successfully!");
-      setTimer(40);
+      setTimer(30);
     } catch (err: any) {
       console.error('Failed to resend OTP:', err);
       const errMsg = err?.data?.message || err?.message || 'Failed to resend verification code.';

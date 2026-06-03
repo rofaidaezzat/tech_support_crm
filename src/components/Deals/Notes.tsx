@@ -197,7 +197,6 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
             </span>
           </div>
         </div>
-
         {/* Close Button */}
         <div
           onClick={onClose}
@@ -216,7 +215,6 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           <img src={closeIcon} alt="close" width={20} height={20} />
         </div>
       </div>
-
       {/* ── Tab Bar ── */}
       <div
         style={{
