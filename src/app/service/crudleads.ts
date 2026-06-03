@@ -71,6 +71,7 @@ export interface UpdateLeadRequest {
     value?: string;
     city?: string;
     service_details?: string;
+    priority?: string;
   };
 }
 
@@ -146,10 +147,19 @@ export const leadsApi = createApi({
         if (status) queryParams.append('status', status);
         if (priority) queryParams.append('priority', priority);
         const queryString = queryParams.toString();
+
+        const requestBody = { ...body };
+        if (priority && !requestBody.priority) {
+          requestBody.priority = priority;
+        }
+        if (status && !requestBody.status) {
+          requestBody.status = status;
+        }
+
         return {
           url: `api/v1/leads/${id}${queryString ? `?${queryString}` : ''}`,
           method: 'PATCH',
-          body,
+          body: requestBody,
         };
       },
       invalidatesTags: (result, error, { id }) => [

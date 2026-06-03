@@ -23,6 +23,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [contentError, setContentError] = useState<string>("");
   const [isUnauthorized, setIsUnauthorized] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   // RTK Query API Hooks (skipped if leadId is not provided)
   const { data: notesResponse, error: fetchError } = useGetNotesForLeadQuery(leadId || "", { skip: !leadId });
@@ -61,6 +62,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           }).unwrap();
           setNoteText("");
           setEditingNoteId(null);
+          setIsAdding(false);
           setIsSubmitted(true);
           setTimeout(() => setIsSubmitted(false), 2000);
         } catch (err: any) {
@@ -79,6 +81,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
             note_type: activeTab,
           }).unwrap();
           setNoteText("");
+          setIsAdding(false);
           setIsSubmitted(true);
           setTimeout(() => setIsSubmitted(false), 2000);
         } catch (err: any) {
@@ -129,6 +132,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
     if (isUnauthorized) return;
     setEditingNoteId(note.id);
     setNoteText(note.content);
+    setIsAdding(true);
   };
 
   return (
@@ -424,107 +428,167 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
           )}
         </div>
 
-        {/* ── Input Box / Success Bar ── */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 24,
-            left: 20,
-            width: 422,
-            height: isSubmitted ? 48 : 85,
-            boxSizing: "border-box",
-            transition: "height 0.2s",
-          }}
-        >
-          {isSubmitted ? (
-            <div
+        {/* ── Input Box / Success Bar or Floating Add Note Button ── */}
+        {!isAdding && !isSubmitted ? (
+          <button
+            onClick={() => {
+              if (!isUnauthorized) {
+                setIsAdding(true);
+              }
+            }}
+            disabled={isUnauthorized}
+            style={{
+              position: "absolute",
+              bottom: "24px",
+              right: "20px",
+              zIndex: 10,
+              borderRadius: "12px",
+              background: "var(--Foundation-brand-brand-500, #00236F)",
+              boxShadow: "0 0 3px 3px rgba(0, 0, 0, 0.13)",
+              display: "inline-flex",
+              height: "48px",
+              padding: "8px 24px",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "8px",
+              border: "none",
+              cursor: isUnauthorized ? "not-allowed" : "pointer",
+              opacity: isUnauthorized ? 0.6 : 1,
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 5V19M5 12H19"
+                stroke="var(--Foundation-neutral-neutral-25, #F5F6FA)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span
               style={{
-                borderRadius: 12,
-                background: "#00236F",
-                display: "flex",
-                width: "100%",
-                height: 48,
-                padding: "8px 24px",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 8,
-                boxSizing: "border-box",
+                color: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
+                textAlign: "center",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "normal",
               }}
             >
-              <span style={{ color: "#fff", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
-                {editingNoteId ? "Changes Saved" : "Save"}
-              </span>
-            </div>
-          ) : (
-            <>
-              <textarea
-                disabled={isUnauthorized}
-                value={noteText}
-                onChange={(e) => { setNoteText(e.target.value); if (contentError) setContentError(""); }}
-                placeholder={isUnauthorized ? "You do not have permission to add or edit notes" : (editingNoteId ? "Edit note..." : `Add ${activeTab.toLowerCase()} note...`)}
+              Add Note
+            </span>
+          </button>
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 24,
+              left: 20,
+              width: 422,
+              height: isSubmitted ? 48 : 85,
+              boxSizing: "border-box",
+              transition: "height 0.2s",
+            }}
+          >
+            {isSubmitted ? (
+              <div
                 style={{
+                  borderRadius: 12,
+                  background: "#00236F",
+                  display: "flex",
                   width: "100%",
-                  height: "100%",
-                  borderRadius: noteText ? 8 : 12,
-                  border: contentError
-                    ? "1px solid #E03131"
-                    : noteText
-                    ? "1px solid #00236F"
-                    : "1px solid rgba(212, 213, 216, 1)",
-                  padding: "12px 56px 12px 16px",
-                  outline: "none",
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 14,
-                  resize: "none",
+                  height: 48,
+                  padding: "8px 24px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 8,
                   boxSizing: "border-box",
-                  background: isUnauthorized ? "#E9ECEF" : "#fff",
-                  cursor: isUnauthorized ? "not-allowed" : "text",
-                  transition: "border 0.2s, border-radius 0.2s",
                 }}
-              />
-              {contentError && (
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: -20,
-                    left: 0,
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 12,
-                    color: "#E03131",
-                  }}
-                >
-                  {contentError}
+              >
+                <span style={{ color: "#fff", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
+                  {editingNoteId ? "Changes Saved" : "Save"}
                 </span>
-              )}
-              {noteText && !isUnauthorized && (
-                <div
-                  onClick={handleSubmitNote}
+              </div>
+            ) : (
+              <>
+                <textarea
+                  autoFocus
+                  disabled={isUnauthorized}
+                  value={noteText}
+                  onChange={(e) => { setNoteText(e.target.value); if (contentError) setContentError(""); }}
+                  placeholder={isUnauthorized ? "You do not have permission to add or edit notes" : (editingNoteId ? "Edit note..." : `Add ${activeTab.toLowerCase()} note...`)}
                   style={{
-                    position: "absolute",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    right: 12,
-                    display: "flex",
-                    width: 36,
-                    height: 36,
-                    padding: 6,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexShrink: 0,
-                    borderRadius: 12,
-                    background: "#00236F",
-                    boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
-                    cursor: "pointer",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: noteText ? 8 : 12,
+                    border: contentError
+                      ? "1px solid #E03131"
+                      : noteText
+                      ? "1px solid #00236F"
+                      : "1px solid rgba(212, 213, 216, 1)",
+                    padding: "12px 56px 12px 16px",
+                    outline: "none",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 14,
+                    resize: "none",
+                    boxSizing: "border-box",
+                    background: isUnauthorized ? "#E9ECEF" : "#fff",
+                    cursor: isUnauthorized ? "not-allowed" : "text",
+                    transition: "border 0.2s, border-radius 0.2s",
                   }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                    <path d="M1 1L6 6L1 11" stroke="#F5F6FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                  onBlur={() => {
+                    if (!noteText.trim()) {
+                      setIsAdding(false);
+                      setEditingNoteId(null);
+                    }
+                  }}
+                />
+                {contentError && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: -20,
+                      left: 0,
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 12,
+                      color: "#E03131",
+                    }}
+                  >
+                    {contentError}
+                  </span>
+                )}
+                {noteText && !isUnauthorized && (
+                  <div
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={handleSubmitNote}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      right: 12,
+                      display: "flex",
+                      width: 36,
+                      height: 36,
+                      padding: 6,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexShrink: 0,
+                      borderRadius: 12,
+                      background: "#00236F",
+                      boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.11)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+                      <path d="M1 1L6 6L1 11" stroke="#F5F6FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

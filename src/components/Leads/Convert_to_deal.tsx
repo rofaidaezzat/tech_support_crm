@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import checkSquareIcon from "../../assets/check-square-broken.svg";
 import closeIcon from "../../assets/x-02.svg";
 import "../../styles/leads-modal-mobile.css";
-import { useUpdateLeadMutation } from "../../app/service/crudleads";
+import { useUpdateLeadMutation, useGetLeadQuery } from "../../app/service/crudleads";
+import { useCreateDealMutation, useUpdateDealMutation, useGetDealsQuery } from "../../app/service/cruddeals";
 import { toast } from "sonner";
 
 import addressIcon from "../../assets/Address.svg";
@@ -26,7 +27,7 @@ const inputStyle: React.CSSProperties = {
   fontFamily: "Inter, sans-serif",
   fontSize: 14,
   color: "#141414",
- background: "transparent",
+  background: "transparent",
   outline: "none",
   boxSizing: "border-box",
   transition: "border-color 0.2s",
@@ -64,7 +65,13 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
   companyName = "Elshayeeb inc.",
   leadId,
 }) => {
-  const [updateLead, { isLoading }] = useUpdateLeadMutation();
+  const { data: leadResponse, isLoading: isLeadLoading } = useGetLeadQuery(leadId, { skip: !leadId });
+  const [updateLead, { isLoading: isLeadUpdating }] = useUpdateLeadMutation();
+  const [createDeal, { isLoading: isDealCreating }] = useCreateDealMutation();
+  const [updateDeal, { isLoading: isDealUpdating }] = useUpdateDealMutation();
+  const { data: dealsResponse, isLoading: isDealsLoading } = useGetDealsQuery();
+
+  const leadData = leadResponse?.data;
 
   const [value, setValue] = useState("");
   const [city, setCity] = useState("");
@@ -72,8 +79,11 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [citySearch, setCitySearch] = useState("");
 
+  const isMutationLoading = isLeadUpdating || isDealCreating || isDealUpdating;
+
   const isConvertEnabled =
-    !isLoading &&
+    !isMutationLoading &&
+    !isLeadLoading &&
     value.trim() !== "" && city.trim() !== "" && serviceDetails.trim() !== "";
 
   const handleConvert = async () => {
@@ -83,17 +93,85 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
       return;
     }
     try {
+      const isTransition = leadData?.status !== "DEAL";
+      const numericValue = Number(value);
+
+      if (isNaN(numericValue)) {
+        toast.error("Value must be a valid number.");
+        return;
+      }
+
+      // Normalize city to match the backend enum expectations ("CAIRO", "GIZA", or "ALEXANDRIA")
+      const normalizedCity = (() => {
+        const lower = city.trim().toLowerCase();
+        if (lower === "cairo") return "CAIRO";
+        if (lower === "giza") return "GIZA";
+        if (lower === "alexandria") return "ALEXANDRIA";
+        return "CAIRO"; // Fallback to CAIRO as OTHER is not allowed by the backend Deals API validator
+      })();
+
+      // 1. Update the Lead status
       await updateLead({
         id: leadId,
         status: "DEAL",
         body: {},
       }).unwrap();
-      toast.success("Lead converted to deal successfully!");
+
+      // 2. Create or update the Deal record
+      if (isTransition) {
+        // Create new deal
+        await createDeal({
+          phone: leadData?.phone || "",
+          name: leadData?.name || "",
+          source: leadData?.source || "WEBSITE",
+          city: normalizedCity,
+          value: numericValue,
+          deals_details: serviceDetails,
+          close_date: new Date().toISOString(),
+        }).unwrap();
+      } else {
+        // Update latest deal
+        const leadDeals = (dealsResponse?.data || []).filter((d) => d.lead_id === leadId);
+        const latestDeal = [...leadDeals].sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )[0];
+
+        if (latestDeal) {
+          await updateDeal({
+            id: latestDeal.id,
+            body: {
+              value: numericValue,
+              city: normalizedCity,
+              deals_details: serviceDetails,
+              close_date: new Date().toISOString(),
+            },
+          }).unwrap();
+        } else {
+          // Fallback: create deal if none found
+          await createDeal({
+            phone: leadData?.phone || "",
+            name: leadData?.name || "",
+            source: leadData?.source || "WEBSITE",
+            city: normalizedCity,
+            value: numericValue,
+            deals_details: serviceDetails,
+            close_date: new Date().toISOString(),
+          }).unwrap();
+        }
+      }
+
+      toast.success(
+        isTransition
+          ? "Lead converted to deal successfully!"
+          : "Deal details updated successfully!"
+      );
+
       if (onConvert) {
         onConvert({ value, city, serviceDetails });
       }
       if (onClose) onClose();
     } catch (err: any) {
+      console.error("Conversion failed:", err);
       const errMsg = err?.data?.message || err?.message || "Failed to convert lead.";
       toast.error(errMsg);
     }
@@ -106,7 +184,35 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
     e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)";
   };
 
-  const cities = ["City Name 1", "City Name 2", "City Name 3", "City Name 4", "City Name 5"];
+  const cities = [
+    "Cairo",
+    "Giza",
+    "Alexandria",
+    "Qalyubia",
+    "Sharqia",
+    "Dakahlia",
+    "Beheira",
+    "Minya",
+    "Gharbia",
+    "Sohag",
+    "Monufia",
+    "Assiut",
+    "Kafr El Sheikh",
+    "Faiyum",
+    "Qena",
+    "Beni Suef",
+    "Damietta",
+    "Aswan",
+    "Ismailia",
+    "Luxor",
+    "Port Said",
+    "Suez",
+    "Red Sea",
+    "North Sinai",
+    "South Sinai",
+    "Matrouh",
+    "New Valley"
+  ];
 
   return (
     <div
@@ -222,7 +328,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
             </div>
             {/* Arrow */}
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 12H18M18 12L14 8M18 12L14 16" stroke="#D4D5D8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4 12H18M18 12L14 8M18 12L14 16" stroke="#D4D5D8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <div
               style={{
@@ -287,7 +393,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
                   flexShrink: 0,
                 }}
               >
-                <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
 
@@ -424,7 +530,7 @@ const Convert_to_deal: React.FC<ConvertToDealProps> = ({
             boxSizing: "border-box",
           }}
         >
-          {isLoading ? "Converting..." : "Convert"}
+          {isMutationLoading ? "Converting..." : "Convert"}
         </button>
       </div>
     </div>

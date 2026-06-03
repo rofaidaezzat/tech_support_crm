@@ -306,6 +306,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
         flexDirection: "column",
         padding: "16px 24px",
         boxSizing: "border-box",
+        position: "relative",
       }}
     >
       {/* ── Header ── */}
@@ -394,7 +395,7 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
         style={{
           width: 470,
           flex: 1,
-          padding: "16px 0",
+          padding: "16px 0 80px 0",
           display: "flex",
           flexDirection: "column",
           gap: 16,
@@ -417,45 +418,55 @@ const Task_drawer: React.FC<TaskDrawerProps> = ({ onClose, onNewTask, onEditTask
         ))}
       </div>
 
-      {/* ── Footer ── */}
-      <div
+      {/* ── New Task Button (Absolutely Positioned Bottom-Right) ── */}
+      <button
+        onClick={() => onNewTask?.()}
+        className="task-drawer-footer-btn"
         style={{
-          padding: "24px 8px",
-          background: "#fff",
-          borderTop: "1px solid rgba(212, 213, 216, 0.5)",
-          display: "flex",
+          position: "absolute",
+          bottom: "24px",
+          right: "24px",
+          zIndex: 10,
+          background: "#00236F",
+          width: "151px",
+          height: "48px",
+          borderRadius: "12px",
+          border: "none",
+          boxShadow: "0px 2px 3px 0px #0000001C",
+          padding: "8px 24px",
+          display: "inline-flex",
+          alignItems: "center",
           justifyContent: "center",
+          gap: "8px",
+          cursor: "pointer",
+          opacity: 1,
+          transition: "background 0.2s, opacity 0.2s",
+          boxSizing: "border-box",
         }}
       >
-        <button
-          onClick={() => onNewTask?.()}
-          className="task-drawer-footer-btn"
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 5V19M5 12H19"
+            stroke="var(--Foundation-neutral-neutral-25, #F5F6FA)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span
           style={{
-            background: "rgba(0, 35, 111, 1)",
-            width: 505,
-            height: 48,
-            borderRadius: 12,
-            border: "none",
-            color: "#fff",
+            color: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
+            textAlign: "center",
             fontFamily: "Inter, sans-serif",
-            fontWeight: 600,
-            fontSize: 16,
-            padding: "8px 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            cursor: "pointer",
-            transition: "background 0.2s",
-            boxSizing: "border-box",
+            fontSize: "16px",
+            fontStyle: "normal",
+            fontWeight: 500,
+            lineHeight: "normal",
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5V19M5 12H19" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
           New Task
-        </button>
-      </div>
+        </span>
+      </button>
     </div>
   );
 };

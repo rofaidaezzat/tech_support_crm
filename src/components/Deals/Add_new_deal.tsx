@@ -126,7 +126,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
         name,
         phone,
         source,
-        city,
+        city: city === "OTHER" ? "CAIRO" : city,
         value: Number(value),
         deals_details: dealsDetails || undefined,
       }).unwrap();

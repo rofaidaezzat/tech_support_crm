@@ -280,7 +280,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
               className="support-drawer-header"
               style={{
                 display: 'flex',
-                width: '473px',
+                width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '24px',
@@ -350,7 +350,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
               className="support-drawer-inner"
               style={{
                 display: 'flex',
-                width: '473px',
+                width: '100%',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'flex-start',
@@ -426,7 +426,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                       style={{
                         background: 'var(--Foundation-brand-brand-50, #E6E9F1)',
                         display: 'flex',
-                        width: '473px',
+                        width: '100%',
                         padding: '8px 12px',
                         alignItems: 'flex-start',
                         gap: '12px',
@@ -583,16 +583,15 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
             <button
               onClick={() => setView('CREATE')}
               style={{
-                borderRadius: '99px',
+                borderRadius: '12px',
                 background: 'var(--Foundation-brand-brand-500, #00236F)',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.11)',
-                display: 'flex',
-                width: '40px',
-                height: '40px',
-                padding: '8px',
+                boxShadow: '0 0 3px 3px rgba(0, 0, 0, 0.13)',
+                display: 'inline-flex',
+                height: '48px',
+                padding: '8px 24px',
                 justifyContent: 'center',
                 alignItems: 'center',
-                aspectRatio: '1/1',
+                gap: '8px',
                 position: 'absolute',
                 bottom: '32px',
                 right: '24px',
@@ -602,7 +601,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                 transition: 'transform 0.2s ease, opacity 0.2s ease',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'scale(1.1)';
+                e.currentTarget.style.transform = 'scale(1.05)';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'scale(1)';
@@ -610,19 +609,33 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                style={{ width: '24px', height: '24px', flexShrink: 0 }}
+                style={{ width: '20px', height: '20px', flexShrink: 0 }}
               >
                 <path
-                  d="M12 4.80005L12 19.2M19.2 12L4.79999 12"
+                  d="M12 5V19M5 12H19"
                   stroke="#F5F6FA"
-                  strokeWidth="2"
+                  strokeWidth="2.4"
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
+              <span
+                style={{
+                  color: 'var(--Foundation-neutral-neutral-25, #F5F6FA)',
+                  textAlign: 'center',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '16px',
+                  fontStyle: 'normal',
+                  fontWeight: 500,
+                  lineHeight: 'normal',
+                }}
+              >
+                New ticket
+              </span>
             </button>
           </div>
         )}
@@ -644,7 +657,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
               className="support-drawer-header"
               style={{
                 display: 'flex',
-                width: '473px',
+                width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '32px',
@@ -798,7 +811,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Send Button container */}
-            <div className="support-drawer-send-container" style={{ display: 'flex', justifyContent: 'flex-end', width: '473px', marginTop: '40px' }}>
+            <div className="support-drawer-send-container" style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '40px' }}>
               <button
                 className="support-drawer-send-btn"
                 type="submit"
@@ -839,7 +852,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
               className="support-drawer-details-header"
               style={{
                 display: 'flex',
-                width: '473px',
+                width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '8px',
@@ -1006,6 +1019,8 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                           color: '#464646',
                           lineHeight: '1.5',
                           textAlign: 'left',
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
                         }}
                       >
                         {message.text}
