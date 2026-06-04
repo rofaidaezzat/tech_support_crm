@@ -9,6 +9,8 @@
   /* ── Drawer panel itself ── */
   .support-drawer-panel {
     width: 100vw !important;
+    height: 100vh !important;
+    top: 0 !important;
     padding: 24px 16px 16px 16px !important;
   }
 

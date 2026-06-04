@@ -33,6 +33,24 @@ const TaskCard = ({ onEdit, dueDateLabel, dueDateColor }: {
     reminderDate: "2026-04-02",
   };
 
+  const labelStyle: React.CSSProperties = {
+    fontFamily: "Inter, sans-serif",
+    fontSize: "13px",
+    fontStyle: "normal",
+    fontWeight: 400,
+    lineHeight: "140%",
+    color: "var(--Foundation-neutral-neutral-800, #464646)",
+  };
+
+  const dataStyle: React.CSSProperties = {
+    fontFamily: "Inter, sans-serif",
+    fontSize: "13px",
+    fontStyle: "normal",
+    fontWeight: 400,
+    lineHeight: "140%",
+    color: "var(--Foundation-neutral-neutral-950, #141414)",
+  };
+
   return (
     <div
       style={{
@@ -103,39 +121,49 @@ const TaskCard = ({ onEdit, dueDateLabel, dueDateColor }: {
           boxSizing: "border-box",
         }}
       >
-          <div className="st-card-left" style={{ display: "flex", flexDirection: "column", gap: 12, width: 216 }}>
+        <div className="st-card-left" style={{ display: "flex", flexDirection: "column", gap: 12, width: 216 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
             <img src={userProfileIcon} alt="User" width={16} height={16} />
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Lead Name:</span>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>{taskData.selectedLead}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={labelStyle}>Lead Name:</span>
+              <span style={dataStyle}>{taskData.selectedLead}</span>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
-            <img src={userProfileIcon} alt="User" width={16} height={16} />
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Assigned by:</span>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>Yasser Helmy</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 18 18" fill="none" style={{ flexShrink: 0 }}>
+              <path d="M0.833374 16.8333L0.833711 13.833C0.833898 12.1763 2.17699 10.8333 3.83371 10.8333H9.83325M12.8334 12.6905L14.8334 14.8333L16.8334 12.6905M14.8334 14.8333V9.33333M10.8334 3.83334C10.8334 5.49019 9.49023 6.83333 7.83337 6.83333C6.17652 6.83333 4.83337 5.49019 4.83337 3.83334C4.83337 2.17648 6.17652 0.833336 7.83337 0.833336C9.49023 0.833336 10.8334 2.17648 10.8334 3.83334Z" stroke="var(--Foundation-neutral-neutral-800, #464646)" strokeWidth={1.66667} strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={labelStyle}>Assigned by:</span>
+              <span style={dataStyle}>Yasser Helmy</span>
             </div>
           </div>
+          {taskData.reminderDate && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
+              <img src={bellIcon} alt="Bell" width={16} height={16} />
+              <span style={labelStyle}>
+                We will remind you at {new Date(taskData.reminderDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+              </span>
+            </div>
+          )}
         </div>
 
-          <div className="st-card-right" style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, paddingLeft: 16 }}>
+        <div className="st-card-right" style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, paddingLeft: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
             <img src={infoIcon} alt="Info" width={16} height={16} />
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Priority:</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={labelStyle}>Priority:</span>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#141414" }} />
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#141414", lineHeight: "140%" }}>Low</span>
+                <span style={dataStyle}>Low</span>
               </div>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, height: 20 }}>
             <img src={calendarIcon} alt="Calendar" width={16} height={16} />
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "#464646", lineHeight: "140%" }}>Due date:</span>
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: dueDateColor ?? "#EF4444", lineHeight: "140%" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={labelStyle}>Due date:</span>
+              <span style={{ ...dataStyle, color: dueDateColor ?? "#EF4444" }}>
                 {dueDateLabel ?? "Yesterday"}
               </span>
             </div>

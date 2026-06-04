@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, Filter, Sparkles, ChevronDown, ArrowDownUp } from 'lucide-react';
+import { Plus, Filter, Sparkles, ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
 import { useGetLeadsQuery, useUpdateLeadMutation } from '../app/service/crudleads';
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
@@ -44,7 +44,7 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
   </div>
 );
 
-const PRIORITY_OPTIONS = ["None", "Low", "Medium", "High", "Urgent"];
+const PRIORITY_OPTIONS = ["Low", "Medium", "High", "Urgent"];
 
 const getPriorityStyle = (priority: string) => {
   const p = (priority || "").toLowerCase();
@@ -68,8 +68,8 @@ const getPriorityStyle = (priority: string) => {
   }
   if (p === "low") {
     return {
-      dotColor: "#0CA678",
-      textColor: "#0CA678",
+      dotColor: "#464646",
+      textColor: "#464646",
     };
   }
   return {
@@ -370,6 +370,7 @@ const Leads = () => {
   // Filter Dropdowns & Modals
   type ActiveFilter = 'date' | 'status' | 'source' | 'followup' | 'sort' | 'priority' | null;
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
+  const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
 
   // Modal States
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
@@ -696,20 +697,54 @@ const Leads = () => {
             </div>
           )}
 
-
           {/* Date */}
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'date' ? null : 'date')}
+              onMouseEnter={() => setHoveredFilter('date')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
-                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: (activeFilter === 'date' || dateFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                width: 88,
+                gap: 8,
+                background: hoveredFilter === 'date' ? "#E6E9F1" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
               }}
             >
               Date
-              <ChevronDown size={16} color="#4B5563" />
+              {dateFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'date' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'date' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -737,15 +772,50 @@ const Leads = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'status' ? null : 'status')}
+              onMouseEnter={() => setHoveredFilter('status')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
-                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: (activeFilter === 'status' || selectedStatuses.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                minWidth: 88,
+                gap: 8,
+                background: hoveredFilter === 'status' ? "#E6E9F1" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
               }}
             >
               Status
-              <ChevronDown size={16} color="#4B5563" />
+              {selectedStatuses.length > 0 ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  {selectedStatuses.length}
+                </div>
+              ) : activeFilter === 'status' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'status' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -771,15 +841,50 @@ const Leads = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'priority' ? null : 'priority')}
+              onMouseEnter={() => setHoveredFilter('priority')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
-                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: (activeFilter === 'priority' || selectedPriorities.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                minWidth: 88,
+                gap: 8,
+                background: hoveredFilter === 'priority' ? "#E6E9F1" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
               }}
             >
               Priority
-              <ChevronDown size={16} color="#4B5563" />
+              {selectedPriorities.length > 0 ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  {selectedPriorities.length}
+                </div>
+              ) : activeFilter === 'priority' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'priority' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -805,15 +910,50 @@ const Leads = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'source' ? null : 'source')}
+              onMouseEnter={() => setHoveredFilter('source')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
-                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: (activeFilter === 'source' || selectedSources.length > 0) ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                minWidth: 88,
+                gap: 8,
+                background: hoveredFilter === 'source' ? "#E6E9F1" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
               }}
             >
               Source
-              <ChevronDown size={16} color="#4B5563" />
+              {selectedSources.length > 0 ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  {selectedSources.length}
+                </div>
+              ) : activeFilter === 'source' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'source' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -839,15 +979,50 @@ const Leads = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'followup' ? null : 'followup')}
+              onMouseEnter={() => setHoveredFilter('followup')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
-                display: "flex", alignItems: "center", border: "1px solid rgba(212, 213, 216, 1)",
-                borderRadius: 12, padding: "0 12px", height: 40, gap: 8,
-                background: (activeFilter === 'followup' || followUpFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
-                cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, color: "#4B5563", boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
+                borderRadius: 12,
+                padding: "0 12px",
+                height: 40,
+                minWidth: 88,
+                gap: 8,
+                background: hoveredFilter === 'followup' ? "#E6E9F1" : "transparent",
+                cursor: "pointer",
+                fontFamily: "Inter, sans-serif",
+                fontSize: 14,
+                color: "#4B5563",
+                boxSizing: "border-box",
+                flexShrink: 0,
               }}
             >
               Followup
-              <ChevronDown size={16} color="#4B5563" />
+              {followUpFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'followup' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'followup' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -906,17 +1081,20 @@ const Leads = () => {
           <div className="filter-bar-right" style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+              onMouseEnter={() => setHoveredFilter('sort')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
-                padding: "0 12px",
+                paddingRight: 12,
+                paddingLeft: 12,
                 height: 40,
                 width: 108,
                 gap: 8,
-                background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: hoveredFilter === 'sort' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -1220,7 +1398,7 @@ const Leads = () => {
 
               {/* Status with dropdown */}
               <div
-                style={{ width: 112, flexShrink: 0, position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}
+                style={{ width: 112, flexShrink: 0, position: "relative", display: "flex", justifyContent: "flex-start", alignItems: "center" }}
                 ref={(el) => { dropdownRefs.current[i] = el; }}
               >
                 <div
@@ -1263,8 +1441,7 @@ const Leads = () => {
                     style={{
                       position: "absolute",
                       top: "calc(100% + 8px)",
-                      left: "50%",
-                      transform: "translateX(-50%)",
+                      left: 0,
                       zIndex: 1000,
                       background: "rgba(255, 255, 255, 1)",
                       boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.04)",
@@ -1485,12 +1662,27 @@ const Leads = () => {
               </div>
 
               {/* Actions */}
-              <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, position: "relative" }} ref={(el) => { actionMenuRefs.current[i] = el; }}>
+              <div style={{ width: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 12, position: "relative" }} ref={(el) => { actionMenuRefs.current[i] = el; }}>
                 {/* Phone call icon — FIRST */}
-                <svg xmlns="http://www.w3.org/2000/svg" width="19.2" height="19.2" viewBox="0 0 22 22" fill="none" style={{ cursor: "pointer", flexShrink: 0 }}>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="19.2" 
+                  height="19.2" 
+                  viewBox="0 0 22 22" 
+                  fill="none" 
+                  style={{ cursor: "pointer", flexShrink: 0 }}
+                  onClick={() => { window.open(`https://teams.microsoft.com/l/call/0/0?users=${encodeURIComponent('4:' + lead.phone)}`, '_blank'); }}
+                >
                   <path d="M11.4711 4.92605C12.671 5.12715 13.7609 5.69387 14.6311 6.56224C15.5012 7.4306 16.0645 8.51834 16.2706 9.71577M11.6543 1.00012C13.7884 1.36118 15.7348 2.37122 17.2827 3.91143C18.8307 5.4562 19.8382 7.3986 20.2 9.52838M18.533 18.0018C18.533 18.0018 17.3743 19.1398 17.0903 19.4734C16.6278 19.967 16.0828 20.2001 15.3684 20.2001C15.2997 20.2001 15.2264 20.2001 15.1577 20.1955C13.7975 20.1087 12.5336 19.5786 11.5856 19.1261C8.99344 17.8738 6.71733 16.096 4.82592 13.8428C3.26424 11.9644 2.22007 10.2276 1.52854 8.36294C1.10263 7.22492 0.946916 6.33828 1.01561 5.5019C1.06141 4.96717 1.26749 4.52385 1.64761 4.14451L3.20929 2.58603C3.43369 2.37579 3.67184 2.26153 3.9054 2.26153C4.19392 2.26153 4.42749 2.43521 4.57404 2.58146C4.57862 2.58603 4.5832 2.5906 4.58778 2.59517C4.86714 2.85568 5.13276 3.12533 5.41212 3.41326C5.55409 3.55951 5.70064 3.70576 5.84719 3.85658L7.09745 5.10428C7.5829 5.58874 7.5829 6.03663 7.09745 6.52109C6.96464 6.65363 6.83641 6.78617 6.7036 6.91414C6.3189 7.30719 6.6211 7.0056 6.22267 7.36209C6.21351 7.37123 6.20435 7.3758 6.19977 7.38494C5.80591 7.77799 5.87919 8.1619 5.96162 8.42241C5.9662 8.43612 5.97078 8.44983 5.97536 8.46354C6.30052 9.24964 6.75849 9.99004 7.4546 10.8721L7.45918 10.8767C8.72318 12.4306 10.0559 13.6417 11.526 14.5695C11.7137 14.6883 11.9061 14.7843 12.0893 14.8757C12.2541 14.958 12.4098 15.0357 12.5426 15.118C12.561 15.1271 12.5793 15.1408 12.5976 15.1499C12.7533 15.2276 12.8999 15.2642 13.051 15.2642C13.4311 15.2642 13.6693 15.0265 13.7471 14.9489L14.6448 14.053C14.8005 13.8976 15.0478 13.7102 15.3363 13.7102C15.6203 13.7102 15.8538 13.8885 15.9958 14.0439C16.0004 14.0484 16.0004 14.0484 16.005 14.053L18.5284 16.5713C19.0001 17.0374 18.533 18.0018 18.533 18.0018Z" stroke="#00236F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                <img src={whatsappIcon} alt="WhatsApp" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} />
+                <img 
+                  src={whatsappIcon} 
+                  alt="WhatsApp" 
+                  width={24} 
+                  height={24} 
+                  style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} 
+                  onClick={() => { window.open(`https://web.whatsapp.com/send?phone=${encodeURIComponent(lead.phone)}`, '_blank'); }}
+                />
                 <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
                 
                 {/* Three dots menu */}

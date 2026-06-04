@@ -855,7 +855,7 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                 width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '8px',
+                marginBottom: '32px',
               }}
             >
               {/* Back breadcrumb & Title */}
@@ -1059,30 +1059,70 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                   marginTop: 'auto',
                 }}
               >
-                <textarea
-                  placeholder="Reply to messages..."
-                  value={replyText}
-                  onChange={e => setReplyText(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleReplySubmit(e);
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    height: '80px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)',
-                    background: '#FFF',
-                    padding: '12px',
-                    fontSize: '14px',
-                    outline: 'none',
-                    resize: 'none',
-                    boxSizing: 'border-box',
-                    fontFamily: 'Inter, sans-serif',
-                  }}
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <textarea
+                    placeholder="Reply to messages..."
+                    value={replyText}
+                    onChange={e => setReplyText(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleReplySubmit(e);
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '80px',
+                      borderRadius: '12px',
+                      border: '1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)',
+                      background: '#FFF',
+                      padding: '12px 60px 12px 12px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      resize: 'none',
+                      boxSizing: 'border-box',
+                      fontFamily: 'Inter, sans-serif',
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    style={{
+                      position: 'absolute',
+                      right: '16px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      borderRadius: '12px',
+                      background: 'var(--Foundation-brand-brand-500, #00236F)',
+                      display: 'flex',
+                      width: '36px',
+                      height: '36px',
+                      padding: '6px',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      aspectRatio: '1/1',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxSizing: 'border-box',
+                      transition: 'background 0.2s ease',
+                    }}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 5L16 12L9 19"
+                        stroke="#FFF"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </form>
             )}
           </div>

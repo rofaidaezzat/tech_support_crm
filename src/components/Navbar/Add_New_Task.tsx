@@ -55,14 +55,24 @@ const labelStyle: React.CSSProperties = {
 };
 
 const errorTextStyle: React.CSSProperties = {
-  fontFamily: "Inter, sans-serif",
-  fontSize: 12,
-  color: "#E03131",
+  fontFamily: "Cairo, sans-serif",
+  fontSize: 14,
+  fontStyle: "normal",
+  fontWeight: 400,
+  lineHeight: "100%",
+  color: "var(--Foundation-error-red-700, #A80D0B)",
   marginTop: 4,
-  lineHeight: "1.4",
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
 };
 
 const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
+  const errorIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="13.333" height="13.333" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+      <path d="M7.66667 5V7.66667M7.66667 10.3333H7.67333M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z" stroke="var(--Foundation-error-red-700, #A80D0B)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
 
   const [title, setTitle] = useState("");
@@ -270,7 +280,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {formErrors.title && <span style={errorTextStyle}>{formErrors.title}</span>}
+            {formErrors.title && <span style={errorTextStyle}>{errorIcon}{formErrors.title}</span>}
           </div>
 
           {/* Assign To — SALES_MANAGER only */}
@@ -552,7 +562,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                 </div>
               )}
             </div>
-            {formErrors.lead_id && <span style={errorTextStyle}>{formErrors.lead_id}</span>}
+            {formErrors.lead_id && <span style={errorTextStyle}>{errorIcon}{formErrors.lead_id}</span>}
           </div>
 
           {/* Description */}
@@ -570,7 +580,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {formErrors.description && <span style={errorTextStyle}>{formErrors.description}</span>}
+            {formErrors.description && <span style={errorTextStyle}>{errorIcon}{formErrors.description}</span>}
           </div>
 
           {/* Priority */}
@@ -662,7 +672,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
                 }}
               />
             </div>
-            {formErrors.due_date && <span style={errorTextStyle}>{formErrors.due_date}</span>}
+            {formErrors.due_date && <span style={errorTextStyle}>{errorIcon}{formErrors.due_date}</span>}
           </div>
 
           {/* Reminder date */}

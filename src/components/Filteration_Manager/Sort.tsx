@@ -32,7 +32,7 @@ export const Sort: React.FC<SortProps> = ({
     onClose();
   };
 
-  const handleClear = () => {
+  const handleReset = () => {
     setSelected(defaultValue);
   };
 
@@ -63,8 +63,8 @@ export const Sort: React.FC<SortProps> = ({
       {/* Buttons */}
       <div style={styles.buttonsRowContainer}>
         <div className="filter-buttons" style={styles.buttonsRow}>
-          <button onClick={handleClear} style={styles.clearButton}>
-            Clear
+          <button onClick={handleReset} style={styles.clearButton}>
+            Reset
           </button>
           <button onClick={handleApply} style={styles.applyButton}>
             Apply

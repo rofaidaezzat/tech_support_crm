@@ -35,11 +35,16 @@ const labelStyle: React.CSSProperties = {
 };
 
 const errorTextStyle: React.CSSProperties = {
-  fontFamily: "Inter, sans-serif",
-  fontSize: 12,
-  color: "#E03131",
+  fontFamily: "Cairo, sans-serif",
+  fontSize: 14,
+  fontStyle: "normal",
+  fontWeight: 400,
+  lineHeight: "100%",
+  color: "var(--Foundation-error-red-700, #A80D0B)",
   marginTop: 4,
-  lineHeight: "1.4",
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
 };
 
 const SOURCE_OPTIONS = [
@@ -60,6 +65,11 @@ const CITY_OPTIONS = [
 const PHONE_REGEX = /^[+\d][\d\s\-().]{5,19}$/;
 
 const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
+  const errorIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="13.333" height="13.333" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+      <path d="M7.66667 5V7.66667M7.66667 10.3333H7.67333M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z" stroke="var(--Foundation-error-red-700, #A80D0B)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [source, setSource] = useState("");
@@ -250,7 +260,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {formErrors.name && <span style={errorTextStyle}>{formErrors.name}</span>}
+            {formErrors.name && <span style={errorTextStyle}>{errorIcon}{formErrors.name}</span>}
           </div>
 
           {/* Phone Number */}
@@ -273,7 +283,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {formErrors.phone && <span style={errorTextStyle}>{formErrors.phone}</span>}
+            {formErrors.phone && <span style={errorTextStyle}>{errorIcon}{formErrors.phone}</span>}
           </div>
 
           {/* Lead Source */}
@@ -366,7 +376,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
                 </div>
               )}
             </div>
-            {formErrors.source && <span style={errorTextStyle}>{formErrors.source}</span>}
+            {formErrors.source && <span style={errorTextStyle}>{errorIcon}{formErrors.source}</span>}
           </div>
 
           {/* City */}
@@ -457,7 +467,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
                 </div>
               )}
             </div>
-            {formErrors.city && <span style={errorTextStyle}>{formErrors.city}</span>}
+            {formErrors.city && <span style={errorTextStyle}>{errorIcon}{formErrors.city}</span>}
           </div>
 
           {/* Value */}
@@ -480,7 +490,7 @@ const Add_new_deal: React.FC<AddNewDealProps> = ({ onClose, onSave }) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {formErrors.value && <span style={errorTextStyle}>{formErrors.value}</span>}
+            {formErrors.value && <span style={errorTextStyle}>{errorIcon}{formErrors.value}</span>}
           </div>
 
           {/* Service Details */}

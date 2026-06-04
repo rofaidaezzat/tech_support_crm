@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, ChevronDown, ArrowDownUp } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
 import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
 import filterIcon from '../assets/filter.svg';
@@ -97,6 +97,7 @@ const getPresetDateRange = (preset: string) => {
 const Deals = () => {
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
   const [activeFilter, setActiveFilter] = useState<'date' | 'value' | 'sort' | null>(null);
+  const [hoveredFilter, setHoveredFilter] = useState<'date' | 'value' | 'sort' | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortQuery, setSortQuery] = useState("-created_at");
@@ -172,8 +173,8 @@ const Deals = () => {
     let apiSort = "-created_at";
     if (sortVal === "oldest") apiSort = "created_at";
     else if (sortVal === "newest") apiSort = "-created_at";
-    else if (sortVal === "a-z") apiSort = "value";
-    else if (sortVal === "z-a") apiSort = "-value";
+    else if (sortVal === "a-z") apiSort = "name";
+    else if (sortVal === "z-a") apiSort = "-name";
     
     setSortQuery(apiSort);
     setCurrentPage(1);
@@ -254,7 +255,7 @@ const Deals = () => {
         }}
       >
         {/* Left group */}
-        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {/* Filter input */}
           <div
             style={{
@@ -272,7 +273,7 @@ const Deals = () => {
               background: "transparent",
               flexShrink: 0,
               boxSizing: "border-box",
-              marginRight: 20,
+              marginRight: 8,
             }}
           >
             <img src={filterIcon} alt="filter" width={24} height={24} />
@@ -297,18 +298,22 @@ const Deals = () => {
           </div>
 
           {/* Date dropdown */}
-          <div style={{ position: "relative", marginRight: 12 }}>
+          <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'date' ? null : 'date')}
+              onMouseEnter={() => setHoveredFilter('date')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 padding: "0 12px",
                 height: 40,
+                width: 88,
                 gap: 8,
-                background: (activeFilter === 'date' || dateFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: hoveredFilter === 'date' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -318,7 +323,28 @@ const Deals = () => {
               }}
             >
               Date
-              <ChevronDown size={16} color="#4B5563" />
+              {dateFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'date' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'date' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -346,15 +372,19 @@ const Deals = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'value' ? null : 'value')}
+              onMouseEnter={() => setHoveredFilter('value')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 padding: "0 12px",
                 height: 40,
+                width: 88,
                 gap: 8,
-                background: (activeFilter === 'value' || valueFilter) ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: hoveredFilter === 'value' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -364,7 +394,28 @@ const Deals = () => {
               }}
             >
               Value
-              <ChevronDown size={16} color="#4B5563" />
+              {valueFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'value' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === 'value' && (
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
@@ -419,18 +470,20 @@ const Deals = () => {
           <div className="filter-bar-right" style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === 'sort' ? null : 'sort')}
+              onMouseEnter={() => setHoveredFilter('sort')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 paddingRight: 12,
                 paddingLeft: 12,
                 height: 40,
                 width: 108,
                 gap: 8,
-                background: activeFilter === 'sort' ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: hoveredFilter === 'sort' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -453,8 +506,8 @@ const Deals = () => {
                   defaultValue={
                     sortQuery === "created_at" ? "oldest" :
                     sortQuery === "-created_at" ? "newest" :
-                    sortQuery === "value" ? "a-z" :
-                    sortQuery === "-value" ? "z-a" : "newest"
+                    sortQuery === "name" ? "a-z" :
+                    sortQuery === "-name" ? "z-a" : "newest"
                   }
                 />
               </div>

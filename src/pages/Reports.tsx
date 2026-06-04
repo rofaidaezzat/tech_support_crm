@@ -1,4 +1,4 @@
-import { ArrowDownUp, ChevronDown, Plus } from 'lucide-react'
+import { ArrowDownUp, ChevronDown, ChevronUp, Plus } from 'lucide-react'
 import filterIcon from '../assets/filter.svg';
 import { useState } from 'react';
 import { getCookie } from '../app/service/baseQuery';
@@ -15,6 +15,9 @@ import Empty_table from '../components/Empty_table';
 const Reports = () => {
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<any>(null);
+  const [valueFilter, setValueFilter] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
@@ -108,7 +111,7 @@ const Reports = () => {
         }}
       >
         {/* Left group */}
-        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div className="filter-bar-left" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {/* Filter input */}
           <div
             style={{
@@ -126,7 +129,7 @@ const Reports = () => {
               background: "transparent",
               flexShrink: 0,
               boxSizing: "border-box",
-              marginRight: 20,
+              marginRight: 8,
             }}
           >
             <img src={filterIcon} alt="filter" width={24} height={24} />
@@ -146,20 +149,22 @@ const Reports = () => {
           </div>
 
           {/* Date dropdown */}
-          <div style={{ position: "relative", marginRight: 12 }}>
+          <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === "date" ? null : "date")}
+              onMouseEnter={() => setHoveredFilter('date')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 padding: "0 12px",
                 height: 40,
                 width: 88,
                 gap: 8,
-                background: "transparent",
+                background: hoveredFilter === 'date' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -168,21 +173,33 @@ const Reports = () => {
                 flexShrink: 0,
               }}
             >
-              <span style={{
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                fontSize: 16,
-                lineHeight: "100%",
-                color: "rgba(70, 70, 70, 1)",
-                verticalAlign: "middle"
-              }}>
-                Date
-              </span>
-              <ChevronDown size={16} color="#4B5563" />
+              Date
+              {dateFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'date' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === "date" && (
               <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
-                <DateFilter onApply={(date) => { console.log(date); setActiveFilter(null); }} />
+                <DateFilter onApply={(date) => { setDateFilter(date); setActiveFilter(null); }} />
               </div>
             )}
           </div>
@@ -191,17 +208,19 @@ const Reports = () => {
           <div style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === "value" ? null : "value")}
+              onMouseEnter={() => setHoveredFilter('value')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 padding: "0 12px",
                 height: 40,
                 width: 139,
                 gap: 8,
-                background: "transparent",
+                background: hoveredFilter === 'value' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,
@@ -210,21 +229,33 @@ const Reports = () => {
                 flexShrink: 0,
               }}
             >
-              <span style={{
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                fontSize: 16,
-                lineHeight: "100%",
-                color: "rgba(70, 70, 70, 1)",
-                verticalAlign: "middle"
-              }}>
-                Deals value
-              </span>
-              <ChevronDown size={16} color="#4B5563" />
+              Deals value
+              {valueFilter ? (
+                <div style={{
+                  background: "#B0BBD2",
+                  width: 20,
+                  height: 22,
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 2,
+                  boxSizing: "border-box",
+                  fontSize: 11,
+                  color: "#141414",
+                  fontWeight: 600,
+                }}>
+                  1
+                </div>
+              ) : activeFilter === 'value' ? (
+                <ChevronUp size={16} color="#4B5563" />
+              ) : (
+                <ChevronDown size={16} color="#4B5563" />
+              )}
             </button>
             {activeFilter === "value" && (
               <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
-                <Value onApply={(val) => { console.log(val); setActiveFilter(null); }} onClear={() => setActiveFilter(null)} />
+                <Value onApply={(val) => { setValueFilter(val); setActiveFilter(null); }} onClear={() => { setValueFilter(null); setActiveFilter(null); }} />
               </div>
             )}
           </div>
@@ -232,6 +263,8 @@ const Reports = () => {
           {/* Reset Filters */}
           <button
             onClick={() => {
+              setDateFilter(null);
+              setValueFilter(null);
               setActiveFilter(null);
             }}
             style={{
@@ -258,18 +291,20 @@ const Reports = () => {
           <div className="filter-bar-right" style={{ position: "relative" }}>
             <button
               onClick={() => setActiveFilter(activeFilter === "sort" ? null : "sort")}
+              onMouseEnter={() => setHoveredFilter('sort')}
+              onMouseLeave={() => setHoveredFilter(null)}
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
-                border: "1px solid rgba(212, 213, 216, 1)",
+                justifyContent: "center",
+                border: "1px solid #D4D5D8",
                 borderRadius: 12,
                 paddingRight: 12,
                 paddingLeft: 12,
                 height: 40,
                 width: 108,
                 gap: 8,
-                background: activeFilter === "sort" ? "rgba(0, 35, 111, 0.06)" : "transparent",
+                background: hoveredFilter === 'sort' ? "#E6E9F1" : "transparent",
                 cursor: "pointer",
                 fontFamily: "Inter, sans-serif",
                 fontSize: 14,

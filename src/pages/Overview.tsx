@@ -10,6 +10,7 @@ import filePlusIcon from '../assets/file-plus-01.svg';
 import Notes from '../components/Deals/Notes';
 import LeadForm from '../components/Leads/Lead_form';
 import ConvertToDeal from '../components/Leads/Convert_to_deal';
+import Empty_table from '../components/Empty_table';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
 const funnelData = [
@@ -38,6 +39,7 @@ const leadsBarData = [
 const Overview = () => {
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<{ type: "notes" | "lead" | "convert" | null, leadId: number | null }>({ type: null, leadId: null });
+  const [followups, setFollowups] = useState<number[]>([1, 2, 3, 4, 5]);
   const cards = [
     {
       title: "Followups Today",
@@ -281,44 +283,63 @@ const Overview = () => {
 
             {/* Table rows */}
             <div className="overview-table-rows-wrapper" style={{ width: "100%", height: 300, display: "flex", flexDirection: "column", overflowY: "auto" }}>
-              {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="overview-table-row" style={{
-                  display: "grid",
-                  gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
-                  padding: "16px",
-                  borderBottom: "1px solid #F3F4F6",
-                  gap: 16,
-                  alignItems: "center"
-                }}>
-                  {/* Lead info */}
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
-                    <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Elshayeeb inc.</span>
+              {followups.length === 0 ? (
+                <Empty_table message="No followups today..." />
+              ) : (
+                followups.map(i => (
+                  <div key={i} className="overview-table-row" style={{
+                    display: "grid",
+                    gridTemplateColumns: "3fr 1.5fr 1.5fr 1fr 1.5fr",
+                    padding: "16px",
+                    borderBottom: "1px solid #F3F4F6",
+                    gap: 16,
+                    alignItems: "center"
+                  }}>
+                    {/* Lead info */}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>John Dorghamasadsad</span>
+                      <span style={{ fontSize: 12, color: "#6B7280", fontFamily: "Inter, sans-serif" }}>Elshayeeb inc.</span>
+                    </div>
+                    {/* Status */}
+                    <div>
+                      <span style={{ background: "#E5E7EB", padding: "4px 8px", borderRadius: 12, fontSize: 12, color: "#374151", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>FU after meeting</span>
+                    </div>
+                    {/* Phone */}
+                    <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>+201121504065</span>
+                    {/* Priority */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#D97706" }} />
+                      <span style={{ fontSize: 14, color: "#D97706", fontFamily: "Inter, sans-serif" }}>Medium</span>
+                    </div>
+                    {/* Actions */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
+                      {/* Phone call icon — FIRST */}
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="19.2" 
+                        height="19.2" 
+                        viewBox="0 0 22 22" 
+                        fill="none" 
+                        style={{ cursor: "pointer", flexShrink: 0 }}
+                        onClick={() => { window.open(`https://teams.microsoft.com/l/call/0/0?users=${encodeURIComponent('4:+201121504065')}`, '_blank'); }}
+                      >
+                        <path d="M11.4711 4.92605C12.671 5.12715 13.7609 5.69387 14.6311 6.56224C15.5012 7.4306 16.0645 8.51834 16.2706 9.71577M11.6543 1.00012C13.7884 1.36118 15.7348 2.37122 17.2827 3.91143C18.8307 5.4562 19.8382 7.3986 20.2 9.52838M18.533 18.0018C18.533 18.0018 17.3743 19.1398 17.0903 19.4734C16.6278 19.967 16.0828 20.2001 15.3684 20.2001C15.2997 20.2001 15.2264 20.2001 15.1577 20.1955C13.7975 20.1087 12.5336 19.5786 11.5856 19.1261C8.99344 17.8738 6.71733 16.096 4.82592 13.8428C3.26424 11.9644 2.22007 10.2276 1.52854 8.36294C1.10263 7.22492 0.946916 6.33828 1.01561 5.5019C1.06141 4.96717 1.26749 4.52385 1.64761 4.14451L3.20929 2.58603C3.43369 2.37579 3.67184 2.26153 3.9054 2.26153C4.19392 2.26153 4.42749 2.43521 4.57404 2.58146C4.57862 2.58603 4.5832 2.5906 4.58778 2.59517C4.86714 2.85568 5.13276 3.12533 5.41212 3.41326C5.55409 3.55951 5.70064 3.70576 5.84719 3.85658L7.09745 5.10428C7.5829 5.58874 7.5829 6.03663 7.09745 6.52109C6.96464 6.65363 6.83641 6.78617 6.7036 6.91414C6.3189 7.30719 6.6211 7.0056 6.22267 7.36209C6.21351 7.37123 6.20435 7.3758 6.19977 7.38494C5.80591 7.77799 5.87919 8.1619 5.96162 8.42241C5.9662 8.43612 5.97078 8.44983 5.97536 8.46354C6.30052 9.24964 6.75849 9.99004 7.4546 10.8721L7.45918 10.8767C8.72318 12.4306 10.0559 13.6417 11.526 14.5695C11.7137 14.6883 11.9061 14.7843 12.0893 14.8757C12.2541 14.958 12.4098 15.0357 12.5426 15.118C12.561 15.1271 12.5793 15.1408 12.5976 15.1499C12.7533 15.2276 12.8999 15.2642 13.051 15.2642C13.4311 15.2642 13.6693 15.0265 13.7471 14.9489L14.6448 14.053C14.8005 13.8976 15.0478 13.7102 15.3363 13.7102C15.6203 13.7102 15.8538 13.8885 15.9958 14.0439C16.0004 14.0484 16.0004 14.0484 16.005 14.053L18.5284 16.5713C19.0001 17.0374 18.533 18.0018 18.533 18.0018Z" stroke="#00236F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <img 
+                        src={whatsappIcon} 
+                        width={20} 
+                        height={20} 
+                        alt="WhatsApp" 
+                        style={{ cursor: "pointer" }} 
+                        onClick={() => { window.open(`https://web.whatsapp.com/send?phone=${encodeURIComponent("+201121504065")}`, '_blank'); }}
+                      />
+                      <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "notes", leadId: i }); }} />
+                      <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "lead", leadId: i }); }} />
+                      <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "convert", leadId: i }); }} />
+                    </div>
                   </div>
-                  {/* Status */}
-                  <div>
-                    <span style={{ background: "#E5E7EB", padding: "4px 8px", borderRadius: 12, fontSize: 12, color: "#374151", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap" }}>FU after meeting</span>
-                  </div>
-                  {/* Phone */}
-                  <span style={{ fontSize: 14, color: "#374151", fontFamily: "Inter, sans-serif" }}>+201121504065</span>
-                  {/* Priority */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#D97706" }} />
-                    <span style={{ fontSize: 14, color: "#D97706", fontFamily: "Inter, sans-serif" }}>Medium</span>
-                  </div>
-                  {/* Actions */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}>
-                    {/* Phone call icon — FIRST */}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="19.2" height="19.2" viewBox="0 0 22 22" fill="none" style={{ cursor: "pointer", flexShrink: 0 }}>
-                      <path d="M11.4711 4.92605C12.671 5.12715 13.7609 5.69387 14.6311 6.56224C15.5012 7.4306 16.0645 8.51834 16.2706 9.71577M11.6543 1.00012C13.7884 1.36118 15.7348 2.37122 17.2827 3.91143C18.8307 5.4562 19.8382 7.3986 20.2 9.52838M18.533 18.0018C18.533 18.0018 17.3743 19.1398 17.0903 19.4734C16.6278 19.967 16.0828 20.2001 15.3684 20.2001C15.2997 20.2001 15.2264 20.2001 15.1577 20.1955C13.7975 20.1087 12.5336 19.5786 11.5856 19.1261C8.99344 17.8738 6.71733 16.096 4.82592 13.8428C3.26424 11.9644 2.22007 10.2276 1.52854 8.36294C1.10263 7.22492 0.946916 6.33828 1.01561 5.5019C1.06141 4.96717 1.26749 4.52385 1.64761 4.14451L3.20929 2.58603C3.43369 2.37579 3.67184 2.26153 3.9054 2.26153C4.19392 2.26153 4.42749 2.43521 4.57404 2.58146C4.57862 2.58603 4.5832 2.5906 4.58778 2.59517C4.86714 2.85568 5.13276 3.12533 5.41212 3.41326C5.55409 3.55951 5.70064 3.70576 5.84719 3.85658L7.09745 5.10428C7.5829 5.58874 7.5829 6.03663 7.09745 6.52109C6.96464 6.65363 6.83641 6.78617 6.7036 6.91414C6.3189 7.30719 6.6211 7.0056 6.22267 7.36209C6.21351 7.37123 6.20435 7.3758 6.19977 7.38494C5.80591 7.77799 5.87919 8.1619 5.96162 8.42241C5.9662 8.43612 5.97078 8.44983 5.97536 8.46354C6.30052 9.24964 6.75849 9.99004 7.4546 10.8721L7.45918 10.8767C8.72318 12.4306 10.0559 13.6417 11.526 14.5695C11.7137 14.6883 11.9061 14.7843 12.0893 14.8757C12.2541 14.958 12.4098 15.0357 12.5426 15.118C12.561 15.1271 12.5793 15.1408 12.5976 15.1499C12.7533 15.2276 12.8999 15.2642 13.051 15.2642C13.4311 15.2642 13.6693 15.0265 13.7471 14.9489L14.6448 14.053C14.8005 13.8976 15.0478 13.7102 15.3363 13.7102C15.6203 13.7102 15.8538 13.8885 15.9958 14.0439C16.0004 14.0484 16.0004 14.0484 16.005 14.053L18.5284 16.5713C19.0001 17.0374 18.533 18.0018 18.533 18.0018Z" stroke="#00236F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <img src={whatsappIcon} width={20} height={20} alt="WhatsApp" style={{ cursor: "pointer" }} />
-                    <img src={messageTextIcon} width={20} height={20} alt="Message" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "notes", leadId: i }); }} />
-                    <img src={filePlusIcon} width={20} height={20} alt="Add File" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "lead", leadId: i }); }} />
-                    <img src={coinIcon} width={20} height={20} alt="Coin" style={{ cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setActiveModal({ type: "convert", leadId: i }); }} />
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
               </div>
             </div>

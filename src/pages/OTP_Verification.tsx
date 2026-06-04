@@ -266,7 +266,10 @@ const OTP_Verification: React.FC = () => {
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "140%",
-                textAlign: "center"
+                textAlign: "center",
+                width: 411,
+                height: 18,
+                opacity: 1
               }}>
                 Check your Whatsapp we’ve sent you a one-time verification code.
               </p>
@@ -347,12 +350,12 @@ const OTP_Verification: React.FC = () => {
                       onClick={handleResend}
                       disabled={isResending}
                       style={{
-                        color: "var(--Foundation-neutral-neutral-600, #747474)",
+                        color: "var(--Foundation-brand-brand-500, #00236F)",
                         textAlign: "center",
                         fontFamily: "Inter, sans-serif",
                         fontSize: 13,
                         fontStyle: "normal",
-                        fontWeight: 400,
+                        fontWeight: 500,
                         lineHeight: "140%",
                         textDecorationLine: "underline",
                         textDecorationStyle: "solid",
@@ -363,7 +366,7 @@ const OTP_Verification: React.FC = () => {
                         outline: "none"
                       }}
                     >
-                      {isResending ? "Resending..." : "Resend"}
+                      {isResending ? "Resending..." : "Resend again"}
                     </button>
                   )}
                 </div>
