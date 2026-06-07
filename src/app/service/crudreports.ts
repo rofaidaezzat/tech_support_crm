@@ -35,6 +35,16 @@ export interface Pagination {
   total: number;
 }
 
+export interface DateCounts {
+  today: number;
+  yesterday: number;
+  thisWeek: number;
+  lastWeek: number;
+  thisMonth: number;
+  lastMonth: number;
+  thisYear: number;
+}
+
 export interface GetReportsResponse {
   status: string;
   code: number;
@@ -42,6 +52,7 @@ export interface GetReportsResponse {
   pagination: Pagination;
   min_revenue?: number;
   max_revenue?: number;
+  dateCounts?: DateCounts;
   data: Report[];
 }
 

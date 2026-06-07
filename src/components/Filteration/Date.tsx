@@ -28,6 +28,7 @@ interface DateFilterProps {
     thisWeek?: number;
     lastWeek?: number;
     thisMonth?: number;
+    lastMonth?: number;
     thisYear?: number;
   };
 }
@@ -38,7 +39,7 @@ const PRESETS: { label: DatePreset & string; countKey: string }[] = [
   { label: "This week", countKey: "thisWeek" },
   { label: "Last week", countKey: "lastWeek" },
   { label: "This month", countKey: "thisMonth" },
-  { label: "Last month", countKey: "lastWeek" },
+  { label: "Last month", countKey: "lastMonth" },
   { label: "This year", countKey: "thisYear" },
 ];
 

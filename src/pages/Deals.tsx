@@ -17,6 +17,7 @@ import DateFilter from '../components/Filteration/Date';
 import { Sort } from '../components/Filteration/Sort';
 import { useGetDealsQuery, useDeleteDealMutation, Deal } from '../app/service/cruddeals';
 import { toast } from 'sonner';
+import TableSkeleton from '../components/TableSkeleton';
 
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
   <div
@@ -113,17 +114,17 @@ const Deals = () => {
   
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
 
-  // Calculate start_date and end_date for API based on dateFilter
-  let start_date: string | undefined = undefined;
-  let end_date: string | undefined = undefined;
+  // Calculate close_date[gte] and close_date[lte] for API based on dateFilter
+  let close_date_gte: string | undefined = undefined;
+  let close_date_lte: string | undefined = undefined;
   if (dateFilter) {
     if (dateFilter.preset) {
       const range = getPresetDateRange(dateFilter.preset);
-      start_date = range.startDate;
-      end_date = range.endDate;
+      close_date_gte = range.startDate;
+      close_date_lte = range.endDate;
     } else {
-      if (dateFilter.startDate) start_date = dateFilter.startDate;
-      if (dateFilter.endDate) end_date = dateFilter.endDate;
+      if (dateFilter.startDate) close_date_gte = dateFilter.startDate;
+      if (dateFilter.endDate) close_date_lte = dateFilter.endDate;
     }
   }
 
@@ -133,8 +134,8 @@ const Deals = () => {
     limit: 10,
     search: searchQuery || undefined,
     sort: sortQuery || undefined,
-    start_date,
-    end_date,
+    'close_date[gte]': close_date_gte,
+    'close_date[lte]': close_date_lte,
   });
 
   const [deleteDeal] = useDeleteDealMutation();
@@ -363,6 +364,7 @@ const Deals = () => {
                   initialPreset={dateFilter?.preset}
                   initialStartDate={dateFilter?.startDate}
                   initialEndDate={dateFilter?.endDate}
+                  dateCounts={dealsResponse?.dateCounts}
                 />
               </div>
             )}
@@ -433,6 +435,8 @@ const Deals = () => {
                   onClose={() => setActiveFilter(null)}
                   initialFrom={valueFilter?.from}
                   initialTo={valueFilter?.to}
+                  minRevenue={dealsResponse?.min_revenue}
+                  maxRevenue={dealsResponse?.max_revenue}
                 />
               </div>
             )}
@@ -579,7 +583,7 @@ const Deals = () => {
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
           {isLoading ? (
-            <div style={{ padding: "20px", textAlign: "center", color: "#6B7280" }}>Loading deals...</div>
+            <TableSkeleton rowCount={5} columnCount={isSalesManager ? 8 : 7} />
           ) : filteredDeals.length === 0 ? (
             <Empty_table message="No deals added yet..." />
           ) : (

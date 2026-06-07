@@ -40,11 +40,24 @@ export interface PaginationInfo {
   totalPages: number;
 }
 
+export interface DateCounts {
+  today: number;
+  yesterday: number;
+  thisWeek: number;
+  lastWeek: number;
+  thisMonth: number;
+  lastMonth: number;
+  thisYear: number;
+}
+
 export interface GetDealsResponse {
   status: string;
   code: number;
   message: string;
   pagination?: PaginationInfo;
+  min_revenue?: number;
+  max_revenue?: number;
+  dateCounts?: DateCounts;
   data: Deal[];
 }
 
@@ -82,21 +95,28 @@ export interface DeleteDealResponse {
   message: string;
 }
 
+export interface GetDealsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sort?: string;
+  [key: string]: any;
+}
+
 export const dealsApi = createApi({
   reducerPath: 'dealsApi',
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Deal'],
   endpoints: (builder) => ({
-    getDeals: builder.query<GetDealsResponse, { page?: number; limit?: number; search?: string; sort?: string; start_date?: string; end_date?: string } | void>({
+    getDeals: builder.query<GetDealsResponse, GetDealsParams | void>({
       query: (params) => {
         const urlParams = new URLSearchParams();
         if (params) {
-          if (params.page !== undefined) urlParams.append('page', params.page.toString());
-          if (params.limit !== undefined) urlParams.append('limit', params.limit.toString());
-          if (params.search) urlParams.append('search', params.search);
-          if (params.sort) urlParams.append('sort', params.sort);
-          if (params.start_date) urlParams.append('start_date', params.start_date);
-          if (params.end_date) urlParams.append('end_date', params.end_date);
+          Object.entries(params).forEach(([key, val]) => {
+            if (val !== undefined && val !== null && val !== '') {
+              urlParams.append(key, val.toString());
+            }
+          });
         }
         const queryString = urlParams.toString();
         return `api/v1/deals${queryString ? `?${queryString}` : ''}`;

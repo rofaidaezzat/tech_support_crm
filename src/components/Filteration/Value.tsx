@@ -7,9 +7,11 @@ interface ValueProps {
   onClose?: () => void;
   initialFrom?: string;
   initialTo?: string;
+  minRevenue?: number;
+  maxRevenue?: number;
 }
 
-const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, initialTo }) => {
+const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, initialTo, minRevenue, maxRevenue }) => {
   const [fromValue, setFromValue] = useState(initialFrom || "");
   const [toValue, setToValue] = useState(initialTo || "");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,27 +39,16 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
 
   const hasFrom = fromValue !== "";
   const hasTo = toValue !== "";
-  const hasAny = hasFrom || hasTo;
 
-  // Only compute slider positions when both values are typed
-  const min = 0;
-  const fromNum = hasFrom ? Math.max(min, parseInt(fromValue) || 0) : 0;
-  const maxBound = hasTo ? Math.max(fromNum, parseInt(toValue) || fromNum) : fromNum;
+  const min = minRevenue !== undefined ? minRevenue : 0;
+  const max = maxRevenue !== undefined ? maxRevenue : 100;
 
-  // Use the actual max as reference for the slider
-  const sliderMax = hasTo
-    ? Math.max(maxBound, parseInt(toValue) || 1)
-    : hasFrom
-    ? Math.max(fromNum * 2, 1)
-    : 100;
+  const fromNum = hasFrom ? Math.max(min, parseInt(fromValue) || 0) : min;
+  const toNum = hasTo ? Math.max(fromNum, parseInt(toValue) || 0) : max;
 
-  const leftPercent = hasFrom ? ((fromNum - min) / (sliderMax - min)) * 100 : 0;
-  const rightPercent = hasTo
-    ? ((maxBound - min) / (sliderMax - min)) * 100
-    : hasFrom
-    ? leftPercent
-    : 0;
-  const activeWidth = rightPercent - leftPercent;
+  const leftPercent = max > min ? ((fromNum - min) / (max - min)) * 100 : 0;
+  const rightPercent = max > min ? ((toNum - min) / (max - min)) * 100 : 100;
+  const activeWidth = (hasFrom || hasTo) ? rightPercent - leftPercent : 0;
 
   return (
     <div ref={containerRef} className="filter-modal" style={styles.container}>
@@ -73,6 +64,7 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
               className="filter-input"
               value={fromValue}
               onChange={(e) => setFromValue(e.target.value)}
+              placeholder={String(min)}
               style={styles.input}
             />
           </div>
@@ -87,6 +79,7 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
               className="filter-input"
               value={toValue}
               onChange={(e) => setToValue(e.target.value)}
+              placeholder={String(max)}
               style={styles.input}
             />
           </div>
@@ -95,22 +88,20 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
         {/* Range Slider Visual */}
         <div style={styles.sliderContainer}>
           <div style={styles.sliderLabels}>
-            <span style={styles.sliderLabelText}>{hasFrom ? `${fromNum} EGP` : "0 EGP"}</span>
-            <span style={styles.sliderLabelText}>{hasTo ? `${maxBound} EGP` : hasFrom ? `${fromNum} EGP` : "—"}</span>
+            <span style={styles.sliderLabelText}>{`${fromNum} EGP`}</span>
+            <span style={styles.sliderLabelText}>{`${toNum} EGP`}</span>
           </div>
 
           <div style={styles.trackWrapper}>
             <div style={styles.trackBackground} />
-            {hasAny && (
-              <div
-                style={{
-                  ...styles.trackActive,
-                  left: `${leftPercent}%`,
-                  width: `${activeWidth}%`,
-                }}
-              />
-            )}
-            {/* Left Thumb — only when from is typed */}
+            <div
+              style={{
+                ...styles.trackActive,
+                left: `${leftPercent}%`,
+                width: `${activeWidth}%`,
+              }}
+            />
+            {/* Left Thumb */}
             {hasFrom && (
               <div
                 style={{
@@ -119,7 +110,7 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
                 }}
               />
             )}
-            {/* Right Thumb — only when to is typed */}
+            {/* Right Thumb */}
             {hasTo && (
               <div
                 style={{

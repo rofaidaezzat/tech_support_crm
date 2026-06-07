@@ -13,6 +13,7 @@ import { Sort } from '../components/Filteration/Sort';
 import Empty_table from '../components/Empty_table';
 import { useGetReportsQuery, useCreateReportMutation } from '../app/service/crudreports';
 import { toast } from 'sonner';
+import TableSkeleton from '../components/TableSkeleton';
 
 const getPresetDateRange = (preset: string) => {
   const today = new Date();
@@ -350,6 +351,7 @@ const Reports = () => {
                   initialPreset={dateFilter?.preset}
                   initialStartDate={dateFilter?.startDate}
                   initialEndDate={dateFilter?.endDate}
+                  dateCounts={reportsData?.dateCounts}
                 />
               </div>
             )}
@@ -420,6 +422,8 @@ const Reports = () => {
                   }}
                   initialFrom={valueFilter?.from}
                   initialTo={valueFilter?.to}
+                  minRevenue={reportsData?.min_revenue}
+                  maxRevenue={reportsData?.max_revenue}
                 />
               </div>
             )}
@@ -564,8 +568,10 @@ const Reports = () => {
 
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
-          {reports.length === 0 ? (
-            <Empty_table message={isLoadingReports ? "Loading reports..." : "No reports added yet..."} />
+          {isLoadingReports ? (
+            <TableSkeleton rowCount={5} columnCount={isSalesManager ? 9 : 8} />
+          ) : reports.length === 0 ? (
+            <Empty_table message="No reports added yet..." />
           ) : (
             reports.map((report: any, i: number, arr: any[]) => (
               <div

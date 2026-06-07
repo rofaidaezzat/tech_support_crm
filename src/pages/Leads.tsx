@@ -4,6 +4,7 @@ import { useGetLeadsQuery, useUpdateLeadMutation, useGetLeadStatsQuery } from '.
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
+import TableSkeleton from '../components/TableSkeleton';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
 import filePlusIcon from '../assets/file-plus-01.svg';
 import editIcon from '../assets/edit-contained.svg';
@@ -1216,9 +1217,7 @@ const Leads = () => {
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
           {isLoading ? (
-            <div style={{ padding: "40px", textAlign: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
-              Loading leads...
-            </div>
+            <TableSkeleton rowCount={5} columnCount={COL_HEADERS.length} />
           ) : leads.length === 0 ? (
             <Empty_table message="No leads added yet..." />
           ) : (
