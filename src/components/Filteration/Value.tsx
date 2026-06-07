@@ -35,18 +35,28 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
     onApply?.({ from: fromValue, to: toValue });
   };
 
-  // Calculate widths for the fake slider just for visual representation
+  const hasFrom = fromValue !== "";
+  const hasTo = toValue !== "";
+  const hasAny = hasFrom || hasTo;
+
+  // Only compute slider positions when both values are typed
   const min = 0;
-  const max = 100;
-  let fromNum = parseInt(fromValue) || 0;
-  let toNum = parseInt(toValue) || 100;
+  const fromNum = hasFrom ? Math.max(min, parseInt(fromValue) || 0) : 0;
+  const maxBound = hasTo ? Math.max(fromNum, parseInt(toValue) || fromNum) : fromNum;
 
-  if (fromNum < min) fromNum = min;
-  if (toNum > max) toNum = max;
-  if (fromNum > toNum) fromNum = toNum;
+  // Use the actual max as reference for the slider
+  const sliderMax = hasTo
+    ? Math.max(maxBound, parseInt(toValue) || 1)
+    : hasFrom
+    ? Math.max(fromNum * 2, 1)
+    : 100;
 
-  const leftPercent = ((fromNum - min) / (max - min)) * 100;
-  const rightPercent = ((toNum - min) / (max - min)) * 100;
+  const leftPercent = hasFrom ? ((fromNum - min) / (sliderMax - min)) * 100 : 0;
+  const rightPercent = hasTo
+    ? ((maxBound - min) / (sliderMax - min)) * 100
+    : hasFrom
+    ? leftPercent
+    : 0;
   const activeWidth = rightPercent - leftPercent;
 
   return (
@@ -85,33 +95,39 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
         {/* Range Slider Visual */}
         <div style={styles.sliderContainer}>
           <div style={styles.sliderLabels}>
-            <span style={styles.sliderLabelText}>0 EGP</span>
-            <span style={styles.sliderLabelText}>100 EGP</span>
+            <span style={styles.sliderLabelText}>{hasFrom ? `${fromNum} EGP` : "0 EGP"}</span>
+            <span style={styles.sliderLabelText}>{hasTo ? `${maxBound} EGP` : hasFrom ? `${fromNum} EGP` : "—"}</span>
           </div>
 
           <div style={styles.trackWrapper}>
             <div style={styles.trackBackground} />
-            <div
-              style={{
-                ...styles.trackActive,
-                left: `${leftPercent}%`,
-                width: `${activeWidth}%`,
-              }}
-            />
-            {/* Left Thumb */}
-            <div
-              style={{
-                ...styles.thumb,
-                left: `calc(${leftPercent}% - 10px)`,
-              }}
-            />
-            {/* Right Thumb */}
-            <div
-              style={{
-                ...styles.thumb,
-                left: `calc(${rightPercent}% - 10px)`,
-              }}
-            />
+            {hasAny && (
+              <div
+                style={{
+                  ...styles.trackActive,
+                  left: `${leftPercent}%`,
+                  width: `${activeWidth}%`,
+                }}
+              />
+            )}
+            {/* Left Thumb — only when from is typed */}
+            {hasFrom && (
+              <div
+                style={{
+                  ...styles.thumb,
+                  left: `calc(${leftPercent}% - 10px)`,
+                }}
+              />
+            )}
+            {/* Right Thumb — only when to is typed */}
+            {hasTo && (
+              <div
+                style={{
+                  ...styles.thumb,
+                  left: `calc(${rightPercent}% - 10px)`,
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

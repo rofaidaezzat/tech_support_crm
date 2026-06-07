@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/leads-modal-mobile.css";
+import { useGetTodayStatsQuery } from "../../app/service/crudreports";
+import { toast } from "sonner";
 
 interface NewReportModalProps {
   onClose?: () => void;
@@ -7,10 +9,10 @@ interface NewReportModalProps {
   dateStr?: string;
 }
 
-const getDynamicInputStyle = (value: string): React.CSSProperties => ({
+const getDynamicInputStyle = (value: string, hasError?: boolean): React.CSSProperties => ({
   width: "100%",
   height: 48,
-  border: "1px solid rgba(212, 213, 216, 1)",
+  border: hasError ? "1px solid #E03131" : "1px solid rgba(212, 213, 216, 1)",
   borderRadius: 8,
   padding: "12px",
   fontFamily: "Inter, sans-serif",
@@ -25,6 +27,25 @@ const getDynamicInputStyle = (value: string): React.CSSProperties => ({
   alignItems: "center",
   alignSelf: "stretch",
 });
+
+const errorTextStyle: React.CSSProperties = {
+  fontFamily: "Inter, sans-serif",
+  fontSize: 13,
+  fontStyle: "normal",
+  fontWeight: 400,
+  lineHeight: "100%",
+  color: "var(--Foundation-error-red-700, #A80D0B)",
+  marginTop: 4,
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
+};
+
+const errorIcon = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13.333" height="13.333" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+    <path d="M7.66667 5V7.66667M7.66667 10.3333H7.67333M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z" stroke="var(--Foundation-error-red-700, #A80D0B)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 const readOnlyBoxStyle: React.CSSProperties = {
   borderRadius: 8,
@@ -71,6 +92,8 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
   onSubmit,
   dateStr = "dd/mm/yyyy",
 }) => {
+  const { data: todayStatsData, isLoading: isLoadingStats } = useGetTodayStatsQuery();
+
   const [calls, setCalls] = useState("");
   const [leads, setLeads] = useState("");
   const [followups, setFollowups] = useState("");
@@ -79,8 +102,65 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
   const [notes, setNotes] = useState("");
   const [dealsClosed, setDealsClosed] = useState("");
   const [dealsValue, setDealsValue] = useState("");
+  const [formErrors, setFormErrors] = useState<{
+    calls?: string;
+    leads?: string;
+    followups?: string;
+    meetings?: string;
+    priority?: string;
+  }>({});
+
+  useEffect(() => {
+    if (todayStatsData?.data) {
+      setDealsClosed(todayStatsData.data.deals_closed_today ? todayStatsData.data.deals_closed_today.toString() : "");
+      setDealsValue(todayStatsData.data.revenue_today ? todayStatsData.data.revenue_today.toString() : "");
+    }
+  }, [todayStatsData]);
+
+  const displayDealsClosed = isLoadingStats ? "Loading..." : dealsClosed;
+  const displayDealsValue = isLoadingStats ? "Loading..." : dealsValue;
+
+  const validate = () => {
+    const errors: typeof formErrors = {};
+    const callsNum = Number(calls);
+    const leadsNum = Number(leads);
+    const followupsNum = Number(followups);
+    const meetingsNum = Number(meetings);
+
+    if (calls === "") {
+      errors.calls = "Calls today is required.";
+    } else if (isNaN(callsNum) || callsNum < 0 || !Number.isInteger(callsNum)) {
+      errors.calls = "Must be an integer >= 0.";
+    }
+
+    if (leads === "") {
+      errors.leads = "Leads contacted today is required.";
+    } else if (isNaN(leadsNum) || leadsNum < 0 || !Number.isInteger(leadsNum)) {
+      errors.leads = "Must be an integer >= 0.";
+    }
+
+    if (followups === "") {
+      errors.followups = "Follow-ups today is required.";
+    } else if (isNaN(followupsNum) || followupsNum < 0 || !Number.isInteger(followupsNum)) {
+      errors.followups = "Must be an integer >= 0.";
+    }
+
+    if (meetings === "") {
+      errors.meetings = "Meetings today is required.";
+    } else if (isNaN(meetingsNum) || meetingsNum < 0 || !Number.isInteger(meetingsNum)) {
+      errors.meetings = "Must be an integer >= 0.";
+    }
+
+    if (!priority.trim()) {
+      errors.priority = "Priority for tomorrow is required.";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = () => {
+    if (!validate()) return;
     if (onSubmit) {
       onSubmit({ calls, leads, followups, meetings, dealsClosed, dealsValue, priority, notes });
     }
@@ -102,7 +182,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
       className="leads-modal-root"
       style={{
         width: 762,
-        height: 596,
+        height: 720,
         background: "rgba(245, 246, 250, 1)",
         borderRadius: 12,
         padding: 20,
@@ -133,7 +213,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             color: "#6B7280",
           }}
         >
-          {dateStr}
+          {todayStatsData?.data?.date || dateStr}
         </span>
       </div>
 
@@ -156,11 +236,15 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <input
             type="number"
             value={calls}
-            onChange={(e) => setCalls(e.target.value)}
-            style={getDynamicInputStyle(calls)}
+            onChange={(e) => {
+              setCalls(e.target.value);
+              setFormErrors((prev) => ({ ...prev, calls: undefined }));
+            }}
+            style={getDynamicInputStyle(calls, !!formErrors.calls)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.calls && <span style={errorTextStyle}>{errorIcon}{formErrors.calls}</span>}
         </div>
         <div>
           <label style={labelStyle}>
@@ -169,11 +253,15 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <input
             type="number"
             value={leads}
-            onChange={(e) => setLeads(e.target.value)}
-            style={getDynamicInputStyle(leads)}
+            onChange={(e) => {
+              setLeads(e.target.value);
+              setFormErrors((prev) => ({ ...prev, leads: undefined }));
+            }}
+            style={getDynamicInputStyle(leads, !!formErrors.leads)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.leads && <span style={errorTextStyle}>{errorIcon}{formErrors.leads}</span>}
         </div>
 
         {/* Row 2 */}
@@ -184,11 +272,15 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <input
             type="number"
             value={followups}
-            onChange={(e) => setFollowups(e.target.value)}
-            style={getDynamicInputStyle(followups)}
+            onChange={(e) => {
+              setFollowups(e.target.value);
+              setFormErrors((prev) => ({ ...prev, followups: undefined }));
+            }}
+            style={getDynamicInputStyle(followups, !!formErrors.followups)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.followups && <span style={errorTextStyle}>{errorIcon}{formErrors.followups}</span>}
         </div>
         <div>
           <label style={labelStyle}>
@@ -197,11 +289,15 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <input
             type="number"
             value={meetings}
-            onChange={(e) => setMeetings(e.target.value)}
-            style={getDynamicInputStyle(meetings)}
+            onChange={(e) => {
+              setMeetings(e.target.value);
+              setFormErrors((prev) => ({ ...prev, meetings: undefined }));
+            }}
+            style={getDynamicInputStyle(meetings, !!formErrors.meetings)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.meetings && <span style={errorTextStyle}>{errorIcon}{formErrors.meetings}</span>}
         </div>
 
         {/* Row 3 */}
@@ -213,7 +309,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="number"
             value={dealsClosed}
             onChange={(e) => setDealsClosed(e.target.value)}
-            style={getDynamicInputStyle(dealsClosed)}
+            style={getDynamicInputStyle(dealsClosed, false)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -226,7 +322,7 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
             type="text"
             value={dealsValue}
             onChange={(e) => setDealsValue(e.target.value)}
-            style={getDynamicInputStyle(dealsValue)}
+            style={getDynamicInputStyle(dealsValue, false)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
@@ -240,11 +336,15 @@ const New_Report_Modal: React.FC<NewReportModalProps> = ({
           <input
             type="text"
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            style={getDynamicInputStyle(priority)}
+            onChange={(e) => {
+              setPriority(e.target.value);
+              setFormErrors((prev) => ({ ...prev, priority: undefined }));
+            }}
+            style={getDynamicInputStyle(priority, !!formErrors.priority)}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
+          {formErrors.priority && <span style={errorTextStyle}>{errorIcon}{formErrors.priority}</span>}
         </div>
         <div style={{ gridRow: "span 2" }}>
           <label style={labelStyle}>Additional Notes</label>

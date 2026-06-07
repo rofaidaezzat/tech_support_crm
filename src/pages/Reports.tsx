@@ -11,6 +11,81 @@ import DateFilter from '../components/Filteration/Date';
 import Value from '../components/Filteration/Value';
 import { Sort } from '../components/Filteration/Sort';
 import Empty_table from '../components/Empty_table';
+import { useGetReportsQuery, useCreateReportMutation } from '../app/service/crudreports';
+import { toast } from 'sonner';
+
+const getPresetDateRange = (preset: string) => {
+  const today = new Date();
+  let start = new Date();
+  let end = new Date();
+
+  switch (preset) {
+    case "Today":
+      start = today;
+      end = today;
+      break;
+    case "Yesterday":
+      start = new Date(today);
+      start.setDate(today.getDate() - 1);
+      end = new Date(start);
+      break;
+    case "This week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "Last week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day - 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "This month": {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      break;
+    }
+    case "Last month": {
+      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      end = new Date(today.getFullYear(), today.getMonth(), 0);
+      break;
+    }
+    case "This year": {
+      start = new Date(today.getFullYear(), 0, 1);
+      end = new Date(today.getFullYear(), 11, 31);
+      break;
+    }
+    default:
+      break;
+  }
+
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  return {
+    startDate: formatLocalDate(start),
+    endDate: formatLocalDate(end)
+  };
+};
+
+const formatDateString = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const datePart = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+  const parts = datePart.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+};
 
 const Reports = () => {
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
@@ -21,19 +96,73 @@ const Reports = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [selectedReportForNotes, setSelectedReportForNotes] = useState<any>(null);
 
-  const reports = [
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-    { date: "04/11/2026", createdBy: "Yasser Abdelhameed", calls: 44, contacts: 24, followups: 24, meetings: 6, deals: 3, dealsValue: "250,000" },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortQuery, setSortQuery] = useState("-date");
+
+  const queryParams: any = {
+    page: currentPage,
+    limit: 10,
+  };
+
+  if (searchQuery) {
+    queryParams.search = searchQuery;
+  }
+
+  if (dateFilter) {
+    if (dateFilter.preset) {
+      const { startDate, endDate } = getPresetDateRange(dateFilter.preset);
+      queryParams['date[gte]'] = startDate;
+      queryParams['date[lte]'] = endDate;
+    } else {
+      if (dateFilter.startDate) queryParams['date[gte]'] = dateFilter.startDate;
+      if (dateFilter.endDate) queryParams['date[lte]'] = dateFilter.endDate;
+    }
+  }
+
+  if (valueFilter) {
+    if (valueFilter.from) {
+      queryParams['revenue_today[gte]'] = valueFilter.from;
+    }
+    if (valueFilter.to) {
+      queryParams['revenue_today[lte]'] = valueFilter.to;
+    }
+  }
+
+  if (sortQuery) {
+    queryParams.sort = sortQuery;
+  }
+
+  const { data: reportsData, isLoading: isLoadingReports } = useGetReportsQuery(queryParams);
+  const reports = reportsData?.data || [];
+  const totalPages = reportsData?.pagination?.totalPages || 1;
+
+  const [createReport] = useCreateReportMutation();
+
+  const handleNewReportClick = () => {
+    setIsNewReportModalOpen(true);
+  };
+
+  const handleCreateReportSubmit = async (formData: any) => {
+    try {
+      const payload = {
+        calls_today: Number(formData.calls),
+        follow_ups_today: Number(formData.followups),
+        leads_contacted_today: Number(formData.leads),
+        meetings_today: Number(formData.meetings),
+        top_periority_tomorrow: formData.priority || undefined,
+        additional_notes: formData.notes || undefined,
+      };
+      await createReport(payload).unwrap();
+      toast.success("Report created successfully");
+      setIsNewReportModalOpen(false);
+    } catch (err: any) {
+      console.error("Failed to create report:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to create report";
+      toast.error(errMsg);
+    }
+  };
 
   return (
     <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
@@ -64,32 +193,34 @@ const Reports = () => {
           Reports
         </div>
 
-        <button
-          onClick={() => setIsNewReportModalOpen(true)}
-          style={{
-            background: "rgba(0, 35, 111, 1)",
-            width: 167,
-            height: 48,
-            borderRadius: 12,
-            padding: "8px 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            border: "none",
-            color: "#fff",
-            fontFamily: "Inter, sans-serif",
-            fontSize: 16,
-            fontWeight: 500,
-            lineHeight: "100%",
-            letterSpacing: "0%",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Plus size={20} color="#fff" style={{ opacity: 1 }} />
-          New Report
-        </button>
+        {!isSalesManager && (
+          <button
+            onClick={handleNewReportClick}
+            style={{
+              background: "rgba(0, 35, 111, 1)",
+              width: 167,
+              height: 48,
+              borderRadius: 12,
+              padding: "8px 24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              border: "none",
+              color: "#fff",
+              fontFamily: "Inter, sans-serif",
+              fontSize: 16,
+              fontWeight: 500,
+              lineHeight: "100%",
+              letterSpacing: "0%",
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Plus size={20} color="#fff" style={{ opacity: 1 }} />
+            New Report
+          </button>
+        )}
       </div>
       {/* ── Filter Bar ── */}
       <div
@@ -136,6 +267,11 @@ const Reports = () => {
             <input
               type="text"
               placeholder="Filter by date, name,..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               style={{
                 border: "none",
                 background: "transparent",
@@ -199,7 +335,22 @@ const Reports = () => {
             </button>
             {activeFilter === "date" && (
               <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
-                <DateFilter onApply={(date) => { setDateFilter(date); setActiveFilter(null); }} />
+                <DateFilter
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(date) => {
+                    setDateFilter(date);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setDateFilter(null);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  initialPreset={dateFilter?.preset}
+                  initialStartDate={dateFilter?.startDate}
+                  initialEndDate={dateFilter?.endDate}
+                />
               </div>
             )}
           </div>
@@ -255,7 +406,21 @@ const Reports = () => {
             </button>
             {activeFilter === "value" && (
               <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 50 }}>
-                <Value onApply={(val) => { setValueFilter(val); setActiveFilter(null); }} onClear={() => { setValueFilter(null); setActiveFilter(null); }} />
+                <Value
+                  onClose={() => setActiveFilter(null)}
+                  onApply={(val) => {
+                    setValueFilter(val);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  onClear={() => {
+                    setValueFilter(null);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
+                  initialFrom={valueFilter?.from}
+                  initialTo={valueFilter?.to}
+                />
               </div>
             )}
           </div>
@@ -265,6 +430,9 @@ const Reports = () => {
             onClick={() => {
               setDateFilter(null);
               setValueFilter(null);
+              setSearchQuery("");
+              setSortQuery("-date");
+              setCurrentPage(1);
               setActiveFilter(null);
             }}
             style={{
@@ -323,7 +491,11 @@ const Reports = () => {
                 <Sort
                   isOpen={true}
                   onClose={() => setActiveFilter(null)}
-                  onApply={(sortData) => { console.log(sortData); setActiveFilter(null); }}
+                  onApply={(sortData) => {
+                    setSortQuery(sortData);
+                    setCurrentPage(1);
+                    setActiveFilter(null);
+                  }}
                 />
               </div>
             )}
@@ -393,11 +565,11 @@ const Reports = () => {
         {/* Table Body */}
         <div style={{ width: "100%", background: "#fff" }}>
           {reports.length === 0 ? (
-            <Empty_table message="No reports added yet..." />
+            <Empty_table message={isLoadingReports ? "Loading reports..." : "No reports added yet..."} />
           ) : (
-            reports.map((report, i, arr) => (
+            reports.map((report: any, i: number, arr: any[]) => (
               <div
-                key={i}
+                key={report.id || i}
                 className="responsive-table-row"
                 style={{
                   width: "100%",
@@ -412,7 +584,7 @@ const Reports = () => {
               >
                 {/* Date */}
                 <div style={{ width: 70, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  {report.date}
+                  {formatDateString(report.date)}
                 </div>
 
                 {/* Created by */}
@@ -430,43 +602,53 @@ const Reports = () => {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}>
-                    {report.createdBy}
+                    {report.sales ? `${report.sales.first_name} ${report.sales.last_name}` : "N/A"}
                   </div>
                 )}
 
                 {/* Calls */}
                 <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  66666
+                  {report.calls_today}
                 </div>
 
                 {/* Contacts */}
                 <div style={{ width: 59, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  888
+                  {report.leads_contacted_today}
                 </div>
 
                 {/* Followups */}
                 <div style={{ width: 65, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  444
+                  {report.follow_ups_today}
                 </div>
 
                 {/* Meetings */}
                 <div style={{ width: 60, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  888
+                  {report.meetings_today}
                 </div>
 
                 {/* Deals */}
                 <div style={{ width: 41, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  888
+                  {report.deals_closed_today}
                 </div>
 
                 {/* Deals Value */}
                 <div style={{ width: 96, flexShrink: 0, fontFamily: "Inter, sans-serif", fontWeight: 400, fontSize: 13, lineHeight: "140%", letterSpacing: 0, color: "#4B5563" }}>
-                  120,000,000
+                  {report.revenue_today?.toLocaleString() || "0"}
                 </div>
 
                 {/* Top Priority & notes */}
                 <div style={{ width: 125, flexShrink: 0, display: "flex", alignItems: "center" }}>
-                  <img src={mailIcon} alt="Email" width={24} height={24} style={{ cursor: "pointer" }} onClick={() => setIsNotesModalOpen(true)} />
+                  <img
+                    src={mailIcon}
+                    alt="Email"
+                    width={24}
+                    height={24}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedReportForNotes(report);
+                      setIsNotesModalOpen(true);
+                    }}
+                  />
                 </div>
               </div>
             ))
@@ -476,7 +658,7 @@ const Reports = () => {
 
       {/* ── Pagination ── */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-        <Pagination currentPage={currentPage} totalPages={4} onPageChange={setCurrentPage} />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
 
       {/* ── Modals ── */}
@@ -499,17 +681,18 @@ const Reports = () => {
           <div onClick={(e) => e.stopPropagation()}>
             <New_Report_Modal
               onClose={() => setIsNewReportModalOpen(false)}
-              onSubmit={() => {
-                setIsNewReportModalOpen(false);
-              }}
+              onSubmit={handleCreateReportSubmit}
             />
           </div>
         </div>
       )}
 
-      {isNotesModalOpen && (
+      {isNotesModalOpen && selectedReportForNotes && (
         <div
-          onClick={() => setIsNotesModalOpen(false)}
+          onClick={() => {
+            setIsNotesModalOpen(false);
+            setSelectedReportForNotes(null);
+          }}
           style={{
             position: "fixed",
             top: 0,
@@ -524,7 +707,14 @@ const Reports = () => {
           }}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <Top_Periority_notes onClose={() => setIsNotesModalOpen(false)} />
+            <Top_Periority_notes
+              onClose={() => {
+                setIsNotesModalOpen(false);
+                setSelectedReportForNotes(null);
+              }}
+              priorityText={selectedReportForNotes.top_periority_tomorrow}
+              notesText={selectedReportForNotes.additional_notes}
+            />
           </div>
         </div>
       )}
