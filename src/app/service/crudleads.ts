@@ -103,10 +103,36 @@ export interface GetLeadsParams {
   sort?: string;
 }
 
+export interface LeadStatsData {
+  status: Record<string, number>;
+  source: Record<string, number>;
+  date: {
+    today: number;
+    yesterday: number;
+    thisWeek: number;
+    lastWeek: number;
+    thisMonth: number;
+    thisYear: number;
+  };
+}
+
+export interface GetLeadStatsResponse {
+  status: string;
+  code: number;
+  message: string;
+  data: LeadStatsData;
+}
+
+export interface GetLeadStatsParams {
+  search?: string;
+  assigned_to_id?: string;
+  priority?: string;
+}
+
 export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Lead'],
+  tagTypes: ['Lead', 'LeadStats'],
   endpoints: (builder) => ({
     getLeads: builder.query<GetLeadsResponse, GetLeadsParams | void>({
       query: (params) => {
@@ -188,6 +214,21 @@ export const leadsApi = createApi({
         { type: 'Lead', id: 'LIST' },
       ],
     }),
+    getLeadStats: builder.query<GetLeadStatsResponse, GetLeadStatsParams | void>({
+      query: (params) => {
+        const urlParams = new URLSearchParams();
+        if (params) {
+          Object.entries(params).forEach(([key, val]) => {
+            if (val !== undefined && val !== null && val !== '') {
+              urlParams.append(key, val.toString());
+            }
+          });
+        }
+        const queryString = urlParams.toString();
+        return `api/v1/leads/stats${queryString ? `?${queryString}` : ''}`;
+      },
+      providesTags: ['LeadStats'],
+    }),
   }),
 });
 
@@ -198,4 +239,5 @@ export const {
   useUpdateLeadMutation,
   useUpdateLeadStatusMutation,
   useDeleteLeadMutation,
+  useGetLeadStatsQuery,
 } = leadsApi;

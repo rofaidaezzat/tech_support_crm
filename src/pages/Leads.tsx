@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
-import { useGetLeadsQuery, useUpdateLeadMutation } from '../app/service/crudleads';
+import { useGetLeadsQuery, useUpdateLeadMutation, useGetLeadStatsQuery } from '../app/service/crudleads';
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
@@ -340,6 +340,13 @@ const Leads = () => {
   }
 
   const { data: leadsData, isLoading } = useGetLeadsQuery(queryParams);
+
+  // Fetch stats in parallel — only refetch when search/priority/assignment changes, NOT on paging/sort
+  const statsParams = {
+    ...(searchQuery ? { search: searchQuery } : {}),
+    ...(selectedPriorities.length > 0 ? { priority: selectedPriorities.map(p => p.toUpperCase()).join(',') } : {}),
+  };
+  const { data: leadStatsData } = useGetLeadStatsQuery(statsParams);
   const [updateLead] = useUpdateLeadMutation();
   const [leads, setLeads] = useState<any[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
@@ -763,6 +770,7 @@ const Leads = () => {
                   initialPreset={dateFilter?.preset}
                   initialStartDate={dateFilter?.startDate}
                   initialEndDate={dateFilter?.endDate}
+                  dateCounts={leadStatsData?.data?.date}
                 />
               </div>
             )}
@@ -832,6 +840,7 @@ const Leads = () => {
                   }}
                   onClose={() => setActiveFilter(null)}
                   initialSelected={selectedStatuses}
+                  counts={leadStatsData?.data?.status}
                 />
               </div>
             )}
@@ -970,6 +979,7 @@ const Leads = () => {
                   }}
                   onClose={() => setActiveFilter(null)}
                   initialSelected={selectedSources}
+                  counts={leadStatsData?.data?.source}
                 />
               </div>
             )}
@@ -1042,6 +1052,7 @@ const Leads = () => {
                   defaultFilter={followUpFilter?.preset || undefined}
                   defaultStartDate={followUpFilter?.startDate}
                   defaultEndDate={followUpFilter?.endDate}
+                  followUpCounts={leadStatsData?.data?.date as any}
                 />
               </div>
             )}

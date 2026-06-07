@@ -22,16 +22,24 @@ interface DateFilterProps {
   initialPreset?: DatePreset;
   initialStartDate?: string;
   initialEndDate?: string;
+  dateCounts?: {
+    today?: number;
+    yesterday?: number;
+    thisWeek?: number;
+    lastWeek?: number;
+    thisMonth?: number;
+    thisYear?: number;
+  };
 }
 
-const PRESETS: { label: DatePreset & string; count: number }[] = [
-  { label: "Today", count: 200 },
-  { label: "Yesterday", count: 200 },
-  { label: "This week", count: 200 },
-  { label: "Last week", count: 200 },
-  { label: "This month", count: 200 },
-  { label: "Last month", count: 200 },
-  { label: "This year", count: 200 },
+const PRESETS: { label: DatePreset & string; countKey: string }[] = [
+  { label: "Today", countKey: "today" },
+  { label: "Yesterday", countKey: "yesterday" },
+  { label: "This week", countKey: "thisWeek" },
+  { label: "Last week", countKey: "lastWeek" },
+  { label: "This month", countKey: "thisMonth" },
+  { label: "Last month", countKey: "lastWeek" },
+  { label: "This year", countKey: "thisYear" },
 ];
 
 const DateFilter: React.FC<DateFilterProps> = ({
@@ -41,6 +49,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
   initialPreset,
   initialStartDate,
   initialEndDate,
+  dateCounts,
 }) => {
   const [selectedPreset, setSelectedPreset] = useState<DatePreset>(initialPreset || null);
   const [startDate, setStartDate] = useState(initialStartDate || "");
@@ -133,6 +142,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
         >
           {PRESETS.map((preset) => {
             const active = selectedPreset === preset.label;
+            const count = dateCounts?.[preset.countKey as keyof typeof dateCounts];
             return (
               <div
                 key={preset.label}
@@ -198,16 +208,18 @@ const DateFilter: React.FC<DateFilterProps> = ({
                 >
                   {preset.label}
                 </span>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 13,
-                    color: "#6B7280",
-                    fontWeight: 400,
-                  }}
-                >
-                  ({preset.count})
-                </span>
+                {count !== undefined && (
+                  <span
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 13,
+                      color: "#6B7280",
+                      fontWeight: 400,
+                    }}
+                  >
+                    ({count})
+                  </span>
+                )}
               </div>
             );
           })}
