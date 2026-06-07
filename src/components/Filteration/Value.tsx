@@ -46,8 +46,23 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
   const fromNum = hasFrom ? Math.max(min, parseInt(fromValue) || 0) : min;
   const toNum = hasTo ? Math.max(fromNum, parseInt(toValue) || 0) : max;
 
-  const leftPercent = max > min ? ((fromNum - min) / (max - min)) * 100 : 0;
-  const rightPercent = max > min ? ((toNum - min) / (max - min)) * 100 : 100;
+  // Use logarithmic scale if the range spans multiple orders of magnitude (ratio > 50)
+  const useLog = min > 0 && max / min > 50;
+
+  const getPercent = (val: number) => {
+    if (max <= min) return 0;
+    if (useLog) {
+      const logMin = Math.log10(min);
+      const logMax = Math.log10(max);
+      const logVal = Math.log10(Math.max(min, val));
+      return ((logVal - logMin) / (logMax - logMin)) * 100;
+    } else {
+      return ((val - min) / (max - min)) * 100;
+    }
+  };
+
+  const leftPercent = getPercent(fromNum);
+  const rightPercent = getPercent(toNum);
   const activeWidth = (hasFrom || hasTo) ? rightPercent - leftPercent : 0;
 
   return (
@@ -88,8 +103,8 @@ const Value: React.FC<ValueProps> = ({ onApply, onClear, onClose, initialFrom, i
         {/* Range Slider Visual */}
         <div style={styles.sliderContainer}>
           <div style={styles.sliderLabels}>
-            <span style={styles.sliderLabelText}>{`${fromNum} EGP`}</span>
-            <span style={styles.sliderLabelText}>{`${toNum} EGP`}</span>
+            <span style={styles.sliderLabelText}>{`${min.toLocaleString()} EGP`}</span>
+            <span style={styles.sliderLabelText}>{`${max.toLocaleString()} EGP`}</span>
           </div>
 
           <div style={styles.trackWrapper}>
