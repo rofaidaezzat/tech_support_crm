@@ -3,7 +3,6 @@ import '../styles/overview-mobile.css';
 import Task_drawer from '../components/Navbar/Task_drawer';
 import Notes from '../components/Leads/Notes';
 import LeadForm from '../components/Leads/Lead_form';
-import ConvertToDeal from '../components/Leads/Convert_to_deal';
 import { 
   XAxis, 
   YAxis, 
@@ -119,7 +118,7 @@ const tableData = [
 
 const Overview = () => {
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<{ type: "notes" | "lead" | "convert" | null, leadId: number | null }>({ type: null, leadId: null });
+  const [activeModal, setActiveModal] = useState<{ type: "notes" | "lead" | null, leadId: number | null }>({ type: null, leadId: null });
   const [activeRowMenuIndex, setActiveRowMenuIndex] = useState<number | null>(null);
 
   const summaryCards = [
@@ -734,12 +733,6 @@ const Overview = () => {
                             >
                               Add Lead
                             </div>
-                            <div 
-                              onClick={() => { setActiveRowMenuIndex(null); setActiveModal({ type: "convert", leadId: index }); }}
-                              style={{ padding: "8px 12px", fontSize: 12, cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", color: "#374151", textAlign: "left" }}
-                            >
-                              Convert to Deal
-                            </div>
                           </div>
                         </>
                       )}
@@ -791,11 +784,6 @@ const Overview = () => {
       {activeModal.type === "lead" && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
           <LeadForm onClose={() => setActiveModal({ type: null, leadId: null })} />
-        </div>
-      )}
-      {activeModal.type === "convert" && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)" }}>
-          <ConvertToDeal onClose={() => setActiveModal({ type: null, leadId: null })} />
         </div>
       )}
     </>

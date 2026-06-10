@@ -76,7 +76,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
   const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
 
   const [title, setTitle] = useState("");
-  const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">("Lead");
+  const [relatedTo, setRelatedTo] = useState<"Lead">("Lead");
   const [selectedLead, setSelectedLead] = useState("");
   const [selectedLeadId, setSelectedLeadId] = useState("");
   const [isLeadDropdownOpen, setIsLeadDropdownOpen] = useState(false);

@@ -61,14 +61,6 @@ const allNotifications = [
     time: "1 hour ago",
     unread: false,
   },
-  {
-    id: 5,
-    iconType: "followup",
-    title: "New deal created",
-    description: "Call client Ahmed at 3:00 PM.",
-    time: "1 hour ago",
-    unread: false,
-  },
 ];
 
 // ── Props ─────────────────────────────────────────────────────────────────────

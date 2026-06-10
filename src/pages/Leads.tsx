@@ -14,10 +14,8 @@ import mail04Icon from '../assets/mail-04.svg';
 import starsIcon from '../assets/stars.svg';
 import Pagination from '../components/Pagination';
 import filterIcon from '../assets/filter.svg';
-// Modals
 import Add_new_lead from '../components/Leads/Add_new_lead';
 import Edit_lead_info from '../components/Leads/Edit_lead_info';
-import Convert_to_deal from '../components/Leads/Convert_to_deal';
 import Lead_form from '../components/Leads/Lead_form';
 import Empty_table from '../components/Empty_table';
 import Notes from '../components/Leads/Notes';
@@ -385,8 +383,6 @@ const Leads = () => {
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isEditLeadOpen, setIsEditLeadOpen] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
-  const [isConvertToDealOpen, setIsConvertToDealOpen] = useState(false);
-  const [selectedConvertLead, setSelectedConvertLead] = useState<any>(null);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
@@ -472,13 +468,6 @@ const Leads = () => {
   };
 
   const handleStatusChange = async (leadIndex: number, newStatus: string) => {
-    // "Deal" opens the Convert to Deal modal instead of calling the status API
-    if (newStatus === "Deal") {
-      setSelectedConvertLead(leads[leadIndex]);
-      setIsConvertToDealOpen(true);
-      setOpenDropdown(null);
-      return;
-    }
     const lead = leads[leadIndex];
     if (!lead?.id) return;
     // Optimistic local update
@@ -1788,17 +1777,6 @@ const Leads = () => {
       {isEditLeadOpen && selectedLeadId && (
         <ModalOverlay onClose={() => { setIsEditLeadOpen(false); setSelectedLeadId(null); }}>
           <Edit_lead_info leadId={selectedLeadId} onClose={() => { setIsEditLeadOpen(false); setSelectedLeadId(null); }} />
-        </ModalOverlay>
-      )}
-      {isConvertToDealOpen && (
-        <ModalOverlay onClose={() => { setIsConvertToDealOpen(false); setSelectedConvertLead(null); }}>
-          <Convert_to_deal
-            onClose={() => { setIsConvertToDealOpen(false); setSelectedConvertLead(null); }}
-            leadId={selectedConvertLead?.id}
-            leadName={selectedConvertLead?.name}
-            companyName={selectedConvertLead?.company}
-            currentStatus={selectedConvertLead?.status}
-          />
         </ModalOverlay>
       )}
       {isLeadFormOpen && (

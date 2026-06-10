@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, Laptop } from 'lucide-react';
 import Edit_Profile from '../components/Setting/Edit_Profile';
 import Change_password from '../components/Setting/Change_password';
+import Manage_Connected_Devive from '../components/Setting/Manage_Connected_Devive';
 import { toast } from 'sonner';
 import '../styles/settings-mobile.css';
 
@@ -35,9 +36,10 @@ const Settings = () => {
   const [language, setLanguage] = useState<'English' | 'Arabic'>('English');
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isManageDevicesOpen, setIsManageDevicesOpen] = useState(false);
 
   const handleManageDevices = () => {
-    toast.info("Manage Connected Devices feature is coming soon!");
+    setIsManageDevicesOpen(true);
   };
 
   return (
@@ -316,6 +318,11 @@ const Settings = () => {
       {isChangePasswordOpen && (
         <ModalOverlay onClose={() => setIsChangePasswordOpen(false)}>
           <Change_password onClose={() => setIsChangePasswordOpen(false)} />
+        </ModalOverlay>
+      )}
+      {isManageDevicesOpen && (
+        <ModalOverlay onClose={() => setIsManageDevicesOpen(false)}>
+          <Manage_Connected_Devive onClose={() => setIsManageDevicesOpen(false)} />
         </ModalOverlay>
       )}
     </div>

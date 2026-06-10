@@ -100,52 +100,6 @@ const Search_Results = () => {
               </div>
             </div>
           </div>
-
-          {/* Deals Section */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div style={{ fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 32, color: "rgba(0, 35, 111, 1)", lineHeight: "100%" }}>
-                Deals
-              </div>
-              <div style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#6B7280" }}>
-                1 result
-              </div>
-            </div>
-
-            {/* Deals Table */}
-            <div style={{ width: "100%", border: "1px solid rgba(212, 213, 216, 1)", borderRadius: 12, overflow: "hidden", background: "#fff" }}>
-              {/* Header */}
-              <div style={{ background: "rgba(212, 213, 216, 1)", height: 48, display: "flex", alignItems: "center", padding: "0 12px" }}>
-                <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Date</div>
-                <div style={{ flex: 2, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Customer Info</div>
-                <div style={{ flex: 1.5, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Phone number</div>
-                <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>City</div>
-                <div style={{ flex: 1.5, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Deal details</div>
-                <div style={{ flex: 1.5, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Value (EGP)</div>
-                <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: 13, color: "#141414" }}>Actions</div>
-              </div>
-              {/* Row */}
-              <div style={{ height: 72, display: "flex", alignItems: "center", padding: "0 12px" }}>
-                <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>04/11/2026</div>
-                <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#141414" }}>Wael Metwally</span>
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#6B7280" }}>Elshayeeb inc.</span>
-                </div>
-                <div style={{ flex: 1.5, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>+20112170891</div>
-                <div style={{ flex: 1, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>Alexandria</div>
-                <div style={{ flex: 1.5, fontFamily: "Inter, sans-serif", fontSize: 13, color: "rgba(0, 35, 111, 1)", cursor: "pointer" }}>View Details</div>
-                <div style={{ flex: 1.5, display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>120,000,000</span>
-                  <img src={editPenIcon} alt="edit" width={16} height={16} style={{ cursor: "pointer", opacity: 0.55 }} />
-                </div>
-                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={whatsappIcon} alt="wa" width={24} height={24} style={{ cursor: "pointer" }} />
-                  <img src={mailIcon} alt="mail" width={24} height={24} style={{ cursor: "pointer" }} />
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Footer No Results Info (Image and text) */}
           <div style={{ display: "flex", alignItems: "center", gap: 24, marginTop: 40 }}>
             <img src={frameImage} alt="Search Graphic" />

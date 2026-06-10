@@ -60,7 +60,7 @@ const labelStyle: React.CSSProperties = {
 
 const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) => {
   const [title, setTitle] = useState(initialData?.title || "");
-  const [relatedTo, setRelatedTo] = useState<"Lead" | "Deal">(initialData?.relatedTo || "Lead");
+  const [relatedTo, setRelatedTo] = useState<"Lead">(initialData?.relatedTo || "Lead");
   const [selectedLead, setSelectedLead] = useState(initialData?.lead?.name || initialData?.selectedLead || "");
   const [selectedLeadId, setSelectedLeadId] = useState(initialData?.lead_id || "");
   const [isLeadDropdownOpen, setIsLeadDropdownOpen] = useState(false);

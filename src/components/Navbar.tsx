@@ -162,18 +162,11 @@ const Navbar: React.FC<NavbarProps> = ({
               gap: 0,
             }}
           >
-            {/* Result rows */}
             {[
               {
                 name: "Wael Metwally",
                 type: "Lead",
                 avatarBg: "#4CAF50",
-                initials: "WM",
-              },
-              {
-                name: "Wael Metwally",
-                type: "Deal",
-                avatarBg: "#F59E0B",
                 initials: "WM",
               },
               {

@@ -409,7 +409,6 @@ const Companies = () => {
       toast.success("Company archived successfully!");
     }
   };
-
   const handleExportCompanies = () => {
     toast.success("Companies exported successfully!");
   };
