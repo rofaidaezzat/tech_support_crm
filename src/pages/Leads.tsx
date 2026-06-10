@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Filter, Sparkles, ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
-import { useGetLeadsQuery, useUpdateLeadMutation, useGetLeadStatsQuery } from '../app/service/crudleads';
+import { useGetLeadsQuery, useUpdateLeadMutation, useGetLeadStatsQuery, useDeleteLeadMutation } from '../app/service/crudleads';
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
 import '../styles/tables-mobile.css';
@@ -20,7 +20,7 @@ import Edit_lead_info from '../components/Leads/Edit_lead_info';
 import Convert_to_deal from '../components/Leads/Convert_to_deal';
 import Lead_form from '../components/Leads/Lead_form';
 import Empty_table from '../components/Empty_table';
-import Notes from '../components/Deals/Notes';
+import Notes from '../components/Leads/Notes';
 import Leads_messages from '../components/Leads/Leads_messages';
 import StatusTimeline from '../components/Leads/StatusTimeline';
 // Filter Components
@@ -349,6 +349,7 @@ const Leads = () => {
   };
   const { data: leadStatsData } = useGetLeadStatsQuery(statsParams);
   const [updateLead] = useUpdateLeadMutation();
+  const [deleteLead] = useDeleteLeadMutation();
   const [leads, setLeads] = useState<any[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [openPriorityDropdown, setOpenPriorityDropdown] = useState<number | null>(null);
@@ -522,6 +523,20 @@ const Leads = () => {
         prev.map((l, i) => (i === leadIndex ? { ...l, priority: lead.priority } : l))
       );
       let errMsg = err?.data?.message || err?.message || "Failed to update priority.";
+      if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
+      toast.error(errMsg);
+    }
+  };
+
+  const handleArchiveLead = async (leadId: string) => {
+    if (!window.confirm("Are you sure you want to archive this lead?")) {
+      return;
+    }
+    try {
+      await deleteLead(leadId).unwrap();
+      toast.success("Lead archived successfully");
+    } catch (err: any) {
+      let errMsg = err?.data?.message || err?.message || "Failed to archive lead.";
       if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
       toast.error(errMsg);
     }
@@ -1693,13 +1708,12 @@ const Leads = () => {
                   style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} 
                   onClick={() => { window.open(`https://web.whatsapp.com/send?phone=${encodeURIComponent(lead.phone)}`, '_blank'); }}
                 />
-                <img src={filePlusIcon} alt="Add File" width={24} height={24} style={{ cursor: "pointer", strokeWidth: 2, stroke: "var(--Foundation-neutral-neutral-800, #464646)" }} onClick={() => setIsLeadFormOpen(true)} />
                 
                 {/* Three dots menu */}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ cursor: "pointer", flexShrink: 0 }} onClick={() => setOpenActionMenu(openActionMenu === i ? null : i)}>
                   <path d="M12 3C11.175 3 10.5 3.675 10.5 4.5C10.5 5.325 11.175 6 12 6C12.825 6 13.5 5.325 13.5 4.5C13.5 3.675 12.825 3 12 3ZM12 18C11.175 18 10.5 18.675 10.5 19.5C10.5 20.325 11.175 21 12 21C12.825 21 13.5 20.325 13.5 19.5C13.5 18.675 12.825 18 12 18ZM12 10.5C11.175 10.5 10.5 11.175 10.5 12C10.5 12.825 11.175 13.5 12 13.5C12.825 13.5 13.5 12.825 13.5 12C13.5 11.175 12.825 10.5 12 10.5Z" fill="#464646"/>
                 </svg>
-
+ 
                 {/* Dropdown Menu */}
                 {openActionMenu === i && (
                   <div style={{
@@ -1716,41 +1730,6 @@ const Leads = () => {
                     alignItems: "flex-start",
                     gap: 4
                   }}>
-                    {/* Note */}
-                    <div 
-                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setSelectedLeadId(lead.id); setIsNotesOpen(true); setOpenActionMenu(null); }}
-                    >
-                      <img src={mailIcon} alt="Note" width={20} height={20} style={{ stroke: "#464646" }} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Note</span>
-                    </div>
-
-                    {/* Status timeline */}
-                    <div 
-                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setSelectedLeadId(lead.id); setIsStatusTimelineOpen(true); setOpenActionMenu(null); }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 16" fill="none">
-                        <path d="M1 7.66608H5L7.04044 1L11.4382 15L12.9903 7.66608H17" stroke="#464646" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Status timeline</span>
-                    </div>
-
-                    {/* Convert to deal */}
-                    <div 
-                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => { setSelectedConvertLead(lead); setIsConvertToDealOpen(true); setOpenActionMenu(null); }}
-                    >
-                      <img src={coinIcon} alt="Convert to deal" width={20} height={20} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Convert to deal</span>
-                    </div>
-
                     {/* Edit info */}
                     <div 
                       style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
@@ -1760,6 +1739,31 @@ const Leads = () => {
                     >
                       <img src={editIcon} alt="Edit info" width={20} height={20} />
                       <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "#141414", whiteSpace: "nowrap" }}>Edit info</span>
+                    </div>
+                    {/* Archive */}
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { 
+                        setOpenActionMenu(null);
+                        handleArchiveLead(lead.id);
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                        <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span style={{ 
+                        fontFamily: "Inter, sans-serif", 
+                        fontSize: 16, 
+                        fontStyle: "normal", 
+                        fontWeight: 400, 
+                        lineHeight: "normal", 
+                        color: "var(--Foundation-error-red-700, #A80D0B)", 
+                        whiteSpace: "nowrap" 
+                      }}>
+                        Archive
+                      </span>
                     </div>
                   </div>
                 )}
@@ -1804,13 +1808,12 @@ const Leads = () => {
       )}
       {isNotesOpen && (
         <ModalOverlay onClose={() => { setIsNotesOpen(false); setSelectedLeadId(null); }}>
-          <Notes 
-            leadId={selectedLeadId || undefined} 
-            leadName={leads.find(l => l.id === selectedLeadId)?.name} 
-            onClose={() => { setIsNotesOpen(false); setSelectedLeadId(null); }} 
+          <Notes
+            onClose={() => { setIsNotesOpen(false); setSelectedLeadId(null); }}
           />
         </ModalOverlay>
       )}
+
       {isMessagesOpen && (
         <ModalOverlay onClose={() => setIsMessagesOpen(false)}>
           <Leads_messages onClose={() => setIsMessagesOpen(false)} />

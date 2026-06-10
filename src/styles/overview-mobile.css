@@ -100,4 +100,8 @@
     justify-content: flex-start !important;
     flex-wrap: wrap !important;
   }
+
+  .overview-charts-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

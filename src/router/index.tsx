@@ -4,19 +4,18 @@ import {
   Route,
   Navigate,
 } from "react-router";
-import Deals from "../pages/Deals";
 import Leads from "../pages/Leads";
-import Reports from "../pages/Reports";
 import Search_Results from "../pages/Search_Results";
 import Settings from "../pages/Settings";
 import Layout from "../components/Layout";
 import Overview from "../pages/Overview";
-import Sales from "../pages/Sales";
-import Overview_Manager from "../pages/Overview_Manager";
 import Login from "../pages/Login";
 import Reset_Password from "../pages/Reset_Password";
 import OTP_Verification from "../pages/OTP_Verification";
 import Update_Password from "../pages/Update_Password";
+import Companies from "../pages/Companies";
+import Plans from "../pages/Plans";
+import Support from "../pages/Support";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,12 +24,11 @@ export const router = createBrowserRouter(
         <Route index element={<Navigate to="/login" replace />} />
         <Route path="/overview" element={<Overview />} />
         <Route path="/leads" element={<Leads />} />
-        <Route path="/deals" element={<Deals />} />
-        <Route path="/reports" element={<Reports />} />
         <Route path="/search" element={<Search_Results />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/overview-manager" element={<Overview_Manager />} />
-        <Route path="/sales" element={<Sales />} />
+        <Route path="/companies" element={<Companies />} />
+        <Route path="/plans" element={<Plans />} />
+        <Route path="/support" element={<Support />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/reset-password" element={<Reset_Password />} />
