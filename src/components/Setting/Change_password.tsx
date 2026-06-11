@@ -36,10 +36,12 @@ const PasswordInput = ({
   label,
   value,
   onChange,
+  autoComplete,
 }: {
   label: string;
   value: string;
   onChange: (val: string) => void;
+  autoComplete?: string;
 }) => {
   const [show, setShow] = useState(false);
 
@@ -53,6 +55,7 @@ const PasswordInput = ({
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          autoComplete={autoComplete}
           style={inputStyle}
           onFocus={(e) => (e.currentTarget.style.borderColor = "#3B5BDB")}
           onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(212, 213, 216, 1)")}
@@ -150,8 +153,12 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
       </div>
 
       {/* ── Body ── */}
-      <div
+      <form
         className="leads-modal-body"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave();
+        }}
         style={{
           flex: 1,
           padding: "24px 20px",
@@ -165,16 +172,19 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
           label="Current password"
           value={currentPass}
           onChange={setCurrentPass}
+          autoComplete="current-password"
         />
         <PasswordInput
           label="New password"
           value={newPass}
           onChange={setNewPass}
+          autoComplete="new-password"
         />
         <PasswordInput
           label="Confirm password"
           value={confirmPass}
           onChange={setConfirmPass}
+          autoComplete="new-password"
         />
 
         {/* Actions */}
@@ -186,6 +196,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
           }}
         >
           <button
+            type="button"
             onClick={onClose}
             style={{
               flex: 1,
@@ -204,7 +215,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
             Cancel
           </button>
           <button
-            onClick={handleSave}
+            type="submit"
             style={{
               flex: 1,
               height: 48,
@@ -222,7 +233,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
             Save Changes
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

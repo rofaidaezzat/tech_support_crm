@@ -12,7 +12,6 @@ import lockOpen03Icon from '../assets/lock-open-03.svg';
 import phoneIcon from '../assets/phone.svg';
 import userProfileCircleIcon from '../assets/user-profile-circle.svg';
 import emailIcon from '../assets/email.svg';
-import edit03Icon from '../assets/edit-03.svg';
 import mahmoudAvatar from '../assets/mahmoud_avatar.png';
 
 // Reusable overlay for modals
@@ -108,11 +107,35 @@ const Settings = () => {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 600, color: "#141414" }}>{fullName}</span>
                     <div 
-                      style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", color: "rgba(0, 35, 111, 1)" }} 
+                      style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", color: "var(--Foundation-brand-brand-500, #00236F)" }} 
                       onClick={() => setIsEditProfileOpen(true)}
                     >
-                      <img src={edit03Icon} alt="Edit" style={{ width: 16, height: 16 }} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500 }}>Edit Profile</span>
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="10.4" 
+                        height="10.069" 
+                        viewBox="0 0 12 12" 
+                        fill="none"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <path 
+                          d="M7.06695 10.7354H11.067M0.666992 10.7354L3.57765 10.1489C3.73217 10.1178 3.87404 10.0417 3.98547 9.93023L10.5013 3.41087C10.8137 3.0983 10.8134 2.59165 10.5008 2.27934L9.1205 0.900621C8.80797 0.588442 8.30157 0.588655 7.9893 0.901096L1.47283 7.42113C1.36162 7.5324 1.28569 7.67399 1.25453 7.82819L0.666992 10.7354Z" 
+                          stroke="var(--Foundation-brand-brand-500, #00236F)" 
+                          strokeWidth="1.33333" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span style={{ 
+                        fontFamily: "Inter, sans-serif", 
+                        fontSize: 13, 
+                        fontWeight: 500, 
+                        color: "var(--Foundation-brand-brand-500, #00236F)",
+                        lineHeight: "normal",
+                        textAlign: "center"
+                      }}>
+                        Edit Profile
+                      </span>
                     </div>
                   </div>
                   

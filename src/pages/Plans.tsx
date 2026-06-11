@@ -1,61 +1,26 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import { 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  LineChart, 
+  Line 
+} from 'recharts';
 
-const ChartBackground = ({ children, yTicks, xTicks }: { children: React.ReactNode; yTicks: number[]; xTicks: string[] }) => {
-  return (
-    <div style={{ position: "relative", width: "100%", height: 290, marginTop: 16 }}>
-      {/* Y Axis Labels */}
-      <div style={{ position: "absolute", left: 0, top: 6, bottom: 33, width: 30, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-end", paddingRight: 8 }}>
-        {yTicks.map(tick => (
-          <span key={tick} style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "#747474" }}>{tick}</span>
-        ))}
-      </div>
-
-      {/* Grid and Chart Area */}
-      <div style={{
-        marginLeft: 30,
-        height: 251,
-        position: "relative",
-        borderLeft: "1px solid #EDEFF2",
-        borderBottom: "1px solid #EDEFF2",
-        padding: "6px 1px",
-        boxSizing: "border-box",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start"
-      }}>
-        {/* Horizontal Grid lines */}
-        {yTicks.slice(1, -1).map((tick, idx) => {
-          const topPercent = (idx + 1) * (100 / (yTicks.length - 1));
-          return (
-            <div
-              key={tick}
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: `${topPercent}%`,
-                borderTop: "1px dashed #EDEFF2",
-              }}
-            />
-          );
-        })}
-
-        {/* Chart Lines (SVGs) */}
-        <div style={{ position: "absolute", left: 0, right: 0, top: 6, bottom: 6 }}>
-          {children}
-        </div>
-      </div>
-
-      {/* X Axis Labels */}
-      <div style={{ position: "absolute", left: 30, right: 0, bottom: 0, height: 20, display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 4, boxSizing: "border-box" }}>
-        {xTicks.map(tick => (
-          <span key={tick} style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "#747474" }}>{tick}</span>
-        ))}
-      </div>
-    </div>
-  );
-};
+const subscriptionTrendData = [
+  { name: 'Jan', plan1: 0, plan2: 2, plan3: 5 },
+  { name: 'Feb', plan1: 3, plan2: 0, plan3: 5 },
+  { name: 'Mar', plan1: 6.5, plan2: 6.5, plan3: 0 },
+  { name: 'Apr', plan1: 5, plan2: 3.5, plan3: 6.5 },
+  { name: 'May', plan1: 5, plan2: 3.5, plan3: 6.5 },
+  { name: 'June', plan1: 3, plan2: 3.5, plan3: 6.5 },
+  { name: 'July', plan1: 8, plan2: 6.5, plan3: 6.5 },
+  { name: 'Aug', plan1: 8, plan2: 6.5, plan3: 5 },
+  { name: 'Sep', plan1: 5, plan2: 2, plan3: 6.5 },
+];
 
 const Plans = () => {
   const plan1Features = [
@@ -344,52 +309,50 @@ const Plans = () => {
               </div>
             </div>
 
-            {/* Overlapping graph paths */}
-            <ChartBackground yTicks={[8, 6, 4, 2, 0]} xTicks={["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep"]}>
-              <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                {/* Blue Line (Plan 1) */}
-                <svg viewBox="0 0 509 149" width="100%" height="100%" preserveAspectRatio="none" style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
-                  <path d="M0.34082 148.625L63.7853 89.375L127.23 30.125L190.674 59.75H254.119L317.563 89.375L381.007 0.5H444.452L507.896 59.75" stroke="#00236F" strokeWidth="2" fill="none" />
-                  <circle cx="0.341" cy="148.625" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="63.785" cy="89.375" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="127.23" cy="30.125" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="190.674" cy="59.75" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="254.119" cy="59.75" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="317.563" cy="89.375" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="381.007" cy="0.5" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="444.452" cy="0.5" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                  <circle cx="507.896" cy="59.75" r="4" fill="#fff" stroke="#00236F" strokeWidth="2" />
-                </svg>
-
-                {/* Red Line (Plan 2) */}
-                <svg viewBox="0 0 509 120" width="100%" height="80%" preserveAspectRatio="none" style={{ position: "absolute", left: 0, top: "20%", overflow: "visible" }}>
-                  <path d="M0.211914 89.6842L63.6564 119.309L127.101 0.809204L190.545 60.0592H253.99H317.434L380.879 0.809204H444.323L507.767 89.6842" stroke="#EC130F" strokeWidth="2" fill="none" />
-                  <circle cx="0.212" cy="89.684" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="63.656" cy="119.309" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="127.101" cy="0.809" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="190.545" cy="60.059" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="253.99" cy="60.059" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="317.434" cy="60.059" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="380.879" cy="0.809" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="444.323" cy="0.809" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                  <circle cx="507.767" cy="89.684" r="4" fill="#fff" stroke="#EC130F" strokeWidth="2" />
-                </svg>
-
-                {/* Green Line (Plan 3) */}
-                <svg viewBox="0 0 508 120" width="100%" height="80%" preserveAspectRatio="none" style={{ position: "absolute", left: 0, top: "20%", overflow: "visible" }}>
-                  <path d="M0 30.125H63.4444L126.889 119L190.333 0.5H253.778H317.222H380.667L444.111 30.125L507.556 0.5" stroke="#4BA832" strokeWidth="2" fill="none" />
-                  <circle cx="0" cy="30.125" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="63.444" cy="30.125" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="126.889" cy="119" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="190.333" cy="0.5" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="253.778" cy="0.5" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="317.222" cy="0.5" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="380.667" cy="0.5" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="444.111" cy="30.125" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                  <circle cx="507.556" cy="0.5" r="4" fill="#fff" stroke="#4BA832" strokeWidth="2" />
-                </svg>
-              </div>
-            </ChartBackground>
+            {/* Subscription Trend Line Chart */}
+            <div style={{ width: "100%", height: 310, display: "flex", justifyContent: "center", alignItems: "center", marginTop: 16 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={subscriptionTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#EDEFF2" vertical={false} />
+                  <XAxis dataKey="name" scale="point" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6B7280", dy: 8 }} padding={{ left: 0, right: 0 }} />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 12, fill: "#6B7280", dx: -8 }} 
+                    domain={[0, 8]}
+                    ticks={[0, 2, 4, 6, 8]}
+                  />
+                  <Tooltip />
+                  <Line 
+                    type="monotone" 
+                    dataKey="plan1" 
+                    name="Plan 1"
+                    stroke="#00236F" 
+                    strokeWidth={2} 
+                    dot={{ r: 4, fill: "#FFF", stroke: "#00236F", strokeWidth: 2 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="plan2" 
+                    name="Plan 2"
+                    stroke="#EC130F" 
+                    strokeWidth={2} 
+                    dot={{ r: 4, fill: "#FFF", stroke: "#EC130F", strokeWidth: 2 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="plan3" 
+                    name="Plan 3"
+                    stroke="#4BA832" 
+                    strokeWidth={2} 
+                    dot={{ r: 4, fill: "#FFF", stroke: "#4BA832", strokeWidth: 2 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
           {/* Card 2: Plan Performance */}

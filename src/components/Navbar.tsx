@@ -118,6 +118,9 @@ const Navbar: React.FC<NavbarProps> = ({
           </svg>
           <input
             type="text"
+            name="searchQuery"
+            id="navbarSearchInput"
+            autoComplete="off"
             placeholder="Search..."
             value={searchQuery}
             onFocus={() => setShowSearch(true)}
