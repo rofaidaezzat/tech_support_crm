@@ -532,18 +532,35 @@ const Support = () => {
                       {openActionMenu === i && (
                         <>
                           <div onClick={() => setOpenActionMenu(null)} style={{ position: "fixed", inset: 0, zIndex: 998 }} />
-                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 160, display: "flex", flexDirection: "column", padding: 4 }}>
-                            {["View ticket", "Assign agent", "Change status", "Close ticket"].map((action) => (
-                              <div
-                                key={action}
-                                onClick={() => setOpenActionMenu(null)}
-                                style={{ padding: "8px 12px", fontSize: 13, cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", color: "#374151", textAlign: "left" }}
-                                onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                              >
-                                {action}
-                              </div>
-                            ))}
+                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 180, display: "flex", flexDirection: "column", padding: 4 }}>
+
+
+                            {/* Pause agent */}
+                            <div
+                              onClick={() => setOpenActionMenu(null)}
+                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M17.625 3H6.375C4.51104 3 3 4.51104 3 6.375V17.625C3 19.489 4.51104 21 6.375 21H17.625C19.489 21 21 19.489 21 17.625V6.375C21 4.51104 19.489 3 17.625 3Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
+                                <path d="M8.625 9.89062C8.625 9.19164 9.19164 8.625 9.89062 8.625H14.1094C14.8084 8.625 15.375 9.19164 15.375 9.89062V14.1094C15.375 14.8084 14.8084 15.375 14.1094 15.375H9.89062C9.19164 15.375 8.625 14.8084 8.625 14.1094V9.89062Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
+                              </svg>
+                              <span>Pause agent</span>
+                            </div>
+
+                            {/* Deactivate */}
+                            <div
+                              onClick={() => setOpenActionMenu(null)}
+                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                              <span>Deactivate</span>
+                            </div>
                           </div>
                         </>
                       )}
@@ -660,18 +677,33 @@ const Support = () => {
                       {openTeamActionMenu === i && (
                         <>
                           <div onClick={() => setOpenTeamActionMenu(null)} style={{ position: "fixed", inset: 0, zIndex: 998 }} />
-                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 160, display: "flex", flexDirection: "column", padding: 4 }}>
-                            {["View agent details", "Edit assignment", "Change status", "Remove agent"].map((action) => (
-                              <div
-                                key={action}
-                                onClick={() => setOpenTeamActionMenu(null)}
-                                style={{ padding: "8px 12px", fontSize: 13, cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", color: "#374151", textAlign: "left" }}
-                                onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                              >
-                                {action}
-                              </div>
-                            ))}
+                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 180, display: "flex", flexDirection: "column", padding: 4 }}>
+                            {/* Pause agent */}
+                            <div
+                              onClick={() => setOpenTeamActionMenu(null)}
+                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M17.625 3H6.375C4.51104 3 3 4.51104 3 6.375V17.625C3 19.489 4.51104 21 6.375 21H17.625C19.489 21 21 19.489 21 17.625V6.375C21 4.51104 19.489 3 17.625 3Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
+                                <path d="M8.625 9.89062C8.625 9.19164 9.19164 8.625 9.89062 8.625H14.1094C14.8084 8.625 15.375 9.19164 15.375 9.89062V14.1094C15.375 14.8084 14.8084 15.375 14.1094 15.375H9.89062C9.19164 15.375 8.625 14.8084 8.625 14.1094V9.89062Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
+                              </svg>
+                              <span>Pause agent</span>
+                            </div>
+
+                            {/* Deactivate */}
+                            <div
+                              onClick={() => setOpenTeamActionMenu(null)}
+                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                              <span>Deactivate</span>
+                            </div>
                           </div>
                         </>
                       )}
