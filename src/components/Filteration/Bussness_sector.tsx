@@ -1,32 +1,40 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const STATUS_OPTIONS: { label: string; apiKey: string; count: number }[] = [
-  { label: "Active",      apiKey: "ACTIVE",      count: 200 },
-  { label: "Expired",     apiKey: "EXPIRED",     count: 200 },
-  { label: "Paused",      apiKey: "PAUSED",      count: 200 },
-  { label: "Deactivated", apiKey: "DEACTIVATED", count: 200 },
-];
-
-interface StatusProps {
-  onApply?: (selected: string | null) => void;
-  onClear?: () => void;
-  onClose?: () => void;
-  initialSelected?: string | null;
-  counts?: Record<string, number>;
+interface SectorOption {
+  label: string;
+  count: number;
 }
 
-const Status: React.FC<StatusProps> = ({
+interface BusinessSectorFilterProps {
+  options?: SectorOption[];
+  onApply?: (selectedSectors: string[]) => void;
+  onClear?: () => void;
+  onClose?: () => void;
+  initialSelected?: string[];
+}
+
+const defaultOptions: SectorOption[] = [
+  { label: "Real estate", count: 200 },
+  { label: "Marketing", count: 200 },
+  { label: "Education", count: 200 },
+  { label: "Consultations", count: 200 },
+  { label: "Software", count: 200 },
+  { label: "Retailers", count: 200 },
+];
+
+const BusinessSectorFilter: React.FC<BusinessSectorFilterProps> = ({
+  options = defaultOptions,
   onApply,
   onClear,
   onClose,
-  initialSelected = null,
-  counts,
+  initialSelected = [],
 }) => {
-  const [selected, setSelected] = useState<string | null>(initialSelected);
+  const [selected, setSelected] = useState<string[]>(initialSelected);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdown on click outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handler = (e: MouseEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
@@ -34,14 +42,21 @@ const Status: React.FC<StatusProps> = ({
         onClose?.();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
+  const handleToggle = (label: string) => {
+    setSelected((prev) =>
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
+    );
+  };
+
   const handleClear = () => {
-    setSelected(null);
+    setSelected([]);
     onClear?.();
-    onClose?.();
   };
 
   const handleApply = () => {
@@ -52,30 +67,66 @@ const Status: React.FC<StatusProps> = ({
     <div ref={containerRef} style={styles.container}>
       {/* Options list */}
       <div style={styles.listWrapper}>
-        {STATUS_OPTIONS.map((option) => {
-          const isSelected = selected === option.apiKey;
-          const count = counts?.[option.apiKey] ?? option.count;
+        {options.map((option) => {
+          const isSelected = selected.includes(option.label);
           return (
             <div
-              key={option.apiKey}
+              key={option.label}
               style={{
                 ...styles.row,
                 ...(isSelected ? styles.rowSelected : {}),
               }}
-              onClick={() => setSelected(option.apiKey)}
+              onClick={() => handleToggle(option.label)}
             >
-              {/* Custom radio */}
-              <div style={styles.radioOuter}>
-                {isSelected && <div style={styles.radioInner} />}
-              </div>
+              {/* Checkbox */}
+              {isSelected ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  style={{ flexShrink: 0 }}
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" fill="#00236F" />
+                  <path
+                    d="M10 16.4L6 12.4L7.4 11L10 13.6L16.6 7L18 8.4L10 16.4Z"
+                    fill="white"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  style={{ flexShrink: 0 }}
+                >
+                  <rect
+                    x="3.5"
+                    y="3.5"
+                    width="17"
+                    height="17"
+                    rx="1.5"
+                    stroke="#D4D5D8"
+                    strokeWidth="1"
+                    fill="#FFF"
+                  />
+                </svg>
+              )}
+
+              {/* Text label */}
               <span style={styles.rowText}>
                 {option.label}&nbsp;&nbsp;
-                <span style={styles.rowCount}>({count})</span>
+                <span style={styles.rowCount}>({option.count})</span>
               </span>
             </div>
           );
         })}
       </div>
+
+      <div style={styles.divider} />
 
       {/* Footer actions */}
       <div style={styles.footer}>
@@ -103,13 +154,12 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "12px",
     boxSizing: "border-box",
   },
-
   listWrapper: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    gap: "4px",
   },
-
   row: {
     display: "flex",
     width: "290px",
@@ -124,30 +174,9 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: "border-box",
     transition: "background 0.15s ease",
   },
-
   rowSelected: {
     background: "var(--Foundation-brand-brand-50, #E6E9F1)",
   },
-
-  radioOuter: {
-    width: "18px",
-    height: "18px",
-    borderRadius: "50%",
-    border: "2px solid var(--Foundation-brand-brand-500, #00236F)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    boxSizing: "border-box",
-  },
-
-  radioInner: {
-    width: "9px",
-    height: "9px",
-    borderRadius: "50%",
-    background: "var(--Foundation-brand-brand-500, #00236F)",
-  },
-
   rowText: {
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
@@ -156,29 +185,30 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: "1.4",
     userSelect: "none",
   },
-
   rowCount: {
     color: "#6B7280",
   },
-
+  divider: {
+    width: "100%",
+    height: "1px",
+    background: "#E8E8F0",
+    margin: "4px 0",
+  },
   footer: {
     display: "flex",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: "12px",
   },
-
   clearButton: {
     background: "transparent",
     border: "none",
     cursor: "pointer",
     fontSize: "14px",
-    fontWeight: 500,
+    fontWeight: 600,
+    color: "var(--Foundation-brand-brand-500, #00236F)",
     fontFamily: "Inter, sans-serif",
-    color: "#374151",
-    padding: "8px 4px",
-    lineHeight: "1",
+    padding: "8px 16px",
   },
-
   applyButton: {
     borderRadius: "12px",
     background: "var(--Foundation-brand-brand-500, #00236F)",
@@ -195,8 +225,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     fontFamily: "Inter, sans-serif",
     lineHeight: "1",
-    transition: "opacity 0.2s ease",
   },
 };
 
-export default Status;
+export default BusinessSectorFilter;

@@ -183,7 +183,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
         height: 824,
         flexDirection: "column",
         alignItems: "flex-start",
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
@@ -196,7 +196,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
         style={{
           width: 462,
           height: 76,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           padding: 20,
           display: "flex",
@@ -271,6 +271,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             </label>
             <input
               type="text"
+              placeholder=" "
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
@@ -572,6 +573,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             </label>
             <textarea
               value={description}
+              placeholder=" "
               onChange={(e) => {
                 setDescription(e.target.value);
                 setFormErrors((prev) => ({ ...prev, description: undefined }));
@@ -737,7 +739,7 @@ const Add_New_Task: React.FC<AddNewTaskProps> = ({ onClose, onSave }) => {
             bottom: 0,
             width: 462,
             height: 76,
-            background: "rgba(245, 246, 250, 1)",
+            background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
             borderBottomRightRadius: 12,
             borderBottomLeftRadius: 12,
             display: "flex",

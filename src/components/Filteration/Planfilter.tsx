@@ -1,47 +1,36 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 
-const STATUS_OPTIONS: { label: string; apiKey: string; count: number }[] = [
-  { label: "Active",      apiKey: "ACTIVE",      count: 200 },
-  { label: "Expired",     apiKey: "EXPIRED",     count: 200 },
-  { label: "Paused",      apiKey: "PAUSED",      count: 200 },
-  { label: "Deactivated", apiKey: "DEACTIVATED", count: 200 },
-];
-
-interface StatusProps {
-  onApply?: (selected: string | null) => void;
-  onClear?: () => void;
-  onClose?: () => void;
-  initialSelected?: string | null;
-  counts?: Record<string, number>;
+interface PlanOption {
+  id: number;
+  label: string;
+  count: number;
 }
 
-const Status: React.FC<StatusProps> = ({
+interface PlanFilterProps {
+  options?: PlanOption[];
+  onApply?: (selectedId: number | null) => void;
+  onClear?: () => void;
+  initialSelected?: number | null;
+}
+
+const defaultOptions: PlanOption[] = [
+  { id: 1, label: "Plan name", count: 200 },
+  { id: 2, label: "Plan name", count: 200 },
+  { id: 3, label: "Plan name", count: 200 },
+  { id: 4, label: "Plan name", count: 200 },
+];
+
+const PlanFilter: React.FC<PlanFilterProps> = ({
+  options = defaultOptions,
   onApply,
   onClear,
-  onClose,
   initialSelected = null,
-  counts,
 }) => {
-  const [selected, setSelected] = useState<string | null>(initialSelected);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        onClose?.();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+  const [selected, setSelected] = useState<number | null>(initialSelected);
 
   const handleClear = () => {
     setSelected(null);
     onClear?.();
-    onClose?.();
   };
 
   const handleApply = () => {
@@ -49,20 +38,19 @@ const Status: React.FC<StatusProps> = ({
   };
 
   return (
-    <div ref={containerRef} style={styles.container}>
+    <div style={styles.container}>
       {/* Options list */}
       <div style={styles.listWrapper}>
-        {STATUS_OPTIONS.map((option) => {
-          const isSelected = selected === option.apiKey;
-          const count = counts?.[option.apiKey] ?? option.count;
+        {options.map((option) => {
+          const isSelected = selected === option.id;
           return (
             <div
-              key={option.apiKey}
+              key={option.id}
               style={{
                 ...styles.row,
                 ...(isSelected ? styles.rowSelected : {}),
               }}
-              onClick={() => setSelected(option.apiKey)}
+              onClick={() => setSelected(option.id)}
             >
               {/* Custom radio */}
               <div style={styles.radioOuter}>
@@ -70,7 +58,7 @@ const Status: React.FC<StatusProps> = ({
               </div>
               <span style={styles.rowText}>
                 {option.label}&nbsp;&nbsp;
-                <span style={styles.rowCount}>({count})</span>
+                <span style={styles.rowCount}>({option.count})</span>
               </span>
             </div>
           );
@@ -101,15 +89,12 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "flex-end",
     alignItems: "flex-end",
     gap: "12px",
-    boxSizing: "border-box",
   },
-
   listWrapper: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
   },
-
   row: {
     display: "flex",
     width: "290px",
@@ -124,11 +109,9 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: "border-box",
     transition: "background 0.15s ease",
   },
-
   rowSelected: {
     background: "var(--Foundation-brand-brand-50, #E6E9F1)",
   },
-
   radioOuter: {
     width: "18px",
     height: "18px",
@@ -140,45 +123,37 @@ const styles: Record<string, React.CSSProperties> = {
     flexShrink: 0,
     boxSizing: "border-box",
   },
-
   radioInner: {
     width: "9px",
     height: "9px",
     borderRadius: "50%",
     background: "var(--Foundation-brand-brand-500, #00236F)",
   },
-
   rowText: {
     fontSize: "14px",
-    fontFamily: "Inter, sans-serif",
     color: "#1A1A2E",
     fontWeight: 400,
     lineHeight: "1.4",
     userSelect: "none",
   },
-
   rowCount: {
     color: "#6B7280",
   },
-
   footer: {
     display: "flex",
     alignItems: "flex-start",
     gap: "12px",
   },
-
   clearButton: {
     background: "transparent",
     border: "none",
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: 500,
-    fontFamily: "Inter, sans-serif",
     color: "#374151",
     padding: "8px 4px",
     lineHeight: "1",
   },
-
   applyButton: {
     borderRadius: "12px",
     background: "var(--Foundation-brand-brand-500, #00236F)",
@@ -193,10 +168,8 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#FFF",
     fontSize: "14px",
     fontWeight: 600,
-    fontFamily: "Inter, sans-serif",
     lineHeight: "1",
-    transition: "opacity 0.2s ease",
   },
 };
 
-export default Status;
+export default PlanFilter;

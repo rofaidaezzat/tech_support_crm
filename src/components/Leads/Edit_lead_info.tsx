@@ -177,7 +177,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         style={{
           width: 462,
           height: 91,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
@@ -246,7 +246,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         style={{
           width: 462,
           height: 559,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
           paddingTop: 24,
@@ -394,12 +394,12 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                           alignItems: "center",
                           gap: 12,
                           cursor: "pointer",
-                          background: leadSource === value ? "rgba(245, 246, 250, 1)" : "#fff",
+                          background: leadSource === value ? "var(--Foundation-neutral-neutral-25, #F5F6FA)" : "#fff",
                           transition: "background 0.2s",
                           boxSizing: "border-box",
                           width: "100%",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-neutral-neutral-25, #F5F6FA)")}
                         onMouseLeave={(e) => {
                           if (leadSource !== value) {
                             e.currentTarget.style.background = "#fff";

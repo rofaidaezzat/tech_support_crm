@@ -2,13 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
 import Pagination from '../components/Pagination';
 import mail04Icon from '../assets/mail-04.svg';
+import StatusTicket from '../components/Filteration/staus_ticket';
+import StatusSuport from '../components/Filteration/Status_suport';
+import DateFilter from '../components/Filteration/Date';
+import { Sort } from '../components/Filteration/Sort';
+import { toast } from 'sonner';
+import TicketMessage from '../components/Support_com_Page/Ticket_Message';
+import PauseMessage from '../components/Support_com_Page/Pause_message';
+import DeactivateAgent from '../components/Support_com_Page/deactivation';
 
-// ── Filter icon ──────────────────────────────────────────────────────────────
-const FilterSVG = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M3 4.5H21M6.75 12H17.25M10.5 19.5H13.5" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
+import filterIcon from '../assets/filter.svg';
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const MOCK_TICKETS = [
@@ -64,17 +67,23 @@ const teamWidthMap: Record<string, number | string> = {
 };
 
 const Support = () => {
+  const [tickets, setTickets]               = useState(MOCK_TICKETS);
+  const [openStatusDropdownIndex, setOpenStatusDropdownIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab]           = useState<"ticket" | "team">("ticket");
   const [activeFilter, setActiveFilter]     = useState<ActiveFilter>(null);
   const [hoveredFilter, setHoveredFilter]   = useState<string | null>(null);
   const [searchQuery, setSearchQuery]       = useState("");
-  const [selectedDate, setSelectedDate]     = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<{ preset: any; startDate: string; endDate: string } | null>(null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [sortOrder, setSortOrder]           = useState<string>("newest");
   const [currentPage, setCurrentPage]       = useState(1);
   const [teamPage, setTeamPage]             = useState(1);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
   const [openTeamActionMenu, setOpenTeamActionMenu] = useState<number | null>(null);
+  const [activeTicketMessage, setActiveTicketMessage] = useState<any | null>(null);
+  const [teamMembers, setTeamMembers]       = useState(MOCK_TEAM);
+  const [pausingAgent, setPausingAgent]     = useState<any | null>(null);
+  const [deactivatingAgent, setDeactivatingAgent] = useState<any | null>(null);
 
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
   const teamActionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -102,7 +111,67 @@ const Support = () => {
   }, [openActionMenu, openTeamActionMenu, activeFilter]);
 
   const ITEMS_PER_PAGE = 10;
-  const filteredTickets = MOCK_TICKETS.filter(t => {
+const parseTicketDate = (dateStr: string) => {
+  const [day, month, year] = dateStr.split("/").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const getPresetDateRange = (preset: string) => {
+  const today = new Date();
+  let start = new Date();
+  let end = new Date();
+
+  switch (preset) {
+    case "Today":
+      start = today;
+      end = today;
+      break;
+    case "Yesterday":
+      start = new Date(today);
+      start.setDate(today.getDate() - 1);
+      end = new Date(start);
+      break;
+    case "This week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "Last week": {
+      const day = today.getDay();
+      start = new Date(today);
+      start.setDate(today.getDate() - day - 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      break;
+    }
+    case "This month": {
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      break;
+    }
+    case "Last month": {
+      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      end = new Date(today.getFullYear(), today.getMonth(), 0);
+      break;
+    }
+    case "This year": {
+      start = new Date(today.getFullYear(), 0, 1);
+      end = new Date(today.getFullYear(), 11, 31);
+      break;
+    }
+    default:
+      break;
+  }
+
+  start.setHours(0, 0, 0, 0);
+  end.setHours(23, 59, 59, 999);
+  return { start, end };
+};
+
+  const filteredTickets = tickets.filter(t => {
     const q = searchQuery.toLowerCase();
     const matchesSearch = !q ||
       t.date.toLowerCase().includes(q) ||
@@ -111,15 +180,60 @@ const Support = () => {
       t.agent.toLowerCase().includes(q) ||
       t.ticketId.toLowerCase().includes(q);
     const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(t.status);
-    return matchesSearch && matchesStatus;
+
+    let matchesDate = true;
+    if (dateFilter) {
+      const ticketDate = parseTicketDate(t.date);
+      ticketDate.setHours(0, 0, 0, 0);
+
+      let filterStart: Date | null = null;
+      let filterEnd: Date | null = null;
+
+      if (dateFilter.preset) {
+        const range = getPresetDateRange(dateFilter.preset);
+        filterStart = range.start;
+        filterEnd = range.end;
+      } else {
+        if (dateFilter.startDate) {
+          filterStart = new Date(dateFilter.startDate);
+          filterStart.setHours(0, 0, 0, 0);
+        }
+        if (dateFilter.endDate) {
+          filterEnd = new Date(dateFilter.endDate);
+          filterEnd.setHours(23, 59, 59, 999);
+        }
+      }
+
+      if (filterStart && ticketDate < filterStart) matchesDate = false;
+      if (filterEnd && ticketDate > filterEnd) matchesDate = false;
+    }
+
+    return matchesSearch && matchesStatus && matchesDate;
   });
-  const totalPages     = Math.ceil(filteredTickets.length / ITEMS_PER_PAGE) || 1;
-  const displayTickets = filteredTickets.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  const sortedTickets = [...filteredTickets].sort((a, b) => {
+    if (sortOrder === "newest" || sortOrder === "oldest") {
+      const dateA = parseTicketDate(a.date).getTime();
+      const dateB = parseTicketDate(b.date).getTime();
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    }
+    if (sortOrder === "a-z" || sortOrder === "z-a") {
+      const compA = a.company.toLowerCase();
+      const compB = b.company.toLowerCase();
+      if (compA < compB) return sortOrder === "a-z" ? -1 : 1;
+      if (compA > compB) return sortOrder === "a-z" ? 1 : -1;
+      return 0;
+    }
+    return 0;
+  });
+
+  const totalPages     = Math.ceil(sortedTickets.length / ITEMS_PER_PAGE) || 1;
+  const displayTickets = sortedTickets.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // Team pagination
   const TEAM_PER_PAGE   = 10;
-  const totalTeamPages  = Math.ceil(MOCK_TEAM.length / TEAM_PER_PAGE) || 1;
-  const displayTeam     = MOCK_TEAM.slice((teamPage - 1) * TEAM_PER_PAGE, teamPage * TEAM_PER_PAGE);
+  const totalTeamPages  = Math.ceil(teamMembers.length / TEAM_PER_PAGE) || 1;
+  const displayTeam     = teamMembers.slice((teamPage - 1) * TEAM_PER_PAGE, teamPage * TEAM_PER_PAGE);
 
   const filterBtnStyle = (key: string): React.CSSProperties => ({
     display: "flex",
@@ -283,7 +397,7 @@ const Support = () => {
                 boxSizing: "border-box",
               }}
             >
-              <FilterSVG />
+              <img src={filterIcon} alt="filter" width={24} height={24} />
               <input
                 type="text"
                 id="support-search"
@@ -312,7 +426,7 @@ const Support = () => {
                 style={filterBtnStyle("date")}
               >
                 Date
-                {selectedDate ? (
+                {dateFilter ? (
                   <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#141414", fontWeight: 600 }}>1</div>
                 ) : activeFilter === "date" ? (
                   <ChevronUp size={16} color="#4B5563" />
@@ -321,20 +435,23 @@ const Support = () => {
                 )}
               </button>
               {activeFilter === "date" && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000, borderRadius: 12, background: "#fff", boxShadow: "0px 4px 20px rgba(0,0,0,0.08), 0px 2px 4px rgba(0,0,0,0.04)", border: "1px solid rgba(212,213,216,1)", padding: "8px 0", minWidth: 200 }}
-                >
-                  {DATE_OPTIONS.map((opt) => (
-                    <div
-                      key={opt}
-                      onClick={() => { setSelectedDate(selectedDate === opt ? null : opt); setActiveFilter(null); setCurrentPage(1); }}
-                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", cursor: "pointer", background: selectedDate === opt ? "#E6E9F1" : "transparent" }}
-                    >
-                      <div style={{ width: 16, height: 16, borderRadius: "50%", border: selectedDate === opt ? "5px solid #00236F" : "2px solid #D4D5D8", boxSizing: "border-box", background: "#fff", flexShrink: 0 }} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: selectedDate === opt ? 500 : 400, color: selectedDate === opt ? "#00236F" : "#464646" }}>{opt}</span>
-                    </div>
-                  ))}
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                  <DateFilter
+                    onClose={() => setActiveFilter(null)}
+                    onApply={(data) => {
+                      setDateFilter(data);
+                      setCurrentPage(1);
+                      setActiveFilter(null);
+                    }}
+                    onClear={() => {
+                      setDateFilter(null);
+                      setCurrentPage(1);
+                      setActiveFilter(null);
+                    }}
+                    initialPreset={dateFilter?.preset}
+                    initialStartDate={dateFilter?.startDate}
+                    initialEndDate={dateFilter?.endDate}
+                  />
                 </div>
               )}
             </div>
@@ -358,31 +475,21 @@ const Support = () => {
                 )}
               </button>
               {activeFilter === "status" && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000, borderRadius: 12, background: "#fff", boxShadow: "0px 4px 20px rgba(0,0,0,0.08), 0px 2px 4px rgba(0,0,0,0.04)", border: "1px solid rgba(212,213,216,1)", padding: "8px 0", minWidth: 180 }}
-                >
-                  {STATUS_OPTIONS.map((opt) => {
-                    const isSel = selectedStatuses.includes(opt);
-                    return (
-                      <div
-                        key={opt}
-                        onClick={() => { setSelectedStatuses(isSel ? selectedStatuses.filter(s => s !== opt) : [...selectedStatuses, opt]); setCurrentPage(1); }}
-                        style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", cursor: "pointer", background: isSel ? "#E6E9F1" : "transparent" }}
-                      >
-                        <div style={{ width: 16, height: 16, borderRadius: 4, border: isSel ? "5px solid #00236F" : "2px solid #D4D5D8", boxSizing: "border-box", background: "#fff", flexShrink: 0 }} />
-                        <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: isSel ? 500 : 400, color: isSel ? "#00236F" : "#464646" }}>{opt}</span>
-                      </div>
-                    );
-                  })}
-                </div>
+                <StatusTicket
+                  selected={selectedStatuses[0] || ""}
+                  onSelect={(newStatus) => {
+                    setSelectedStatuses(newStatus ? [newStatus] : []);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               )}
             </div>
 
             {/* Reset Filters */}
             <button
               id="support-reset-filters"
-              onClick={() => { setSearchQuery(""); setSelectedDate(null); setSelectedStatuses([]); setSortOrder("newest"); setCurrentPage(1); setActiveFilter(null); }}
+              onClick={() => { setSearchQuery(""); setDateFilter(null); setSelectedStatuses([]); setSortOrder("newest"); setCurrentPage(1); setActiveFilter(null); }}
               style={{ background: "transparent", border: "none", cursor: "pointer", color: "#00236F", fontFamily: "Inter", fontSize: 16, fontWeight: 400, lineHeight: "normal", padding: 0, whiteSpace: "nowrap" }}
             >
               Reset Filters
@@ -403,20 +510,16 @@ const Support = () => {
                 <ArrowDownUp size={16} color="#4B5563" />
               </button>
               {activeFilter === "sort" && (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000, borderRadius: 12, background: "#fff", boxShadow: "0px 4px 20px rgba(0,0,0,0.08), 0px 2px 4px rgba(0,0,0,0.04)", border: "1px solid rgba(212,213,216,1)", padding: "8px 0", minWidth: 180 }}
-                >
-                  {[["newest", "Newest first"], ["oldest", "Oldest first"], ["a-z", "A → Z"], ["z-a", "Z → A"]].map(([val, label]) => (
-                    <div
-                      key={val}
-                      onClick={() => { setSortOrder(val); setCurrentPage(1); setActiveFilter(null); }}
-                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", cursor: "pointer", background: sortOrder === val ? "#E6E9F1" : "transparent" }}
-                    >
-                      <div style={{ width: 16, height: 16, borderRadius: "50%", border: sortOrder === val ? "5px solid #00236F" : "2px solid #D4D5D8", boxSizing: "border-box", background: "#fff", flexShrink: 0 }} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: sortOrder === val ? 500 : 400, color: sortOrder === val ? "#00236F" : "#464646" }}>{label}</span>
-                    </div>
-                  ))}
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000 }}>
+                  <Sort
+                    isOpen={activeFilter === "sort"}
+                    onClose={() => setActiveFilter(null)}
+                    onApply={(selectedValue) => {
+                      setSortOrder(selectedValue);
+                      setCurrentPage(1);
+                    }}
+                    defaultValue={sortOrder}
+                  />
                 </div>
               )}
             </div>
@@ -496,23 +599,48 @@ const Support = () => {
                       {ticket.phone}
                     </div>
                     {/* Status */}
-                    <div style={{ width: widthMap["Ticket's status"], flexShrink: 0 }}>
-                      <span style={{
-                        display: "inline-flex",
-                        background: statusStyle.bg,
-                        color: statusStyle.color,
-                        borderRadius: 12,
-                        padding: "3px 12px",
-                        fontSize: 12,
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 600,
-                      }}>
+                    <div style={{ width: widthMap["Ticket's status"], flexShrink: 0, position: "relative" }}>
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenStatusDropdownIndex(openStatusDropdownIndex === i ? null : i);
+                        }}
+                        style={{
+                          display: "inline-flex",
+                          background: statusStyle.bg,
+                          color: statusStyle.color,
+                          borderRadius: 12,
+                          padding: "3px 12px",
+                          fontSize: 12,
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
                         {ticket.status}
                       </span>
+                      {openStatusDropdownIndex === i && (
+                        <StatusTicket
+                          selected={ticket.status}
+                          onSelect={(newStatus) => {
+                            const ticketToUpdate = displayTickets[i];
+                            setTickets(prev => prev.map((t) => t === ticketToUpdate ? { ...t, status: newStatus } : t));
+                            setOpenStatusDropdownIndex(null);
+                          }}
+                          onClose={() => setOpenStatusDropdownIndex(null)}
+                        />
+                      )}
                     </div>
                     {/* Message */}
                     <div style={{ width: widthMap["Message"], flexShrink: 0, display: "flex", justifyContent: "center" }}>
-                      <img src={mail04Icon} alt="Message" width={24} height={24} style={{ cursor: "pointer" }} />
+                      <img 
+                        src={mail04Icon} 
+                        alt="Message" 
+                        width={24} 
+                        height={24} 
+                        style={{ cursor: "pointer" }} 
+                        onClick={() => setActiveTicketMessage(ticket)}
+                      />
                     </div>
                     {/* Actions */}
                     <div
@@ -530,39 +658,15 @@ const Support = () => {
                         </svg>
                       </div>
                       {openActionMenu === i && (
-                        <>
-                          <div onClick={() => setOpenActionMenu(null)} style={{ position: "fixed", inset: 0, zIndex: 998 }} />
-                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 180, display: "flex", flexDirection: "column", padding: 4 }}>
-
-
-                            {/* Pause agent */}
-                            <div
-                              onClick={() => setOpenActionMenu(null)}
-                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                <path d="M17.625 3H6.375C4.51104 3 3 4.51104 3 6.375V17.625C3 19.489 4.51104 21 6.375 21H17.625C19.489 21 21 19.489 21 17.625V6.375C21 4.51104 19.489 3 17.625 3Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
-                                <path d="M8.625 9.89062C8.625 9.19164 9.19164 8.625 9.89062 8.625H14.1094C14.8084 8.625 15.375 9.19164 15.375 9.89062V14.1094C15.375 14.8084 14.8084 15.375 14.1094 15.375H9.89062C9.19164 15.375 8.625 14.8084 8.625 14.1094V9.89062Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round"/>
-                              </svg>
-                              <span>Pause agent</span>
-                            </div>
-
-                            {/* Deactivate */}
-                            <div
-                              onClick={() => setOpenActionMenu(null)}
-                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span>Deactivate</span>
-                            </div>
-                          </div>
-                        </>
+                        <StatusSuport
+                          onCall={() => {
+                            toast.success(`Calling ${ticket.reporter}...`);
+                          }}
+                          onSendNotification={() => {
+                            toast.success(`Notification sent to ${ticket.reporter}!`);
+                          }}
+                          onClose={() => setOpenActionMenu(null)}
+                        />
                       )}
                     </div>
                   </div>
@@ -680,7 +784,7 @@ const Support = () => {
                           <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 180, display: "flex", flexDirection: "column", padding: 4 }}>
                             {/* Pause agent */}
                             <div
-                              onClick={() => setOpenTeamActionMenu(null)}
+                              onClick={() => { setPausingAgent(member); setOpenTeamActionMenu(null); }}
                               style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
                               onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
                               onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -694,7 +798,7 @@ const Support = () => {
 
                             {/* Deactivate */}
                             <div
-                              onClick={() => setOpenTeamActionMenu(null)}
+                              onClick={() => { setDeactivatingAgent(member); setOpenTeamActionMenu(null); }}
                               style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
                               onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
                               onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -726,6 +830,41 @@ const Support = () => {
           </div>
         )}
 
+        {/* Ticket Message Modal */}
+        <TicketMessage
+          ticket={activeTicketMessage}
+          onClose={() => setActiveTicketMessage(null)}
+        />
+
+        {/* Pause Agent Modal */}
+        {pausingAgent && (
+          <PauseMessage
+            agentName={pausingAgent.name}
+            onClose={() => setPausingAgent(null)}
+            onConfirm={() => {
+              setTeamMembers(prev =>
+                prev.map(m => m.name === pausingAgent.name ? { ...m, status: "Paused" } : m)
+              );
+              toast.success(`Agent ${pausingAgent.name} is now paused.`);
+              setPausingAgent(null);
+            }}
+          />
+        )}
+
+        {/* Deactivate Agent Modal */}
+        {deactivatingAgent && (
+          <DeactivateAgent
+            agentName={deactivatingAgent.name}
+            onClose={() => setDeactivatingAgent(null)}
+            onConfirm={() => {
+              setTeamMembers(prev =>
+                prev.map(m => m.name === deactivatingAgent.name ? { ...m, status: "Inactive" } : m)
+              );
+              toast.success(`Agent ${deactivatingAgent.name} has been deactivated.`);
+              setDeactivatingAgent(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

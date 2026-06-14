@@ -53,6 +53,7 @@ const PasswordInput = ({
       <div style={{ position: "relative", width: "100%" }}>
         <input
           type={show ? "text" : "password"}
+          placeholder=" "
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete}
@@ -103,7 +104,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
       }}
     >
       {/* ── Header ── */}
@@ -112,7 +113,7 @@ const Change_password: React.FC<ChangePasswordProps> = ({ onClose, onSave }) => 
         style={{
           width: 462,
           height: 76,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           padding: 20,
           display: "flex",

@@ -5,6 +5,18 @@ import Pagination from '../components/Pagination';
 import editIcon from '../assets/edit-contained.svg';
 import filterIcon from '../assets/filter.svg';
 import CompanyDetails from './Company_details';
+import CreateCompany from '../components/Companies/CreateCompany';
+import PlanFilter from '../components/Filteration/Planfilter';
+import Status from '../components/Filteration/Status';
+import DateFilter from '../components/Filteration/Date';
+import { Sort } from '../components/Filteration/Sort';
+import SalesFilter from '../components/Filteration/Sales_Count';
+import PlanSetting from '../components/Companies/Plan_Setting';
+import BusinessSectorFilter from '../components/Filteration/Bussness_sector';
+import SendNotification from '../components/Companies/Send_Notification';
+import PauseCompany from '../components/Companies/Pause_Company';
+import Deactivate from '../components/Companies/Deactivate';
+import PlanInfo from '../components/Companies/Plan_info';
 
 // Reusable overlay for modals
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
@@ -21,24 +33,24 @@ const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClos
 );
 
 const MOCK_COMPANIES = [
-  { id: "1", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "2", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Expired", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "3", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Paused", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "4", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "5", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "6", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "7", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "8", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "9", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "10", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Premium", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
-  { id: "11", name: "Acme Technology Corp", owner: "Jane Doe", sector: "Technology", plan: "Standard", status: "Active", renewalDate: "15/08/2026", salesCount: 50000000 },
-  { id: "12", name: "Global Health Industries", owner: "Robert Smith", sector: "Healthcare", plan: "Basic", status: "Paused", renewalDate: "10/10/2026", salesCount: 12000000 },
-  { id: "13", name: "Apex Financial Group", owner: "Michael Brown", sector: "Finance", plan: "Premium", status: "Expired", renewalDate: "12/01/2027", salesCount: 85000000 },
-  { id: "14", name: "Horizon Retail Enterprise", owner: "Linda Thomas", sector: "Retail", plan: "Standard", status: "Active", renewalDate: "14/07/2026", salesCount: 35000000 },
+  { id: "1", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "2", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Expired", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "3", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Paused", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "4", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "5", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "6", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "7", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "8", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "9", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "10", name: "John Dorghamasadsad inc", owner: "John Dorghamasadsad", sector: "Real estate", plan: "Plan 1", status: "Active", renewalDate: "25/12/2026", salesCount: 100000000 },
+  { id: "11", name: "Acme Technology Corp", owner: "Jane Doe", sector: "Technology", plan: "Plan 2", status: "Active", renewalDate: "15/08/2026", salesCount: 50000000 },
+  { id: "12", name: "Global Health Industries", owner: "Robert Smith", sector: "Healthcare", plan: "Custom plan", status: "Paused", renewalDate: "10/10/2026", salesCount: 12000000 },
+  { id: "13", name: "Apex Financial Group", owner: "Michael Brown", sector: "Finance", plan: "Plan 1", status: "Expired", renewalDate: "12/01/2027", salesCount: 85000000 },
+  { id: "14", name: "Horizon Retail Enterprise", owner: "Linda Thomas", sector: "Retail", plan: "Plan 2", status: "Active", renewalDate: "14/07/2026", salesCount: 35000000 },
 ];
 
 const SECTOR_OPTIONS = ["Real estate", "Technology", "Healthcare", "Finance", "Retail", "Manufacturing"];
-const PLAN_OPTIONS = ["Premium", "Standard", "Basic"];
+const PLAN_OPTIONS = ["Plan 1", "Plan 2", "Custom plan"];
 const STATUS_OPTIONS = ["Active", "Expired", "Paused"];
 const RENEWAL_OPTIONS = ["All", "This Year", "Next Year"];
 const SALES_OPTIONS = ["All", "> 50M", "< 50M"];
@@ -224,9 +236,21 @@ const Companies = () => {
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
   const [selectedPlans, setSelectedPlans] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [selectedRenewal, setSelectedRenewal] = useState<string>("All");
-  const [selectedSalesCount, setSelectedSalesCount] = useState<string>("All");
-  const [sortQuery, setSortQuery] = useState<string>("name-asc");
+  type DatePreset =
+    | "Today"
+    | "Yesterday"
+    | "This week"
+    | "Last week"
+    | "This month"
+    | "Last month"
+    | "This year"
+    | null;
+  const [selectedRenewalPreset, setSelectedRenewalPreset] = useState<DatePreset>(null);
+  const [selectedRenewalStart, setSelectedRenewalStart] = useState<string>("");
+  const [selectedRenewalEnd, setSelectedRenewalEnd] = useState<string>("");
+  const [selectedSalesFrom, setSelectedSalesFrom] = useState<number | null>(null);
+  const [selectedSalesTo, setSelectedSalesTo] = useState<number | null>(null);
+  const [sortQuery, setSortQuery] = useState<string>("newest");
 
   // Dropdown UI state
   type ActiveFilter = 'sector' | 'plan' | 'status' | 'renewal' | 'salesCount' | 'sort' | null;
@@ -243,7 +267,7 @@ const Companies = () => {
   const [newCompanyName, setNewCompanyName] = useState("");
   const [newCompanyOwner, setNewCompanyOwner] = useState("");
   const [newCompanySector, setNewCompanySector] = useState("Real estate");
-  const [newCompanyPlan, setNewCompanyPlan] = useState("Premium");
+  const [newCompanyPlan, setNewCompanyPlan] = useState("Plan 1");
   const [newCompanyStatus, setNewCompanyStatus] = useState("Active");
   const [newCompanyRenewalDate, setNewCompanyRenewalDate] = useState("");
   const [newCompanySalesCount, setNewCompanySalesCount] = useState<number | "">("");
@@ -251,7 +275,14 @@ const Companies = () => {
   const [editCompanyName, setEditCompanyName] = useState("");
   const [editCompanyOwner, setEditCompanyOwner] = useState("");
   const [editCompanySector, setEditCompanySector] = useState("Real estate");
-  const [editCompanyPlan, setEditCompanyPlan] = useState("Premium");
+  const [editCompanyPlan, setEditCompanyPlan] = useState("Plan 1");
+
+  const [isPauseOpen, setIsPauseOpen] = useState(false);
+  const [pausingCompany, setPausingCompany] = useState<any>(null);
+  const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
+  const [deactivatingCompany, setDeactivatingCompany] = useState<any>(null);
+  const [isPlanInfoOpen, setIsPlanInfoOpen] = useState(false);
+  const [selectedPlanForInfo, setSelectedPlanForInfo] = useState<string>("");
   const [editCompanyStatus, setEditCompanyStatus] = useState("Active");
   const [editCompanyRenewalDate, setEditCompanyRenewalDate] = useState("");
   const [editCompanySalesCount, setEditCompanySalesCount] = useState<number>(0);
@@ -327,9 +358,12 @@ const Companies = () => {
     setSelectedSectors([]);
     setSelectedPlans([]);
     setSelectedStatuses([]);
-    setSelectedRenewal("All");
-    setSelectedSalesCount("All");
-    setSortQuery("name-asc");
+    setSelectedRenewalPreset(null);
+    setSelectedRenewalStart("");
+    setSelectedRenewalEnd("");
+    setSelectedSalesFrom(null);
+    setSelectedSalesTo(null);
+    setSortQuery("newest");
     setCurrentPage(1);
     setActiveFilter(null);
   };
@@ -403,10 +437,18 @@ const Companies = () => {
     setOpenActionMenu(null);
   };
 
-  const handleArchiveCompany = (id: string) => {
-    if (window.confirm("Are you sure you want to archive this company?")) {
-      setCompanies(prev => prev.filter(c => c.id !== id));
+  const handleDeactivate = (company: any) => {
+    setDeactivatingCompany(company);
+    setIsDeactivateOpen(true);
+    setOpenActionMenu(null);
+  };
+
+  const handleConfirmDeactivate = () => {
+    if (deactivatingCompany) {
+      setCompanies(prev => prev.filter(c => c.id !== deactivatingCompany.id));
       toast.success("Company archived successfully!");
+      setIsDeactivateOpen(false);
+      setDeactivatingCompany(null);
     }
   };
   const handleExportCompanies = () => {
@@ -414,15 +456,24 @@ const Companies = () => {
   };
 
   const handlePausePlan = (company: any) => {
-    setCompanies(prev =>
-      prev.map(c =>
-        c.id === company.id
-          ? { ...c, status: "Paused" }
-          : c
-      )
-    );
-    toast.success("Plan paused successfully!");
+    setPausingCompany(company);
+    setIsPauseOpen(true);
     setOpenActionMenu(null);
+  };
+
+  const handleConfirmPausePlan = () => {
+    if (pausingCompany) {
+      setCompanies(prev =>
+        prev.map(c =>
+          c.id === pausingCompany.id
+            ? { ...c, status: "Paused" }
+            : c
+        )
+      );
+      toast.success("Plan paused successfully!");
+      setIsPauseOpen(false);
+      setPausingCompany(null);
+    }
   };
 
   const handleSendNotificationSubmit = () => {
@@ -436,6 +487,60 @@ const Companies = () => {
   };
 
   // Filter and sort computation
+  const parseRenewalDate = (dateStr: string): Date | null => {
+    if (!dateStr) return null;
+    const parts = dateStr.split("/");
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      return new Date(year, month, day);
+    }
+    return null;
+  };
+
+  const isDateInPreset = (date: Date, preset: DatePreset): boolean => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const companyDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (preset === "Today") {
+      return companyDay.getTime() === today.getTime();
+    }
+    if (preset === "Yesterday") {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      return companyDay.getTime() === yesterday.getTime();
+    }
+    if (preset === "This week") {
+      const dayOfWeek = today.getDay();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - dayOfWeek);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return companyDay >= startOfWeek && companyDay <= endOfWeek;
+    }
+    if (preset === "Last week") {
+      const dayOfWeek = today.getDay();
+      const startOfLastWeek = new Date(today);
+      startOfLastWeek.setDate(today.getDate() - dayOfWeek - 7);
+      const endOfLastWeek = new Date(startOfLastWeek);
+      endOfLastWeek.setDate(startOfLastWeek.getDate() + 6);
+      return companyDay >= startOfLastWeek && companyDay <= endOfLastWeek;
+    }
+    if (preset === "This month") {
+      return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth();
+    }
+    if (preset === "Last month") {
+      const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      return date.getFullYear() === lastMonth.getFullYear() && date.getMonth() === lastMonth.getMonth();
+    }
+    if (preset === "This year") {
+      return date.getFullYear() === today.getFullYear();
+    }
+    return true;
+  };
+
   const filteredCompanies = companies.filter(company => {
     const matchesSearch =
       company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -447,50 +552,66 @@ const Companies = () => {
     const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(company.status);
 
     let matchesRenewal = true;
-    if (selectedRenewal === "This Year") {
-      const year = new Date().getFullYear();
-      matchesRenewal = company.renewalDate.endsWith(year.toString());
-    } else if (selectedRenewal === "Next Year") {
-      const year = new Date().getFullYear() + 1;
-      matchesRenewal = company.renewalDate.endsWith(year.toString());
+    if (selectedRenewalPreset || selectedRenewalStart || selectedRenewalEnd) {
+      const d = parseRenewalDate(company.renewalDate);
+      if (!d) {
+        matchesRenewal = false;
+      } else {
+        if (selectedRenewalStart) {
+          const start = new Date(selectedRenewalStart);
+          const compDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          const startDateVal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+          if (compDate < startDateVal) matchesRenewal = false;
+        }
+        if (selectedRenewalEnd) {
+          const end = new Date(selectedRenewalEnd);
+          const compDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          const endDateVal = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+          if (compDate > endDateVal) matchesRenewal = false;
+        }
+        if (selectedRenewalPreset) {
+          matchesRenewal = matchesRenewal && isDateInPreset(d, selectedRenewalPreset);
+        }
+      }
     }
 
     let matchesSales = true;
-    if (selectedSalesCount === "> 50M") {
-      matchesSales = company.salesCount > 50000000;
-    } else if (selectedSalesCount === "< 50M") {
-      matchesSales = company.salesCount < 50000000;
+    if (selectedSalesFrom !== null) {
+      if (company.salesCount < selectedSalesFrom * 1000000) matchesSales = false;
+    }
+    if (selectedSalesTo !== null) {
+      if (company.salesCount > selectedSalesTo * 1000000) matchesSales = false;
     }
 
     return matchesSearch && matchesSector && matchesPlan && matchesStatus && matchesRenewal && matchesSales;
   });
 
   const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-    if (sortQuery === "name-asc") {
+    if (sortQuery === "a-z") {
       return a.name.localeCompare(b.name);
     }
-    if (sortQuery === "name-desc") {
+    if (sortQuery === "z-a") {
       return b.name.localeCompare(a.name);
     }
-    if (sortQuery === "sales-desc") {
-      return b.salesCount - a.salesCount;
-    }
-    if (sortQuery === "sales-asc") {
-      return a.salesCount - b.salesCount;
-    }
-    if (sortQuery === "renewal-desc") {
+    if (sortQuery === "newest") {
       const parseDate = (dStr: string) => {
         const [day, month, year] = dStr.split("/").map(Number);
         return new Date(year, month - 1, day).getTime();
       };
       return parseDate(b.renewalDate) - parseDate(a.renewalDate);
     }
-    if (sortQuery === "renewal-asc") {
+    if (sortQuery === "oldest") {
       const parseDate = (dStr: string) => {
         const [day, month, year] = dStr.split("/").map(Number);
         return new Date(year, month - 1, day).getTime();
       };
       return parseDate(a.renewalDate) - parseDate(b.renewalDate);
+    }
+    if (sortQuery === "sales-desc") {
+      return b.salesCount - a.salesCount;
+    }
+    if (sortQuery === "sales-asc") {
+      return a.salesCount - b.salesCount;
     }
     return 0;
   });
@@ -504,7 +625,11 @@ const Companies = () => {
       <CompanyDetails
         company={selectedCompanyDetails}
         onBack={() => setSelectedCompanyDetails(null)}
-        onEdit={() => handleStartEdit(selectedCompanyDetails)}
+        onEdit={(updatedCompany: any) => {
+          setCompanies(prev => prev.map(c => c.id === updatedCompany.id ? updatedCompany : c));
+          setSelectedCompanyDetails(updatedCompany);
+          toast.success("Company details updated successfully!");
+        }}
         onDelete={() => {
           if (window.confirm("Are you sure you want to archive this company?")) {
             setCompanies(prev => prev.filter(c => c.id !== selectedCompanyDetails.id));
@@ -686,13 +811,29 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'sector' && (
-              <div style={dropdownMenuContainerStyle}>
-                {SECTOR_OPTIONS.map((option) => (
-                  <div key={option} onClick={() => handleToggleSector(option)} style={dropdownItemStyle(selectedSectors.includes(option))}>
-                    <div style={checkboxStyle(selectedSectors.includes(option))} />
-                    <span style={dropdownItemTextStyle(selectedSectors.includes(option))}>{option}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <BusinessSectorFilter
+                  options={[
+                    { label: "Real estate", count: companies.filter(c => c.sector === "Real estate").length },
+                    { label: "Technology", count: companies.filter(c => c.sector === "Technology").length },
+                    { label: "Healthcare", count: companies.filter(c => c.sector === "Healthcare").length },
+                    { label: "Finance", count: companies.filter(c => c.sector === "Finance").length },
+                    { label: "Retail", count: companies.filter(c => c.sector === "Retail").length },
+                    { label: "Manufacturing", count: companies.filter(c => c.sector === "Manufacturing").length },
+                  ]}
+                  initialSelected={selectedSectors}
+                  onApply={(sectors) => {
+                    setSelectedSectors(sectors);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClear={() => {
+                    setSelectedSectors([]);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               </div>
             )}
           </div>
@@ -733,13 +874,36 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'plan' && (
-              <div style={dropdownMenuContainerStyle}>
-                {PLAN_OPTIONS.map((option) => (
-                  <div key={option} onClick={() => handleTogglePlan(option)} style={dropdownItemStyle(selectedPlans.includes(option))}>
-                    <div style={checkboxStyle(selectedPlans.includes(option))} />
-                    <span style={dropdownItemTextStyle(selectedPlans.includes(option))}>{option}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <PlanFilter
+                  options={[
+                    { id: 1, label: "Plan 1", count: companies.filter(c => c.plan === "Plan 1").length },
+                    { id: 2, label: "Plan 2", count: companies.filter(c => c.plan === "Plan 2").length },
+                    { id: 3, label: "Custom plan", count: companies.filter(c => c.plan === "Custom plan").length },
+                  ]}
+                  initialSelected={
+                    selectedPlans.includes("Plan 1")
+                      ? 1
+                      : selectedPlans.includes("Plan 2")
+                        ? 2
+                        : selectedPlans.includes("Custom plan")
+                          ? 3
+                          : null
+                  }
+                  onApply={(selectedId) => {
+                    if (selectedId === 1) setSelectedPlans(["Plan 1"]);
+                    else if (selectedId === 2) setSelectedPlans(["Plan 2"]);
+                    else if (selectedId === 3) setSelectedPlans(["Custom plan"]);
+                    else setSelectedPlans([]);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClear={() => {
+                    setSelectedPlans([]);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                />
               </div>
             )}
           </div>
@@ -780,13 +944,41 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'status' && (
-              <div style={dropdownMenuContainerStyle}>
-                {STATUS_OPTIONS.map((option) => (
-                  <div key={option} onClick={() => handleToggleStatus(option)} style={dropdownItemStyle(selectedStatuses.includes(option))}>
-                    <div style={checkboxStyle(selectedStatuses.includes(option))} />
-                    <span style={dropdownItemTextStyle(selectedStatuses.includes(option))}>{option}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <Status
+                  counts={{
+                    ACTIVE: companies.filter(c => c.status === "Active").length,
+                    EXPIRED: companies.filter(c => c.status === "Expired").length,
+                    PAUSED: companies.filter(c => c.status === "Paused").length,
+                    DEACTIVATED: companies.filter(c => c.status === "Deactivated").length,
+                  }}
+                  initialSelected={
+                    selectedStatuses.includes("Active")
+                      ? "ACTIVE"
+                      : selectedStatuses.includes("Expired")
+                        ? "EXPIRED"
+                        : selectedStatuses.includes("Paused")
+                          ? "PAUSED"
+                          : selectedStatuses.includes("Deactivated")
+                            ? "DEACTIVATED"
+                            : null
+                  }
+                  onApply={(selectedApiKey) => {
+                    if (selectedApiKey === "ACTIVE") setSelectedStatuses(["Active"]);
+                    else if (selectedApiKey === "EXPIRED") setSelectedStatuses(["Expired"]);
+                    else if (selectedApiKey === "PAUSED") setSelectedStatuses(["Paused"]);
+                    else if (selectedApiKey === "DEACTIVATED") setSelectedStatuses(["Deactivated"]);
+                    else setSelectedStatuses([]);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClear={() => {
+                    setSelectedStatuses([]);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               </div>
             )}
           </div>
@@ -817,7 +1009,7 @@ const Companies = () => {
               }}
             >
               Renewal date
-              {selectedRenewal !== "All" ? (
+              {(selectedRenewalPreset || selectedRenewalStart || selectedRenewalEnd) ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   1
                 </div>
@@ -828,13 +1020,57 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'renewal' && (
-              <div style={dropdownMenuContainerStyle}>
-                {RENEWAL_OPTIONS.map((option) => (
-                  <div key={option} onClick={() => { setSelectedRenewal(option); setCurrentPage(1); setActiveFilter(null); }} style={dropdownItemStyle(selectedRenewal === option)}>
-                    <div style={radioStyle(selectedRenewal === option)} />
-                    <span style={dropdownItemTextStyle(selectedRenewal === option)}>{option}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <DateFilter
+                  dateCounts={{
+                    today: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "Today") : false;
+                    }).length,
+                    yesterday: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "Yesterday") : false;
+                    }).length,
+                    thisWeek: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "This week") : false;
+                    }).length,
+                    lastWeek: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "Last week") : false;
+                    }).length,
+                    thisMonth: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "This month") : false;
+                    }).length,
+                    lastMonth: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "Last month") : false;
+                    }).length,
+                    thisYear: companies.filter(c => {
+                      const d = parseRenewalDate(c.renewalDate);
+                      return d ? isDateInPreset(d, "This year") : false;
+                    }).length,
+                  }}
+                  initialPreset={selectedRenewalPreset}
+                  initialStartDate={selectedRenewalStart}
+                  initialEndDate={selectedRenewalEnd}
+                  onApply={(data) => {
+                    setSelectedRenewalPreset(data.preset);
+                    setSelectedRenewalStart(data.startDate);
+                    setSelectedRenewalEnd(data.endDate);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClear={() => {
+                    setSelectedRenewalPreset(null);
+                    setSelectedRenewalStart("");
+                    setSelectedRenewalEnd("");
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               </div>
             )}
           </div>
@@ -865,7 +1101,7 @@ const Companies = () => {
               }}
             >
               Sales count
-              {selectedSalesCount !== "All" ? (
+              {(selectedSalesFrom !== null || selectedSalesTo !== null) ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   1
                 </div>
@@ -876,13 +1112,26 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'salesCount' && (
-              <div style={dropdownMenuContainerStyle}>
-                {SALES_OPTIONS.map((option) => (
-                  <div key={option} onClick={() => { setSelectedSalesCount(option); setCurrentPage(1); setActiveFilter(null); }} style={dropdownItemStyle(selectedSalesCount === option)}>
-                    <div style={radioStyle(selectedSalesCount === option)} />
-                    <span style={dropdownItemTextStyle(selectedSalesCount === option)}>{option}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <SalesFilter
+                  initialFrom={selectedSalesFrom}
+                  initialTo={selectedSalesTo}
+                  min={0}
+                  max={100}
+                  onApply={(from, to) => {
+                    setSelectedSalesFrom(from);
+                    setSelectedSalesTo(to);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClear={() => {
+                    setSelectedSalesFrom(null);
+                    setSelectedSalesTo(null);
+                    setActiveFilter(null);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               </div>
             )}
           </div>
@@ -938,28 +1187,16 @@ const Companies = () => {
               <ArrowDownUp size={16} color="#4B5563" />
             </button>
             {activeFilter === 'sort' && (
-              <div style={{ ...dropdownMenuContainerStyle, right: 0, left: 'auto' }}>
-                {[
-                  { label: "Company name (A-Z)", value: "name-asc" },
-                  { label: "Company name (Z-A)", value: "name-desc" },
-                  { label: "Sales (High to Low)", value: "sales-desc" },
-                  { label: "Sales (Low to High)", value: "sales-asc" },
-                  { label: "Renewal (Newest)", value: "renewal-desc" },
-                  { label: "Renewal (Oldest)", value: "renewal-asc" },
-                ].map((option) => (
-                  <div
-                    key={option.value}
-                    onClick={() => {
-                      setSortQuery(option.value);
-                      setCurrentPage(1);
-                      setActiveFilter(null);
-                    }}
-                    style={dropdownItemStyle(sortQuery === option.value)}
-                  >
-                    <div style={radioStyle(sortQuery === option.value)} />
-                    <span style={dropdownItemTextStyle(sortQuery === option.value)}>{option.label}</span>
-                  </div>
-                ))}
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000 }}>
+                <Sort
+                  isOpen={true}
+                  defaultValue={sortQuery}
+                  onApply={(selectedValue) => {
+                    setSortQuery(selectedValue);
+                    setCurrentPage(1);
+                  }}
+                  onClose={() => setActiveFilter(null)}
+                />
               </div>
             )}
           </div>
@@ -1070,11 +1307,45 @@ const Companies = () => {
                 </div>
 
                 {/* Plan */}
-                <div style={{ width: 110, flexShrink: 0, display: "flex", alignItems: "center", gap: 6, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
-                  <span>{company.plan}</span>
-                  {company.plan === "Premium" && (
-                    <Info size={14} color="#747474" style={{ cursor: "pointer" }} />
-                  )}
+                <div style={{ width: 110, flexShrink: 0, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      color: "var(--Foundation-neutral-neutral-800, #464646)",
+                      fontFamily: "Inter",
+                      fontSize: "13px",
+                      fontStyle: "normal",
+                      fontWeight: 400,
+                      lineHeight: "140%",
+                      width: "82px",
+                      flexShrink: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {company.plan}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{ width: "20px", height: "20px", flexShrink: 0, cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlanForInfo(company.plan);
+                      setIsPlanInfoOpen(true);
+                    }}
+                  >
+                    <path
+                      d="M10 10L10 13.75M10 7.22046V7.1875M2.5 10C2.5 5.85786 5.85787 2.5 10 2.5C14.1421 2.5 17.5 5.85787 17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10Z"
+                      stroke="#464646"
+                      strokeWidth="1.66667"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </div>
 
                 {/* Subscription status */}
@@ -1128,20 +1399,23 @@ const Companies = () => {
 
                   {/* Dropdown Menu */}
                   {openActionMenu === i && (
-                    <div style={{
-                      position: "absolute",
-                      top: 32,
-                      right: 0,
-                      zIndex: 10,
-                      borderRadius: 12,
-                      background: "var(--Foundation-neutral-white, #FFF)",
-                      boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
-                      display: "inline-flex",
-                      flexDirection: "column",
-                      padding: 12,
-                      alignItems: "flex-start",
-                      gap: 4
-                    }}>
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        position: "absolute",
+                        top: 32,
+                        right: 0,
+                        zIndex: 10,
+                        borderRadius: 12,
+                        background: "var(--Foundation-neutral-white, #FFF)",
+                        boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.17)",
+                        display: "inline-flex",
+                        flexDirection: "column",
+                        padding: 12,
+                        alignItems: "flex-start",
+                        gap: 4
+                      }}
+                    >
                       {/* Plan settings */}
                       <div
                         style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
@@ -1197,7 +1471,7 @@ const Companies = () => {
                         style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", cursor: "pointer", width: "100%", boxSizing: "border-box", borderRadius: 8 }}
                         onMouseEnter={(e) => e.currentTarget.style.background = "#F3F4F6"}
                         onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                        onClick={() => handleArchiveCompany(company.id)}
+                        onClick={() => handleDeactivate(company)}
                       >
                         <div style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
@@ -1225,397 +1499,74 @@ const Companies = () => {
       {/* ── Create Modal ── */}
       {isCreateOpen && (
         <ModalOverlay onClose={() => setIsCreateOpen(false)}>
-          <div
-            className="leads-modal-root"
-            style={{
-              width: 462,
-              height: 600,
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: 12,
-              overflow: "hidden",
-              boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
+          <CreateCompany
+            onClose={() => setIsCreateOpen(false)}
+            onSubmit={() => {
+              setIsCreateOpen(false);
+              toast.success("Company created successfully!");
             }}
-          >
-            <div
-              className="leads-modal-header"
-              style={{
-                width: 462,
-                height: 72,
-                background: "rgba(245, 246, 250, 1)",
-                borderBottom: "1px solid rgba(212, 213, 216, 1)",
-                padding: "20px 24px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxSizing: "border-box",
-                flexShrink: 0,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: 19, color: "#141414" }}>
-                  Create Company
-                </span>
-              </div>
-              <button
-                onClick={() => setIsCreateOpen(false)}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  background: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                &times;
-              </button>
-            </div>
-
-            <div
-              className="leads-modal-body"
-              style={{
-                width: 462,
-                flex: 1,
-                background: "rgba(245, 246, 250, 1)",
-                padding: "24px",
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-                overflowY: "auto",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Company name*</label>
-                <input
-                  type="text"
-                  value={newCompanyName}
-                  onChange={(e) => setNewCompanyName(e.target.value)}
-                  style={inputStyle}
-                  placeholder="e.g. John Dorghamasadsad inc"
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Owner*</label>
-                <input
-                  type="text"
-                  value={newCompanyOwner}
-                  onChange={(e) => setNewCompanyOwner(e.target.value)}
-                  style={inputStyle}
-                  placeholder="e.g. John Dorghamasadsad"
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Business sector*</label>
-                <select
-                  value={newCompanySector}
-                  onChange={(e) => setNewCompanySector(e.target.value)}
-                  style={inputStyle}
-                >
-                  {SECTOR_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Plan*</label>
-                <select
-                  value={newCompanyPlan}
-                  onChange={(e) => setNewCompanyPlan(e.target.value)}
-                  style={inputStyle}
-                >
-                  {PLAN_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Subscription status*</label>
-                <select
-                  value={newCompanyStatus}
-                  onChange={(e) => setNewCompanyStatus(e.target.value)}
-                  style={inputStyle}
-                >
-                  {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Renewal date*</label>
-                <input
-                  type="date"
-                  value={newCompanyRenewalDate}
-                  onChange={(e) => setNewCompanyRenewalDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Sales count*</label>
-                <input
-                  type="number"
-                  value={newCompanySalesCount}
-                  onChange={(e) => setNewCompanySalesCount(e.target.value === "" ? "" : Number(e.target.value))}
-                  style={inputStyle}
-                  placeholder="e.g. 100000000"
-                />
-              </div>
-
-              <button onClick={handleCreateCompanySubmit} style={saveButtonStyle}>
-                Create
-              </button>
-            </div>
-          </div>
+          />
         </ModalOverlay>
       )}
 
-      {/* ── Edit Modal ── */}
+      {/* ── Plan Settings Modal ── */}
       {isEditOpen && editingCompany && (
         <ModalOverlay onClose={() => setIsEditOpen(false)}>
-          <div
-            className="leads-modal-root"
-            style={{
-              width: 462,
-              height: 600,
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: 12,
-              overflow: "hidden",
-              boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
+          <PlanSetting
+            company={editingCompany}
+            onClose={() => setIsEditOpen(false)}
+            onSave={(updatedCompany) => {
+              setCompanies(prev => prev.map(c => c.id === updatedCompany.id ? updatedCompany : c));
+              setIsEditOpen(false);
+              toast.success("Plan settings updated successfully!");
             }}
-          >
-            <div
-              className="leads-modal-header"
-              style={{
-                width: 462,
-                height: 72,
-                background: "rgba(245, 246, 250, 1)",
-                borderBottom: "1px solid rgba(212, 213, 216, 1)",
-                padding: "20px 24px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxSizing: "border-box",
-                flexShrink: 0,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: 19, color: "#141414" }}>
-                  Edit Company
-                </span>
-              </div>
-              <button
-                onClick={() => setIsEditOpen(false)}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  background: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                &times;
-              </button>
-            </div>
-
-            <div
-              className="leads-modal-body"
-              style={{
-                width: 462,
-                flex: 1,
-                background: "rgba(245, 246, 250, 1)",
-                padding: "24px",
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-                overflowY: "auto",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Company name*</label>
-                <input
-                  type="text"
-                  value={editCompanyName}
-                  onChange={(e) => setEditCompanyName(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Owner*</label>
-                <input
-                  type="text"
-                  value={editCompanyOwner}
-                  onChange={(e) => setEditCompanyOwner(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Business sector*</label>
-                <select
-                  value={editCompanySector}
-                  onChange={(e) => setEditCompanySector(e.target.value)}
-                  style={inputStyle}
-                >
-                  {SECTOR_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Plan*</label>
-                <select
-                  value={editCompanyPlan}
-                  onChange={(e) => setEditCompanyPlan(e.target.value)}
-                  style={inputStyle}
-                >
-                  {PLAN_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Subscription status*</label>
-                <select
-                  value={editCompanyStatus}
-                  onChange={(e) => setEditCompanyStatus(e.target.value)}
-                  style={inputStyle}
-                >
-                  {STATUS_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Renewal date*</label>
-                <input
-                  type="date"
-                  value={editCompanyRenewalDate}
-                  onChange={(e) => setEditCompanyRenewalDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Sales count*</label>
-                <input
-                  type="number"
-                  value={editCompanySalesCount}
-                  onChange={(e) => setEditCompanySalesCount(Number(e.target.value))}
-                  style={inputStyle}
-                />
-              </div>
-
-              <button onClick={handleEditCompanySubmit} style={saveButtonStyle}>
-                Save
-              </button>
-            </div>
-          </div>
+          />
         </ModalOverlay>
       )}
 
       {/* ── Send Notification Modal ── */}
       {isSendNotificationOpen && notifiedCompany && (
         <ModalOverlay onClose={() => setIsSendNotificationOpen(false)}>
-          <div
-            className="leads-modal-root"
-            style={{
-              width: 462,
-              height: 340,
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: 12,
-              overflow: "hidden",
-              boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
+          <SendNotification
+            company={notifiedCompany}
+            onClose={() => setIsSendNotificationOpen(false)}
+            onSubmit={(title) => {
+              toast.success(`Notification "${title}" sent to ${notifiedCompany.owner}!`);
+              setIsSendNotificationOpen(false);
             }}
-          >
-            <div
-              className="leads-modal-header"
-              style={{
-                width: 462,
-                height: 72,
-                background: "rgba(245, 246, 250, 1)",
-                borderBottom: "1px solid rgba(212, 213, 216, 1)",
-                padding: "20px 24px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                boxSizing: "border-box",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: 19, color: "#141414" }}>
-                Send Notification
-              </span>
-              <button
-                onClick={() => setIsSendNotificationOpen(false)}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  border: "1px solid rgba(212, 213, 216, 1)",
-                  background: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                &times;
-              </button>
-            </div>
+          />
+        </ModalOverlay>
+      )}
 
-            <div
-              className="leads-modal-body"
-              style={{
-                width: 462,
-                flex: 1,
-                background: "rgba(245, 246, 250, 1)",
-                padding: "24px",
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label style={labelStyle}>Message to {notifiedCompany.owner}*</label>
-                <textarea
-                  value={notificationMessage}
-                  onChange={(e) => setNotificationMessage(e.target.value)}
-                  style={{
-                    width: "100%",
-                    height: 100,
-                    border: "1px solid #D4D5D8",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: 14,
-                    color: "#141414",
-                    background: "#fff",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    resize: "none",
-                  }}
-                  placeholder="Type notification message here..."
-                />
-              </div>
+      {/* ── Pause Plan Modal ── */}
+      {isPauseOpen && pausingCompany && (
+        <ModalOverlay onClose={() => setIsPauseOpen(false)}>
+          <PauseCompany
+            company={pausingCompany}
+            onClose={() => setIsPauseOpen(false)}
+            onConfirm={handleConfirmPausePlan}
+          />
+        </ModalOverlay>
+      )}
 
-              <button
-                onClick={handleSendNotificationSubmit}
-                style={saveButtonStyle}
-              >
-                Send
-              </button>
-            </div>
-          </div>
+      {/* ── Deactivate Modal ── */}
+      {isDeactivateOpen && deactivatingCompany && (
+        <ModalOverlay onClose={() => setIsDeactivateOpen(false)}>
+          <Deactivate
+            company={deactivatingCompany}
+            onClose={() => setIsDeactivateOpen(false)}
+            onConfirm={handleConfirmDeactivate}
+          />
+        </ModalOverlay>
+      )}
+
+      {/* ── Plan Info Modal ── */}
+      {isPlanInfoOpen && selectedPlanForInfo && (
+        <ModalOverlay onClose={() => setIsPlanInfoOpen(false)}>
+          <PlanInfo
+            planName={selectedPlanForInfo}
+            onClose={() => setIsPlanInfoOpen(false)}
+          />
         </ModalOverlay>
       )}
     </div>

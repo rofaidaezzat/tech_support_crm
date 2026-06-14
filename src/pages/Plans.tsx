@@ -1,5 +1,7 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import Time from '../components/Filteration/Time';
+import PlansFilter from '../components/Filteration/PlansFilter';
 import { 
   XAxis, 
   YAxis, 
@@ -23,6 +25,12 @@ const subscriptionTrendData = [
 ];
 
 const Plans = () => {
+  const [performancePeriod, setPerformancePeriod] = React.useState("This month");
+  const [isPerformancePeriodOpen, setIsPerformancePeriodOpen] = React.useState(false);
+
+  const [selectedPlanFilter, setSelectedPlanFilter] = React.useState("All plans");
+  const [isPlanFilterOpen, setIsPlanFilterOpen] = React.useState(false);
+
   const plan1Features = [
     "Unlimited leads.",
     "Up to 5 sales account.",
@@ -293,19 +301,44 @@ const Plans = () => {
                   </div>
                 </div>
 
-                {/* Dropdown */}
-                <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  border: "1px solid #D4D5D8",
-                  borderRadius: 8,
-                  padding: "4px 12px",
-                  cursor: "pointer",
-                }}>
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#4B5563" }}>All plans</span>
-                  <ChevronDown size={14} color="#4B5563" />
-                </div>
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setIsPlanFilterOpen(!isPlanFilterOpen)}
+                  style={{
+                    borderRadius: "12px",
+                    border: "1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)",
+                    display: "flex",
+                    height: "40px",
+                    padding: "0 12px",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "#FFF",
+                    cursor: "pointer",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <span style={{
+                    color: "var(--Foundation-neutral-neutral-800, #464646)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                  }}>
+                    {selectedPlanFilter}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ width: 20, height: 20 }}>
+                    <path d="M5 8L10.0008 12.58L15 8" stroke="#464646" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                {isPlanFilterOpen && (
+                  <PlansFilter
+                    selected={selectedPlanFilter}
+                    onSelect={(val) => setSelectedPlanFilter(val)}
+                    onClose={() => setIsPlanFilterOpen(false)}
+                  />
+                )}
+              </div>
               </div>
             </div>
 
@@ -376,17 +409,43 @@ const Plans = () => {
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 600, color: "#141414" }}>
                 Plan Performance
               </span>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                border: "1px solid #D4D5D8",
-                borderRadius: 8,
-                padding: "4px 12px",
-                cursor: "pointer",
-              }}>
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#4B5563" }}>This month</span>
-                <ChevronDown size={14} color="#4B5563" />
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={() => setIsPerformancePeriodOpen(!isPerformancePeriodOpen)}
+                  style={{
+                    borderRadius: "12px",
+                    border: "1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)",
+                    display: "flex",
+                    height: "40px",
+                    padding: "0 12px",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "#FFF",
+                    cursor: "pointer",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <span style={{
+                    color: "var(--Foundation-neutral-neutral-800, #464646)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                  }}>
+                    {performancePeriod}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ width: 20, height: 20 }}>
+                    <path d="M5 8L10.0008 12.58L15 8" stroke="#464646" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                {isPerformancePeriodOpen && (
+                  <Time
+                    selected={performancePeriod}
+                    onSelect={(val) => setPerformancePeriod(val)}
+                    onClose={() => setIsPerformancePeriodOpen(false)}
+                  />
+                )}
               </div>
             </div>
 

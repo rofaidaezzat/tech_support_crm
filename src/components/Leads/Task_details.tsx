@@ -10,7 +10,7 @@ const Task_details = () => {
   return (
     <div
       style={{
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         width: 375,
         height: 382,
         borderTopLeftRadius: 24,

@@ -7,7 +7,7 @@ const LeadsMessages = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div className="leads-tw-modal w-[462px] h-[528px] opacity-100 flex flex-col">
       {/* the first part */}
-      <div className="leads-tw-modal-header w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[rgba(245,246,250,1)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
+      <div className="leads-tw-modal-header w-[462px] h-[91px] flex justify-between items-start opacity-100 rounded-tl-[12px] rounded-tr-[12px] p-[20px] bg-[var(--Foundation-neutral-neutral-25,#F5F6FA)] border-b-[1px] border-solid border-[rgba(212,213,216,1)]">
         <div className="flex gap-[12px]">
           <img src={mailIcon} alt="Mail" className="w-[24px] h-[24px]" />
           <div className="flex flex-col gap-1">
@@ -33,7 +33,7 @@ const LeadsMessages = ({ onClose }: { onClose?: () => void }) => {
 
       {/* second */}
       <div 
-        className="leads-tw-modal-body w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[rgba(245,246,250,1)] relative"
+        className="leads-tw-modal-body w-[462px] h-[437px] opacity-100 rounded-br-[12px] rounded-bl-[12px] bg-[var(--Foundation-neutral-neutral-25,#F5F6FA)] relative"
         style={{ minHeight: 437 }}
       >
         {/* the card message */}

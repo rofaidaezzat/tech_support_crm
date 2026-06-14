@@ -34,7 +34,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
         width: 462,
         flexDirection: "column",
         alignItems: "flex-start",
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         borderRadius: 12,
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
       }}
@@ -154,7 +154,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
           justifyContent: "center",
           alignItems: "center",
           alignSelf: "stretch",
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
         }}

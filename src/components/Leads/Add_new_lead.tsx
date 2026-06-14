@@ -163,7 +163,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         style={{
           width: 462,
           height: 72,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
@@ -218,7 +218,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         style={{
           width: 462,
           flex: 1,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 12,
           padding: "24px",
@@ -236,6 +236,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           </label>
           <input
             type="text"
+            placeholder=" "
             value={leadName}
             onChange={(e) => { setLeadName(e.target.value); setFormErrors(prev => ({ ...prev, name: undefined })); }}
             style={{ ...inputStyle, borderColor: formErrors.name ? "#E03131" : undefined }}
@@ -252,6 +253,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           </label>
           <input
             type="text"
+            placeholder=" "
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             style={inputStyle}
@@ -348,10 +350,10 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                       alignItems: "center",
                       gap: 12,
                       cursor: "pointer",
-                      background: leadSource === value ? "rgba(245, 246, 250, 1)" : "#fff",
+                      background: leadSource === value ? "var(--Foundation-neutral-neutral-25, #F5F6FA)" : "#fff",
                       transition: "background 0.2s",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245, 246, 250, 1)")}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-neutral-neutral-25, #F5F6FA)")}
                     onMouseLeave={(e) => {
                       if (leadSource !== value) {
                         e.currentTarget.style.background = "#fff";

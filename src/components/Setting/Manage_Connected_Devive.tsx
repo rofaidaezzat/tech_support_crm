@@ -45,7 +45,7 @@ const Manage_Connected_Devive: React.FC<ManageConnectedDevicesProps> = ({ onClos
         height: 428,
         flexDirection: "column",
         alignItems: "flex-start",
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",

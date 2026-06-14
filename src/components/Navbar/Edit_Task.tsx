@@ -169,7 +169,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
         height: 824,
         flexDirection: "column",
         alignItems: "flex-start",
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         borderRadius: 12,
         overflow: "hidden",
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
@@ -182,7 +182,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
         style={{
           width: 462,
           height: 76,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           padding: 20,
           display: "flex",
@@ -259,6 +259,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
             </label>
             <input
               type="text"
+              placeholder=" "
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               style={inputStyle}
@@ -424,6 +425,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
             </label>
             <textarea
               value={description}
+              placeholder=" "
               onChange={(e) => setDescription(e.target.value)}
               style={textareaStyle}
               onFocus={handleFocus}
@@ -580,7 +582,7 @@ const Edit_Task: React.FC<EditTaskProps> = ({ onClose, onSave, initialData }) =>
             bottom: 0,
             width: 462,
             height: 76,
-            background: "rgba(245, 246, 250, 1)",
+            background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
             borderBottomRightRadius: 12,
             borderBottomLeftRadius: 12,
             display: "flex",

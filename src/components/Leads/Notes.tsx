@@ -146,7 +146,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
         fontFamily: "Inter, sans-serif",
         boxShadow: "0px 4px 6px -1px rgba(0, 0, 0, 0.1)",
         borderRadius: 12,
-        background: "rgba(245, 246, 250, 1)",
+        background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
         overflow: "hidden",
       }}
     >
@@ -154,7 +154,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
       <div
         className="leads-modal-header"
         style={{
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           width: 462,
           height: 91,
           display: "flex",
@@ -220,7 +220,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
         style={{
           width: 462,
           height: 48,
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           display: "flex",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           boxSizing: "border-box",
@@ -272,7 +272,7 @@ const Notes = ({ onClose, leadId, leadName }: NotesProps) => {
       <div
         className="leads-modal-body"
         style={{
-          background: "rgba(245, 246, 250, 1)",
+          background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           width: 462,
           height: 389,
           minHeight: 389,

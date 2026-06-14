@@ -179,3 +179,8 @@
     line-height: 1.5;
   }
 }
+
+input:placeholder-shown, textarea:placeholder-shown {
+  background-color: transparent !important;
+  background: transparent !important;
+}
