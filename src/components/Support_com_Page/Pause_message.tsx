@@ -1,12 +1,12 @@
 import React from "react";
 
-interface PauseMessageProps {
+interface SupportPauseMessageProps {
   agentName: string;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-const PauseMessage: React.FC<PauseMessageProps> = ({
+const SupportPauseMessage: React.FC<SupportPauseMessageProps> = ({
   agentName,
   onClose,
   onConfirm,
@@ -136,4 +136,4 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
-export default PauseMessage;
+export default SupportPauseMessage;

@@ -56,7 +56,6 @@ const Manage_Connected_Devive: React.FC<ManageConnectedDevicesProps> = ({ onClos
       {/* ── Header ── */}
       <div
         style={{
-          borderPadding: "20px",
           borderBottom: "1px solid var(--Foundation-neutral-neutral-100, #D4D5D8)",
           background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           display: "flex",

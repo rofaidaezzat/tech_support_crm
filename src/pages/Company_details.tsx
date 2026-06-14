@@ -8,7 +8,7 @@ import EditInfo from '../components/Companies/Edit_info';
 interface CompanyDetailsProps {
   company: any;
   onBack: () => void;
-  onEdit: () => void;
+  onEdit: (updatedCompany: any) => void;
   onDelete: () => void;
   onExport: () => void;
 }

@@ -1,12 +1,12 @@
 import React from "react";
 
-interface DeactivateProps {
+interface SupportDeactivateProps {
   agentName: string;
   onClose: () => void;
   onConfirm: () => void;
 }
 
-const DeactivateAgent: React.FC<DeactivateProps> = ({
+const SupportDeactivateAgent: React.FC<SupportDeactivateProps> = ({
   agentName,
   onClose,
   onConfirm,
@@ -136,4 +136,4 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
-export default DeactivateAgent;
+export default SupportDeactivateAgent;
