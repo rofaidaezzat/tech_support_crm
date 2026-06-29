@@ -6,6 +6,8 @@ import "../../styles/leads-modal-mobile.css";
 interface EditProfileProps {
   onClose?: () => void;
   onSave?: (data: { fullName: string; phoneNumber: string }) => void;
+  initialFullName?: string;
+  initialPhoneNumber?: string;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -32,9 +34,14 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
-const Edit_Profile: React.FC<EditProfileProps> = ({ onClose, onSave }) => {
-  const [fullName, setFullName] = useState("Mahmoud Eldawly");
-  const [phoneNumber, setPhoneNumber] = useState("01122334455");
+const Edit_Profile: React.FC<EditProfileProps> = ({ 
+  onClose, 
+  onSave, 
+  initialFullName = "Mahmoud Eldawly", 
+  initialPhoneNumber = "01122334455" 
+}) => {
+  const [fullName, setFullName] = useState(initialFullName);
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
 
   const handleSave = () => {
     if (onSave) {

@@ -18,7 +18,7 @@ const Layout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Extract the current page from the pathname for the Sidebar active state
-  const currentPath = location.pathname.substring(1) || "overview";
+  const currentPath = location.pathname.substring(1) || "leads";
 
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "hidden" }}>

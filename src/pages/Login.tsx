@@ -27,9 +27,9 @@ const Login: React.FC = () => {
       const result = await login({ email, password }).unwrap();
       const userType = result?.data?.user?.user_type;
       if (userType === 'SALES_MANAGER') {
-        navigate('/overview-manager');
+        navigate('/leads');
       } else {
-        navigate('/overview');
+        navigate('/leads');
       }
     } catch (err: any) {
       console.error('Login error:', err);

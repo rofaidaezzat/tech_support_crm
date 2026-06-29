@@ -106,7 +106,7 @@ const LogoutIcon = ({ color }: { color: string }) => (
 
 // ── Sidebar Component ─────────────────────────────────────────────────────────
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage = "overview", onNavigate }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentPage = "leads", onNavigate }) => {
   const [activeItem, setActiveItem] = useState(currentPage);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
@@ -123,7 +123,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage = "overview", onNavigate 
   const isSalesManager = userType?.toUpperCase() === "SALES_MANAGER";
 
   const navItems = [
-    { id: "overview",  label: "Overview",  Icon: OverviewIcon  },
     { id: "leads",     label: "Leads",     Icon: LeadsIcon     },
     { id: "companies", label: "Companies", Icon: CompaniesIcon },
     { id: "plans",     label: "Plans",     Icon: PlansIcon     },

@@ -8,37 +8,21 @@ import DateFilter from '../components/Filteration/Date';
 import { Sort } from '../components/Filteration/Sort';
 import { toast } from 'sonner';
 import TicketMessage from '../components/Support_com_Page/Ticket_Message';
-import SupportPauseMessage from '../components/Support_com_Page/Pause_message';
-import SupportDeactivateAgent from '../components/Support_com_Page/deactivation';
-import NewAgent from '../components/Support_com_Page/New_Agent';
 
 import filterIcon from '../assets/filter.svg';
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const MOCK_TICKETS = [
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Resolved" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Mohammed Abdellah", phone: "01120202020", status: "Open" },
-];
-
-const MOCK_TEAM = [
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
-  { startDate: "04/11/2026", name: "John Dorghamasadsad", email: "elawad55@email.com", phone: "01111111111", assigned: 12, resolved: 5, status: "Inactive", time: "2h ago" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Resolved" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
 ];
 
 const DATE_OPTIONS = ["Today", "Yesterday", "This week", "Last week", "This month", "Last month", "This year"];
@@ -55,22 +39,9 @@ const getStatusStyle = (status: string) => {
 
 type ActiveFilter = "date" | "status" | "sort" | null;
 
-const TEAM_COL_HEADERS = ["Start date", "Support agent", "Email", "Phone number", "Assigned tickets", "Resolved tickets", "Status", "Actions"];
-const teamWidthMap: Record<string, number | string> = {
-  "Start date": 110,
-  "Support agent": 160,
-  "Email": 180,
-  "Phone number": 120,
-  "Assigned tickets": 120,
-  "Resolved tickets": 120,
-  "Status": 100,
-  "Actions": 70,
-};
-
 const Support = () => {
   const [tickets, setTickets] = useState(MOCK_TICKETS);
   const [openStatusDropdownIndex, setOpenStatusDropdownIndex] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<"ticket" | "team">("ticket");
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
   const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,17 +49,10 @@ const Support = () => {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<string>("newest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [teamPage, setTeamPage] = useState(1);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
-  const [openTeamActionMenu, setOpenTeamActionMenu] = useState<number | null>(null);
   const [activeTicketMessage, setActiveTicketMessage] = useState<any | null>(null);
-  const [teamMembers, setTeamMembers] = useState(MOCK_TEAM);
-  const [pausingAgent, setPausingAgent] = useState<any | null>(null);
-  const [deactivatingAgent, setDeactivatingAgent] = useState<any | null>(null);
-  const [isNewAgentOpen, setIsNewAgentOpen] = useState(false);
 
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const teamActionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -98,19 +62,13 @@ const Support = () => {
           setOpenActionMenu(null);
         }
       }
-      if (openTeamActionMenu !== null) {
-        const ref = teamActionMenuRefs.current[openTeamActionMenu];
-        if (ref && !ref.contains(e.target as Node)) {
-          setOpenTeamActionMenu(null);
-        }
-      }
       if (activeFilter !== null) {
         setActiveFilter(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openActionMenu, openTeamActionMenu, activeFilter]);
+  }, [openActionMenu, activeFilter]);
 
   const ITEMS_PER_PAGE = 10;
   const parseTicketDate = (dateStr: string) => {
@@ -232,11 +190,6 @@ const Support = () => {
   const totalPages = Math.ceil(sortedTickets.length / ITEMS_PER_PAGE) || 1;
   const displayTickets = sortedTickets.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-  // Team pagination
-  const TEAM_PER_PAGE = 10;
-  const totalTeamPages = Math.ceil(teamMembers.length / TEAM_PER_PAGE) || 1;
-  const displayTeam = teamMembers.slice((teamPage - 1) * TEAM_PER_PAGE, teamPage * TEAM_PER_PAGE);
-
   const filterBtnStyle = (key: string): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
@@ -256,13 +209,12 @@ const Support = () => {
     flexShrink: 0,
   });
 
-  const COL_HEADERS = ["Date", "Ticket ID", "Company name", "Reporter", "Support agent", "Phone number", "Ticket's status", "Message", "Actions"];
+  const COL_HEADERS = ["Date", "Ticket ID", "Company name", "Reporter", "Phone number", "Ticket's status", "Message", "Actions"];
   const widthMap: Record<string, number | string> = {
     "Date": 90,
     "Ticket ID": 80,
     "Company name": 180,
     "Reporter": 160,
-    "Support agent": 160,
     "Phone number": 120,
     "Ticket's status": 120,
     "Message": 80,
@@ -289,123 +241,6 @@ const Support = () => {
             color: "rgba(0, 35, 111, 1)",
           }}>
             Support
-          </div>
-          {activeTab === "team" && (
-            <button
-              style={{
-                borderRadius: "12px",
-                background: "var(--Foundation-brand-brand-500, #00236F)",
-                display: "flex",
-                height: "48px",
-                padding: "8px 24px",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "8px",
-                border: "none",
-                cursor: "pointer",
-                transition: "background-color 0.2s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#001B54")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "var(--Foundation-brand-brand-500, #00236F)")}
-              onClick={() => {
-                setIsNewAgentOpen(true);
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
-                <path d="M10 4L10 16M16 10L4 10" stroke="#F5F6FA" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <span style={{
-                color: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
-                textAlign: "center",
-                fontFamily: "Inter",
-                fontSize: "16px",
-                fontWeight: 500,
-                lineHeight: "normal",
-              }}>
-                New Agent
-              </span>
-            </button>
-          )}
-        </div>
-
-        {/* ── Tabs ── */}
-        {/* Full-width wrapper carries the bottom border across the whole screen */}
-        <div style={{
-          width: "100%",
-          borderBottom: "1px solid #D4D5D8",
-          marginTop: 8,
-          marginBottom: 16,
-        }}>
-          {/* Inner 462px tab buttons */}
-          <div style={{
-            width: 462,
-            height: 35,
-            display: "flex",
-            alignItems: "center",
-            boxSizing: "border-box",
-          }}>
-            {/* Ticket tab */}
-            <button
-              id="support-tab-ticket"
-              onClick={() => setActiveTab("ticket")}
-              style={{
-                flex: 1,
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                padding: "8px",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 8,
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                fontWeight: activeTab === "ticket" ? 600 : 400,
-                color: activeTab === "ticket" ? "#00236F" : "#747474",
-                borderBottom: activeTab === "ticket" ? "2px solid #00236F" : "2px solid transparent",
-                marginBottom: -1,
-                transition: "all 0.2s",
-                boxSizing: "border-box",
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M15 5H19C20.1046 5 21 5.89543 21 7V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V7C3 5.89543 3.89543 5 5 5H9M9 3H15V7H9V3Z" stroke={activeTab === "ticket" ? "#00236F" : "#747474"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M9 12H15M9 16H12" stroke={activeTab === "ticket" ? "#00236F" : "#747474"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Ticket
-            </button>
-
-            {/* Team tab */}
-            <button
-              id="support-tab-team"
-              onClick={() => setActiveTab("team")}
-              style={{
-                flex: 1,
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                padding: "8px",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 8,
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-                fontWeight: activeTab === "team" ? 600 : 400,
-                color: activeTab === "team" ? "#00236F" : "#747474",
-                borderBottom: activeTab === "team" ? "2px solid #00236F" : "2px solid transparent",
-                marginBottom: -1,
-                transition: "all 0.2s",
-                boxSizing: "border-box",
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M17 21V19C17 16.7909 15.2091 15 13 15H5C2.79086 15 1 16.7909 1 19V21M23 21V19C22.9986 17.1771 21.765 15.5857 20 15.13M16 3.13C17.7699 3.58317 19.0078 5.17799 19.0078 7.005C19.0078 8.83201 17.7699 10.4268 16 10.88M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke={activeTab === "team" ? "#00236F" : "#747474"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Team
-            </button>
           </div>
         </div>
 
@@ -572,8 +407,7 @@ const Support = () => {
         </div>
 
         {/* ── TICKET TABLE ── */}
-        {activeTab === "ticket" && (
-          <div style={{ marginTop: 16, width: "100%", display: "flex", flexDirection: "column", borderRadius: 12, border: "1px solid rgba(212, 213, 216, 1)", overflow: "visible" }}>
+        <div style={{ marginTop: 16, width: "100%", display: "flex", flexDirection: "column", borderRadius: 12, border: "1px solid rgba(212, 213, 216, 1)", overflow: "visible" }}>
             {/* Header */}
             <div style={{ width: "100%", height: 48, background: "rgba(212, 213, 216, 1)", display: "flex", alignItems: "center", padding: "0 16px", boxSizing: "border-box", borderTopLeftRadius: 12, borderTopRightRadius: 12, justifyContent: "space-between" }}>
               {COL_HEADERS.map((col) => (
@@ -633,11 +467,6 @@ const Support = () => {
                     {/* Reporter */}
                     <div style={{ width: widthMap["Reporter"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {ticket.reporter}
-                    </div>
-                    {/* Support agent */}
-                    <div style={{ width: widthMap["Support agent"], flexShrink: 0, display: "flex", alignItems: "center", gap: 4 }}>
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>{ticket.agent}</span>
-                      <ChevronDown size={16} color="#141414" />
                     </div>
                     {/* Phone number */}
                     <div style={{ width: widthMap["Phone number"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
@@ -719,219 +548,17 @@ const Support = () => {
               })}
             </div>
           </div>
-        )}
-
-        {/* ── TEAM TABLE ── */}
-        {activeTab === "team" && (
-          <>
-            <div style={{ marginTop: 16, width: "100%", display: "flex", flexDirection: "column", borderRadius: 12, border: "1px solid rgba(212, 213, 216, 1)", overflow: "visible" }}>
-              {/* Header */}
-              <div style={{ width: "100%", height: 48, background: "rgba(212, 213, 216, 1)", display: "flex", alignItems: "center", padding: "0 16px", boxSizing: "border-box", borderTopLeftRadius: 12, borderTopRightRadius: 12, justifyContent: "space-between" }}>
-                {TEAM_COL_HEADERS.map((col) => (
-                  <div
-                    key={col}
-                    style={{
-                      width: teamWidthMap[col],
-                      flexShrink: 0,
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#141414",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      display: (col === "Assigned tickets" || col === "Resolved tickets" || col === "Actions") ? "flex" : "block",
-                      justifyContent: (col === "Assigned tickets" || col === "Resolved tickets" || col === "Actions") ? "center" : "flex-start",
-                    }}
-                  >
-                    {col}
-                  </div>
-                ))}
-              </div>
-              {/* Body */}
-              <div style={{ width: "100%", background: "#fff", borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-                {displayTeam.map((member, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "16px",
-                      boxSizing: "border-box",
-                      height: 72,
-                      borderBottom: i < displayTeam.length - 1 ? "1px solid rgba(237, 239, 242, 1)" : "none",
-                      justifyContent: "space-between",
-                      borderBottomLeftRadius: i === displayTeam.length - 1 ? 12 : 0,
-                      borderBottomRightRadius: i === displayTeam.length - 1 ? 12 : 0,
-                    }}
-                  >
-                    {/* Start date */}
-                    <div style={{ width: teamWidthMap["Start date"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
-                      {member.startDate}
-                    </div>
-                    {/* Support agent */}
-                    <div style={{ width: teamWidthMap["Support agent"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#141414", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {member.name}
-                    </div>
-                    {/* Email */}
-                    <div style={{ width: teamWidthMap["Email"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {member.email}
-                    </div>
-                    {/* Phone number */}
-                    <div style={{ width: teamWidthMap["Phone number"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
-                      {member.phone}
-                    </div>
-                    {/* Assigned tickets */}
-                    <div style={{ width: teamWidthMap["Assigned tickets"], flexShrink: 0, display: "flex", justifyContent: "center", fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
-                      {member.assigned}
-                    </div>
-                    {/* Resolved tickets */}
-                    <div style={{ width: teamWidthMap["Resolved tickets"], flexShrink: 0, display: "flex", justifyContent: "center", fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
-                      {member.resolved}
-                    </div>
-                    {/* Status */}
-                    <div style={{ width: teamWidthMap["Status"], flexShrink: 0, display: "flex", flexDirection: "column", gap: 2 }}>
-                      <span style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: member.status === "Active" ? "#107C41" : "#464646"
-                      }}>
-                        {member.status}
-                      </span>
-                      <span style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: 11,
-                        color: "#747474"
-                      }}>
-                        {member.time}
-                      </span>
-                    </div>
-                    {/* Actions */}
-                    <div
-                      style={{ width: teamWidthMap["Actions"], flexShrink: 0, display: "flex", justifyContent: "center", position: "relative" }}
-                      ref={(el) => { teamActionMenuRefs.current[i] = el; }}
-                    >
-                      <div
-                        onClick={(e) => { e.stopPropagation(); setOpenTeamActionMenu(openTeamActionMenu === i ? null : i); }}
-                        style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: openTeamActionMenu === i ? "#F3F4F6" : "transparent" }}
-                      >
-                        <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
-                          <circle cx="2" cy="2" r="2" fill="#6B7280" />
-                          <circle cx="2" cy="10" r="2" fill="#6B7280" />
-                          <circle cx="2" cy="18" r="2" fill="#6B7280" />
-                        </svg>
-                      </div>
-                      {openTeamActionMenu === i && (
-                        <>
-                          <div onClick={() => setOpenTeamActionMenu(null)} style={{ position: "fixed", inset: 0, zIndex: 998 }} />
-                          <div style={{ position: "absolute", top: 32, right: 0, background: "#FFF", boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)", border: "1px solid #EDEFF2", borderRadius: 8, zIndex: 999, width: 180, display: "flex", flexDirection: "column", padding: 4 }}>
-                            {/* Pause agent */}
-                            <div
-                              onClick={() => { setPausingAgent(member); setOpenTeamActionMenu(null); }}
-                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                <path d="M17.625 3H6.375C4.51104 3 3 4.51104 3 6.375V17.625C3 19.489 4.51104 21 6.375 21H17.625C19.489 21 21 19.489 21 17.625V6.375C21 4.51104 19.489 3 17.625 3Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round" />
-                                <path d="M8.625 9.89062C8.625 9.19164 9.19164 8.625 9.89062 8.625H14.1094C14.8084 8.625 15.375 9.19164 15.375 9.89062V14.1094C15.375 14.8084 14.8084 15.375 14.1094 15.375H9.89062C9.19164 15.375 8.625 14.8084 8.625 14.1094V9.89062Z" stroke="#A80D0B" strokeWidth="2" strokeLinejoin="round" />
-                              </svg>
-                              <span>Pause agent</span>
-                            </div>
-
-                            {/* Deactivate */}
-                            <div
-                              onClick={() => { setDeactivatingAgent(member); setOpenTeamActionMenu(null); }}
-                              style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", cursor: "pointer", borderRadius: 4, fontFamily: "Inter, sans-serif", fontSize: 16, color: "var(--Foundation-error-red-700, #A80D0B)", fontStyle: "normal", fontWeight: 400, lineHeight: "normal" }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = "#F3F4F6")}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                <path d="M4 6.17647H20M10 16.7647V10.4118M14 16.7647V10.4118M16 21H8C6.89543 21 6 20.0519 6 18.8824V7.23529C6 6.65052 6.44772 6.17647 7 6.17647H17C17.5523 6.17647 18 6.65052 18 7.23529V18.8824C18 20.0519 17.1046 21 16 21ZM10 6.17647H14C14.5523 6.17647 15 5.70242 15 5.11765V4.05882C15 3.47405 14.5523 3 14 3H10C9.44772 3 9 3.47405 9 4.05882V5.11765C9 5.70242 9.44772 6.17647 10 6.17647Z" stroke="#A80D0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                              <span>Deactivate</span>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Team Pagination */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-              <Pagination currentPage={teamPage} totalPages={totalTeamPages} onPageChange={setTeamPage} />
-            </div>
-          </>
-        )}
 
         {/* ── Ticket Pagination ── */}
-        {activeTab === "ticket" && (
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-          </div>
-        )}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </div>
 
         {/* Ticket Message Modal */}
         <TicketMessage
           ticket={activeTicketMessage}
           onClose={() => setActiveTicketMessage(null)}
         />
-
-        {/* Pause Agent Modal */}
-        {pausingAgent && (
-          <SupportPauseMessage
-            agentName={pausingAgent.name}
-            onClose={() => setPausingAgent(null)}
-            onConfirm={() => {
-              setTeamMembers(prev =>
-                prev.map(m => m.name === pausingAgent.name ? { ...m, status: "Paused" } : m)
-              );
-              toast.success(`Agent ${pausingAgent.name} is now paused.`);
-              setPausingAgent(null);
-            }}
-          />
-        )}
-
-        {/* Deactivate Agent Modal */}
-        {deactivatingAgent && (
-          <SupportDeactivateAgent
-            agentName={deactivatingAgent.name}
-            onClose={() => setDeactivatingAgent(null)}
-            onConfirm={() => {
-              setTeamMembers(prev =>
-                prev.map(m => m.name === deactivatingAgent.name ? { ...m, status: "Inactive" } : m)
-              );
-              toast.success(`Agent ${deactivatingAgent.name} has been deactivated.`);
-              setDeactivatingAgent(null);
-            }}
-          />
-        )}
-
-        {/* New Agent Modal */}
-        {isNewAgentOpen && (
-          <NewAgent
-            onClose={() => setIsNewAgentOpen(false)}
-            onSave={(agent) => {
-              const newMember = {
-                startDate: new Date().toLocaleDateString("en-GB"),
-                name: `${agent.firstName} ${agent.lastName}`,
-                email: agent.email,
-                phone: agent.phone,
-                assigned: 0,
-                resolved: 0,
-                status: "Active",
-                time: "Just now",
-              };
-              setTeamMembers(prev => [newMember, ...prev]);
-              toast.success(`Agent ${newMember.name} created successfully!`);
-              setIsNewAgentOpen(false);
-            }}
-          />
-        )}
       </div>
     </div>
   );

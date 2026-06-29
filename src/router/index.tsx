@@ -8,7 +8,6 @@ import Leads from "../pages/Leads";
 import Search_Results from "../pages/Search_Results";
 import Settings from "../pages/Settings";
 import Layout from "../components/Layout";
-import Overview from "../pages/Overview";
 import Login from "../pages/Login";
 import Reset_Password from "../pages/Reset_Password";
 import OTP_Verification from "../pages/OTP_Verification";
@@ -22,7 +21,7 @@ export const router = createBrowserRouter(
     <>
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/login" replace />} />
-        <Route path="/overview" element={<Overview />} />
+        <Route path="/overview" element={<Navigate to="/leads" replace />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/search" element={<Search_Results />} />
         <Route path="/settings" element={<Settings />} />
