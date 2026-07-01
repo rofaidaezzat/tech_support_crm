@@ -343,7 +343,13 @@ const Support = () => {
                 )}
               </button>
               {activeFilter === "date" && (
-                <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+                <div style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                  right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                  zIndex: 1000
+                }}>
                   <DateFilter
                     onClose={() => setActiveFilter(null)}
                     onApply={(data) => {
@@ -418,7 +424,13 @@ const Support = () => {
                 <ArrowDownUp size={16} color="#4B5563" />
               </button>
               {activeFilter === "sort" && (
-                <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000 }}>
+                <div style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  right: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                  left: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                  zIndex: 1000
+                }}>
                   <Sort
                     isOpen={activeFilter === "sort"}
                     onClose={() => setActiveFilter(null)}

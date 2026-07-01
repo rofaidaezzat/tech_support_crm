@@ -4,10 +4,12 @@ import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useVerifyOtpMutation, useResendOtpMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
 import { validateOtp } from '../validation';
+import { useTranslation } from '../context/LanguageContext';
 
 const OTP_Verification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const email = location.state?.email || '';
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
@@ -221,7 +223,7 @@ const OTP_Verification: React.FC = () => {
               fontSize: "13px",
               fontWeight: 500,
               lineHeight: "normal"
-            }}>Back</span>
+            }}>{t("auth.backButton")}</span>
           </button>
 
           {/* Logo and Form Container */}
@@ -256,7 +258,7 @@ const OTP_Verification: React.FC = () => {
                 fontStyle: "normal",
                 fontWeight: 500,
                 lineHeight: "normal"
-              }}>OTP Verification</h1>
+              }}>{t("auth.otpVerificationTitle")}</h1>
 
               <p style={{
                 margin: 0,
@@ -271,7 +273,7 @@ const OTP_Verification: React.FC = () => {
                 height: 18,
                 opacity: 1
               }}>
-                Check your Whatsapp we’ve sent you a one-time verification code.
+                {t("auth.otpVerificationDesc")}
               </p>
             </div>
 
@@ -338,7 +340,7 @@ const OTP_Verification: React.FC = () => {
                       color: "var(--Foundation-neutral-neutral-800, #464646)",
                       textAlign: "center"
                     }}>
-                      Resend code in{" "}
+                      {t("auth.resendCodeIn")}
                       <span style={{ color: "var(--Foundation-brand-brand-500, #00236F)", fontWeight: 500 }}>
                         {formatTime(timer)}
                       </span>{" "}
@@ -366,7 +368,7 @@ const OTP_Verification: React.FC = () => {
                         outline: "none"
                       }}
                     >
-                      {isResending ? "Resending..." : "Resend again"}
+                      {isResending ? t("auth.resending") : t("auth.resendButton")}
                     </button>
                   )}
                 </div>
@@ -395,7 +397,7 @@ const OTP_Verification: React.FC = () => {
                   transition: "all 0.3s ease"
                 }}
               >
-                {isLoading ? "Verifying..." : "Verify"}
+                {isLoading ? t("auth.verifying") : t("auth.verifyButton")}
               </button>
 
             </form>

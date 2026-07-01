@@ -4,9 +4,11 @@ import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useLoginMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
 import { validateLogin } from '../validation';
+import { useTranslation } from '../context/LanguageContext';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -141,7 +143,9 @@ const Login: React.FC = () => {
                 fontStyle: "normal",
                 fontWeight: 500,
                 lineHeight: "normal"
-              }}>Welcome back</h1>
+              }}>
+                {t("auth.welcomeBack")}
+              </h1>
             </div>
 
             {/* Form */}
@@ -152,7 +156,7 @@ const Login: React.FC = () => {
                 
                 {/* Email */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <label style={{ fontSize: 14, color: "#374151" }}>Email<span style={{ color: "#00236F" }}>*</span></label>
+                  <label style={{ fontSize: 14, color: "#374151" }}>{t("auth.emailLabel")}<span style={{ color: "#00236F" }}>*</span></label>
                   <input 
                     type="email" 
                     value={email}
@@ -178,7 +182,7 @@ const Login: React.FC = () => {
 
                 {/* Password */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <label style={{ fontSize: 14, color: "#374151" }}>Password<span style={{ color: "#00236F" }}>*</span></label>
+                  <label style={{ fontSize: 14, color: "#374151" }}>{t("auth.passwordLabel")}<span style={{ color: "#00236F" }}>*</span></label>
                   <div style={{ position: "relative", display: "flex", width: "100%" }}>
                     <input 
                       type={showPassword ? "text" : "password"} 
@@ -234,7 +238,7 @@ const Login: React.FC = () => {
                         cursor: "pointer"
                       }}
                     >
-                      Forgot password ?
+                      {t("auth.forgotPasswordLink")}
                     </span>
                   </div>
                 </div>
@@ -263,7 +267,7 @@ const Login: React.FC = () => {
                   transition: "all 0.3s ease"
                 }}
               >
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? t("auth.loggingIn") : t("auth.loginButton")}
               </button>
 
             </form>

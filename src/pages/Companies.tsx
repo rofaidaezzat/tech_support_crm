@@ -814,7 +814,13 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'sector' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <BusinessSectorFilter
                   options={[
                     { label: "Real estate", count: companies.filter(c => c.sector === "Real estate").length },
@@ -877,7 +883,13 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'plan' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <PlanFilter
                   options={[
                     { id: 1, label: "Plan 1", count: companies.filter(c => c.plan === "Plan 1").length },
@@ -947,7 +959,13 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'status' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <Status
                   counts={{
                     ACTIVE: companies.filter(c => c.status === "Active").length,
@@ -1023,7 +1041,13 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'renewal' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <DateFilter
                   dateCounts={{
                     today: companies.filter(c => {
@@ -1115,7 +1139,13 @@ const Companies = () => {
               )}
             </button>
             {activeFilter === 'salesCount' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <SalesFilter
                   initialFrom={selectedSalesFrom}
                   initialTo={selectedSalesTo}
@@ -1190,7 +1220,13 @@ const Companies = () => {
               <ArrowDownUp size={16} color="#4B5563" />
             </button>
             {activeFilter === 'sort' && (
-              <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000 }}>
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                right: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                left: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 1000
+              }}>
                 <Sort
                   isOpen={true}
                   defaultValue={sortQuery}

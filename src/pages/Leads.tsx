@@ -706,7 +706,14 @@ const Leads = () => {
               )}
             </button>
             {activeFilter === 'date' && (
-              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 500,
+                marginTop: 4
+              }}>
                 <DateFilter
                   onClose={() => setActiveFilter(null)}
                   onApply={(data) => {
@@ -778,7 +785,14 @@ const Leads = () => {
               )}
             </button>
             {activeFilter === 'status' && (
-              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 500,
+                marginTop: 4
+              }}>
                 <Status
                   onApply={(selected) => {
                     setSelectedStatuses(selected ? [selected] : []);
@@ -848,7 +862,14 @@ const Leads = () => {
               )}
             </button>
             {activeFilter === 'priority' && (
-              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 500,
+                marginTop: 4
+              }}>
                 <Priority
                   onApply={(selected) => {
                     setSelectedPriorities(selected);
@@ -917,7 +938,14 @@ const Leads = () => {
               )}
             </button>
             {activeFilter === 'source' && (
-              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 500,
+                marginTop: 4
+              }}>
                 <Source
                   onApply={(selected) => {
                     setSelectedSources(selected);
@@ -987,7 +1015,14 @@ const Leads = () => {
               )}
             </button>
             {activeFilter === 'followup' && (
-              <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                left: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                right: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                zIndex: 500,
+                marginTop: 4
+              }}>
                 <FollowUp
                   isOpen={true}
                   onClose={() => setActiveFilter(null)}
@@ -1071,7 +1106,14 @@ const Leads = () => {
             {activeFilter === 'sort' && (
               <div
                 onClick={(e) => e.stopPropagation()}
-                style={{ position: "absolute", top: "100%", right: 0, zIndex: 500, marginTop: 4 }}
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: document.documentElement.dir === 'rtl' ? "auto" : 0,
+                  left: document.documentElement.dir === 'rtl' ? 0 : "auto",
+                  zIndex: 500,
+                  marginTop: 4
+                }}
               >
                 <Sort
                   isOpen={true}

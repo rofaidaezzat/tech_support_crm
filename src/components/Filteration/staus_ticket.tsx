@@ -56,7 +56,11 @@ const StatusTicket: React.FC<StatusTicketProps> = ({ selected, onSelect, onClose
       />
       
       {/* Popover Card */}
-      <div style={styles.container}>
+      <div style={{
+        ...styles.container,
+        left: document.documentElement.dir === 'rtl' ? 'auto' : 0,
+        right: document.documentElement.dir === 'rtl' ? 0 : 'auto',
+      }}>
         <div style={styles.optionsWrapper}>
           {OPTIONS.map((option) => {
             const isSelected = tempSelected.toLowerCase() === option.toLowerCase();

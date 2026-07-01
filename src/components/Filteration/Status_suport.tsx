@@ -27,7 +27,11 @@ const StatusSuport: React.FC<StatusSuportProps> = ({ onCall, onSendNotification,
       />
 
       {/* Popover Card */}
-      <div style={s.container}>
+      <div style={{
+        ...s.container,
+        right: document.documentElement.dir === 'rtl' ? 'auto' : 0,
+        left: document.documentElement.dir === 'rtl' ? 0 : 'auto',
+      }}>
         {/* Call Option */}
         <div
           onClick={() => {

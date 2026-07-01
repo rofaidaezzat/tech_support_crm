@@ -4,9 +4,11 @@ import rightImage from '../assets/7a32fb9fa7972d76a87f5709de18f309ed2c16f1.png';
 import { useForgotPasswordMutation } from '../app/service/crudauth';
 import { toast } from 'sonner';
 import { validateForgotPassword } from '../validation';
+import { useTranslation } from '../context/LanguageContext';
 
 const Reset_Password: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
@@ -147,7 +149,7 @@ const Reset_Password: React.FC = () => {
               fontSize: "13px",
               fontWeight: 500,
               lineHeight: "normal"
-            }}>Back</span>
+            }}>{t("auth.backButton")}</span>
           </button>
 
           {/* Logo and Form Container */}
@@ -182,7 +184,7 @@ const Reset_Password: React.FC = () => {
                 fontStyle: "normal",
                 fontWeight: 500,
                 lineHeight: "normal"
-              }}>Forgot Password</h1>
+              }}>{t("auth.forgotPasswordTitle")}</h1>
 
               <p style={{
                 margin: 0,
@@ -194,7 +196,7 @@ const Reset_Password: React.FC = () => {
                 lineHeight: "140%",
                 textAlign: "center"
               }}>
-                Enter the following information to reset your password
+                {t("auth.forgotPasswordDesc")}
               </p>
             </div>
 
@@ -217,7 +219,7 @@ const Reset_Password: React.FC = () => {
                     color: "var(--Foundation-neutral-neutral-950, #141414)",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 500
-                  }}>Email Address<span style={{ color: "#00236F" }}>*</span></label>
+                  }}>{t("auth.emailAddressLabel")}<span style={{ color: "#00236F" }}>*</span></label>
                   <input 
                     type="email" 
                     value={email}
@@ -266,7 +268,7 @@ const Reset_Password: React.FC = () => {
                   transition: "all 0.3s ease"
                 }}
               >
-                {isLoading ? "Sending OTP..." : "Send OTP"}
+                {isLoading ? t("auth.sendingOtp") : t("auth.sendOtpButton")}
               </button>
 
             </form>

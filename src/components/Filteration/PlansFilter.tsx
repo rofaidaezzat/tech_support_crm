@@ -46,7 +46,11 @@ const PlansFilter: React.FC<PlansFilterProps> = ({ selected, onSelect, onClose }
       />
       
       {/* Popover Card */}
-      <div style={styles.container}>
+      <div style={{
+        ...styles.container,
+        right: document.documentElement.dir === 'rtl' ? 'auto' : 0,
+        left: document.documentElement.dir === 'rtl' ? 0 : 'auto',
+      }}>
         {OPTIONS.map((option) => {
           const isSelected = selected.toLowerCase() === option.toLowerCase();
           return (

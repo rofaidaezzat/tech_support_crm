@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../styles/filteration-mobile.css";
+import { useTranslation } from "../../context/LanguageContext";
 
 type DatePreset =
   | "Today"
@@ -33,14 +34,14 @@ interface DateFilterProps {
   };
 }
 
-const PRESETS: { label: DatePreset & string; countKey: string }[] = [
-  { label: "Today", countKey: "today" },
-  { label: "Yesterday", countKey: "yesterday" },
-  { label: "This week", countKey: "thisWeek" },
-  { label: "Last week", countKey: "lastWeek" },
-  { label: "This month", countKey: "thisMonth" },
-  { label: "Last month", countKey: "lastMonth" },
-  { label: "This year", countKey: "thisYear" },
+const PRESETS: { label: DatePreset & string; countKey: string; translationKey: string }[] = [
+  { label: "Today", countKey: "today", translationKey: "filteration.today" },
+  { label: "Yesterday", countKey: "yesterday", translationKey: "filteration.yesterday" },
+  { label: "This week", countKey: "thisWeek", translationKey: "filteration.thisWeek" },
+  { label: "Last week", countKey: "lastWeek", translationKey: "filteration.lastWeek" },
+  { label: "This month", countKey: "thisMonth", translationKey: "filteration.thisMonth" },
+  { label: "Last month", countKey: "lastMonth", translationKey: "filteration.lastMonth" },
+  { label: "This year", countKey: "thisYear", translationKey: "filteration.thisYear" },
 ];
 
 const DateFilter: React.FC<DateFilterProps> = ({
@@ -52,6 +53,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
   initialEndDate,
   dateCounts,
 }) => {
+  const { t } = useTranslation();
   const [selectedPreset, setSelectedPreset] = useState<DatePreset>(initialPreset || null);
   const [startDate, setStartDate] = useState(initialStartDate || "");
   const [endDate, setEndDate] = useState(initialEndDate || "");
@@ -207,7 +209,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                     fontWeight: 400,
                   }}
                 >
-                  {preset.label}
+                  {t(preset.translationKey)}
                 </span>
                 {count !== undefined && (
                   <span
@@ -256,7 +258,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                   color: "#141414",
                 }}
               >
-                Start date
+                {t("filteration.startDate")}
               </label>
               <button
                 onClick={() => setStartDate("")}
@@ -271,7 +273,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                   padding: 0,
                 }}
               >
-                Clear
+                {t("filteration.clear")}
               </button>
             </div>
             <input
@@ -309,7 +311,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                   color: "#141414",
                 }}
               >
-                End date
+                {t("filteration.endDate")}
               </label>
               <button
                 onClick={() => setEndDate("")}
@@ -324,7 +326,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
                   padding: 0,
                 }}
               >
-                Clear
+                {t("filteration.clear")}
               </button>
             </div>
             <input
@@ -392,7 +394,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
             (e.currentTarget.style.background = "none")
           }
         >
-          Clear
+          {t("filteration.clear")}
         </button>
 
         {/* Apply button */}
@@ -424,7 +426,7 @@ const DateFilter: React.FC<DateFilterProps> = ({
             (e.currentTarget.style.background = "rgba(0, 35, 111, 1)")
           }
         >
-          Apply
+          {t("filteration.apply")}
         </button>
       </div>
     </div>
