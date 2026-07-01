@@ -4,6 +4,7 @@ import notificationIcon from "../assets/icon btn.svg";
 import NotificationsDropdown from "./Navbar/NotificationsDropdown";
 import NotificationDrawer from "./Navbar/NotificationDrawer";
 import Report_Bug from "./Support/Support";
+import { useGetProfileDetailsQuery } from "../app/service/crudsetting";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -18,6 +19,12 @@ const Navbar: React.FC<NavbarProps> = ({
   onProfileClick,
   onMenuClick,
 }) => {
+  const { data: profileData } = useGetProfileDetailsQuery();
+  const profile = profileData?.data?.profile;
+  const firstName = profile?.first_name || "";
+  const lastName = profile?.last_name || "";
+  const initials = ((firstName.charAt(0) || "") + (lastName.charAt(0) || "")).toUpperCase() || "MS";
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -396,7 +403,7 @@ const Navbar: React.FC<NavbarProps> = ({
             cursor: "pointer",
           }}
         >
-          MS
+          {initials}
         </div>
       </div>
     </div>

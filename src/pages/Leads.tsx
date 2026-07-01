@@ -112,23 +112,9 @@ const STATUS_FROM_API: Record<string, string> = {
   "DEAL": "Deal",
 };
 
-const INITIAL_LEADS = [
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Ads", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Referral", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Organic", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
-  { date: "04/11/2026", name: "John Dorghamasadsad", company: "Elshayeeb inc.", status: "After meeting follow up", phone: "+201121504065", priority: "Medium", source: "Website", followup: "25/12/2026" },
-];
 
-const MOCK_SALES_MEMBERS = [
-  { id: "11111111-2222-4333-8444-555555555551", first_name: "Mohamed", last_name: "Modather", email: "mohamed@example.com" },
-  { id: "11111111-2222-4333-8444-555555555552", first_name: "Wael", last_name: "Abdelrasool", email: "wael@example.com" },
-  { id: "11111111-2222-4333-8444-555555555553", first_name: "Abdelwahed", last_name: "Elsaye", email: "abdelwahed@example.com" },
-  { id: "11111111-2222-4333-8444-555555555554", first_name: "Mahmoud", last_name: "Eldawly", email: "mahmoud@example.com" },
-];
+
+
 
 const BASE_COL_HEADERS = ["Date", "Lead info", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"];
 
@@ -270,10 +256,7 @@ const getFollowUpDateRange = (preset: string) => {
 };
 
 const Leads = () => {
-  const isSalesManager = getCookie("user_type") === "SALES_MANAGER";
-  const COL_HEADERS = isSalesManager
-    ? ["Date", "Lead info", "Assigned to", "Status", "Phone number", "Message", "Priority", "Lead Source", "Next Followup", "Actions"]
-    : BASE_COL_HEADERS;
+  const COL_HEADERS = BASE_COL_HEADERS;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<{ preset: any; startDate: string; endDate: string } | null>(null);
@@ -352,8 +335,6 @@ const Leads = () => {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [openPriorityDropdown, setOpenPriorityDropdown] = useState<number | null>(null);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
-  const [openAssignDropdown, setOpenAssignDropdown] = useState<number | null>(null);
-  const [salesSearchQuery, setSalesSearchQuery] = useState("");
 
   useEffect(() => {
     if (leadsData?.data) {
@@ -393,7 +374,6 @@ const Leads = () => {
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const priorityDropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const assignDropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -416,56 +396,11 @@ const Leads = () => {
           setOpenActionMenu(null);
         }
       }
-      if (openAssignDropdown !== null) {
-        const ref = assignDropdownRefs.current[openAssignDropdown];
-        if (ref && !ref.contains(e.target as Node)) {
-          setOpenAssignDropdown(null);
-        }
-      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openDropdown, openPriorityDropdown, openActionMenu, openAssignDropdown]);
+  }, [openDropdown, openPriorityDropdown, openActionMenu]);
 
-  const handleAssignToChange = async (leadIndex: number, salesId: string) => {
-    const lead = leads[leadIndex];
-    if (!lead?.id) return;
-    const selectedSales = MOCK_SALES_MEMBERS.find((s) => s.id === salesId);
-    const fullName = selectedSales ? `${selectedSales.first_name} ${selectedSales.last_name}` : "";
-    const todayStr = formatDate(new Date().toISOString());
-
-    // Optimistic local update
-    setLeads((prev) =>
-      prev.map((l, i) =>
-        i === leadIndex
-          ? { ...l, assignedToName: fullName, assignedToDate: todayStr }
-          : l
-      )
-    );
-    setOpenAssignDropdown(null);
-
-    try {
-      await updateLead({
-        id: lead.id,
-        body: {
-          assigned_to_id: salesId,
-        },
-      }).unwrap();
-      toast.success(`Lead successfully assigned to ${fullName}!`);
-    } catch (err: any) {
-      // Revert optimistic update on error
-      setLeads((prev) =>
-        prev.map((l, i) =>
-          i === leadIndex
-            ? { ...l, assignedToName: lead.assignedToName, assignedToDate: lead.assignedToDate }
-            : l
-        )
-      );
-      let errMsg = err?.data?.message || err?.message || "Failed to assign lead.";
-      if (Array.isArray(errMsg)) errMsg = errMsg.join(", ");
-      toast.error(errMsg);
-    }
-  };
 
   const handleStatusChange = async (leadIndex: number, newStatus: string) => {
     const lead = leads[leadIndex];
@@ -834,7 +769,7 @@ const Leads = () => {
               <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 500, marginTop: 4 }}>
                 <Status
                   onApply={(selected) => {
-                    setSelectedStatuses(selected);
+                    setSelectedStatuses(selected ? [selected] : []);
                     setCurrentPage(1);
                     setActiveFilter(null);
                   }}
@@ -844,7 +779,7 @@ const Leads = () => {
                     setActiveFilter(null);
                   }}
                   onClose={() => setActiveFilter(null)}
-                  initialSelected={selectedStatuses}
+                  initialSelected={selectedStatuses[0] || null}
                   counts={leadStatsData?.data?.status}
                 />
               </div>
@@ -1186,7 +1121,6 @@ const Leads = () => {
             const widthMap: Record<string, number> = {
               "Date": 70,
               "Lead info": 146,
-              "Assigned to": 162,
               "Status": 112,
               "Phone number": 99,
               "Message": 58,
@@ -1256,159 +1190,7 @@ const Leads = () => {
                 </span>
               </div>
 
-              {/* Assigned to (SALES_MANAGER only) */}
-              {isSalesManager && (
-                <div 
-                  style={{ width: 162, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", gap: 8, position: "relative" }}
-                  ref={(el) => { assignDropdownRefs.current[i] = el; }}
-                >
-                  <div 
-                    onClick={() => {
-                      setOpenAssignDropdown(openAssignDropdown === i ? null : i);
-                      setSalesSearchQuery("");
-                    }}
-                    style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}
-                  >
-                    <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "var(--Foundation-neutral-neutral-800, #464646)", lineHeight: "140%" }}>
-                      {lead.assignedToName || "—"}
-                    </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                      <path d="M7 10L12.0008 14.58L17 10" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 400, color: "var(--Foundation-neutral-neutral-600, #747474)", lineHeight: "140%" }}>
-                    {lead.assignedToDate}
-                  </span>
 
-                  {openAssignDropdown === i && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "100%",
-                        left: 0,
-                        marginTop: 4,
-                        borderRadius: 12,
-                        background: "var(--Foundation-neutral-white, #FFF)",
-                        boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
-                        display: "flex",
-                        width: 277,
-                        height: 252,
-                        padding: 12,
-                        boxSizing: "border-box",
-                        flexDirection: "column",
-                        gap: 4,
-                        zIndex: 200,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12, flex: "1 0 0%", width: "100%", boxSizing: "border-box" }}>
-                        {/* Search Input Container */}
-                        <div style={{ position: "relative", width: "100%" }}>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#747474"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}
-                          >
-                            <circle cx="11" cy="11" r="8" />
-                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                          </svg>
-                          <input
-                            type="text"
-                            placeholder="Search sales name..."
-                            value={salesSearchQuery}
-                            onChange={(e) => setSalesSearchQuery(e.target.value)}
-                            style={{
-                              width: "100%",
-                              height: 36,
-                              border: "1px solid rgba(212, 213, 216, 1)",
-                              borderRadius: 8,
-                              padding: "0 10px 0 34px",
-                              fontFamily: "Inter, sans-serif",
-                              fontSize: 13,
-                              color: "#141414",
-                              background: "transparent",
-                              outline: "none",
-                              boxSizing: "border-box",
-                            }}
-                          />
-                        </div>
-
-                        {/* List Container */}
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 4,
-                            flex: 1,
-                            overflowY: "auto",
-                            width: "100%",
-                          }}
-                        >
-                          {MOCK_SALES_MEMBERS.filter((s) =>
-                            `${s.first_name} ${s.last_name}`.toLowerCase().includes(salesSearchQuery.toLowerCase())
-                          ).map((member) => {
-                            const fullName = `${member.first_name} ${member.last_name}`;
-                            const isSelected = lead.assignedToName === fullName;
-                            return (
-                              <div
-                                key={member.id}
-                                onClick={() => handleAssignToChange(i, member.id)}
-                                style={{
-                                  background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
-                                  display: "flex",
-                                  height: 40,
-                                  padding: 8,
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  gap: 8,
-                                  alignSelf: "stretch",
-                                  borderRadius: 8,
-                                  cursor: "pointer",
-                                  boxSizing: "border-box",
-                                }}
-                                onMouseEnter={(e) => {
-                                  if (!isSelected) e.currentTarget.style.background = "#F3F4F6";
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (!isSelected) e.currentTarget.style.background = "transparent";
-                                }}
-                              >
-                                {isSelected ? (
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                    <circle cx="12" cy="12" r="10" stroke="#00236F" strokeWidth="2" />
-                                    <circle cx="12" cy="12" r="5" fill="#00236F" />
-                                  </svg>
-                                ) : (
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                                    <circle cx="12" cy="12" r="10" stroke="#747474" strokeWidth="2" />
-                                  </svg>
-                                )}
-                                <span
-                                  style={{
-                                    fontFamily: "Inter, sans-serif",
-                                    fontSize: 13,
-                                    fontWeight: isSelected ? 500 : 400,
-                                    color: "#141414",
-                                  }}
-                                >
-                                  {fullName}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
 
               {/* Status with dropdown */}
               <div

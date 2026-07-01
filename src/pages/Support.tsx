@@ -8,21 +8,36 @@ import DateFilter from '../components/Filteration/Date';
 import { Sort } from '../components/Filteration/Sort';
 import { toast } from 'sonner';
 import TicketMessage from '../components/Support_com_Page/Ticket_Message';
+import SendNotification from '../components/Companies/Send_Notification';
 
 import filterIcon from '../assets/filter.svg';
 
+// Reusable overlay for modals
+const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
+  <div
+    style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 9999,
+      display: "flex", alignItems: "center", justifyContent: "center"
+    }}
+    onClick={onClose}
+  >
+    <div onClick={(e) => e.stopPropagation()}>{children}</div>
+  </div>
+);
+
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const MOCK_TICKETS = [
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Resolved" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
-  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Resolved" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
+  { date: "04/11/2026", ticketId: "#123", company: "John Dorghamasadsad inc", reporter: "John Dorghamasadsad", agent: "Wael Metwally", phone: "01120202020", status: "Open" },
 ];
 
 const DATE_OPTIONS = ["Today", "Yesterday", "This week", "Last week", "This month", "Last month", "This year"];
@@ -51,6 +66,8 @@ const Support = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
   const [activeTicketMessage, setActiveTicketMessage] = useState<any | null>(null);
+  const [isSendNotificationOpen, setIsSendNotificationOpen] = useState(false);
+  const [notifiedTicket, setNotifiedTicket] = useState<any>(null);
 
   const actionMenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -537,7 +554,9 @@ const Support = () => {
                             toast.success(`Calling ${ticket.reporter}...`);
                           }}
                           onSendNotification={() => {
-                            toast.success(`Notification sent to ${ticket.reporter}!`);
+                            setNotifiedTicket(ticket);
+                            setIsSendNotificationOpen(true);
+                            setOpenActionMenu(null);
                           }}
                           onClose={() => setOpenActionMenu(null)}
                         />
@@ -559,6 +578,24 @@ const Support = () => {
           ticket={activeTicketMessage}
           onClose={() => setActiveTicketMessage(null)}
         />
+
+        {/* Send Notification Modal */}
+        {isSendNotificationOpen && notifiedTicket && (
+          <ModalOverlay onClose={() => setIsSendNotificationOpen(false)}>
+            <SendNotification
+              company={{
+                id: notifiedTicket.ticketId,
+                name: notifiedTicket.company,
+                owner: notifiedTicket.reporter
+              }}
+              onClose={() => setIsSendNotificationOpen(false)}
+              onSubmit={(title) => {
+                toast.success(`Notification "${title}" sent to ${notifiedTicket.reporter}!`);
+                setIsSendNotificationOpen(false);
+              }}
+            />
+          </ModalOverlay>
+        )}
       </div>
     </div>
   );

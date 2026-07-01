@@ -5,6 +5,7 @@ import { leadsAssignmentsApi } from './service/crudAssignment_lead';
 import { notesApi } from './service/crudnote';
 import { tasksApi } from './service/crudtasks';
 import { settingsApi } from './service/crudsetting';
+import { supportApi } from './service/crudSupport ticket';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     [notesApi.reducerPath]: notesApi.reducer,
     [tasksApi.reducerPath]: tasksApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
+    [supportApi.reducerPath]: supportApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -23,6 +25,7 @@ export const store = configureStore({
       notesApi.middleware,
       tasksApi.middleware,
       settingsApi.middleware,
+      supportApi.middleware,
     ),
 });
 

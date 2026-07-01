@@ -128,7 +128,6 @@ const TaskCard = ({
               fontSize: 16,
               lineHeight: "100%",
               color: "rgba(70, 70, 70, 1)",
-              textDecoration: task.status === "COMPLETED" ? "line-through" : "none",
             }}
           >
             {task.title}

@@ -39,7 +39,11 @@ const Layout: React.FC = () => {
       {/* Main content area */}
       <div className="layout-main" style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", backgroundColor: "#F5F6FA" }}>
         <div style={{ position: "relative", zIndex: 10 }}>
-          <Navbar onTasksClick={() => setIsTaskDrawerOpen(true)} onMenuClick={() => setIsMobileMenuOpen(true)} />
+          <Navbar
+            onTasksClick={() => setIsTaskDrawerOpen(true)}
+            onMenuClick={() => setIsMobileMenuOpen(true)}
+            onProfileClick={() => navigate("/settings")}
+          />
         </div>
 
         {/* Scrollable page content */}

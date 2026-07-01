@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useCreateLeadMutation } from "../../app/service/crudleads";
 import { toast } from "sonner";
 import plusIcon from "../../assets/plus-02.svg";
 import closeIcon from "../../assets/x-02.svg";
+import calendarPlusIcon from "../../assets/calendar-plus.svg";
 import "../../styles/leads-modal-mobile.css";
 
 
@@ -13,6 +14,8 @@ interface AddNewLeadProps {
     companyName: string;
     phoneNumber: string;
     leadSource: string;
+    status?: string;
+    nextFollowup?: string;
   }) => void;
 }
 
@@ -57,6 +60,17 @@ const SOURCE_OPTIONS: { label: string; value: string }[] = [
   { label: "Other",     value: "OTHER" },
 ];
 
+const STATUS_OPTIONS: { label: string; value: string }[] = [
+  { label: "Fresh", value: "FRESH" },
+  { label: "Interested", value: "INTERESTED" },
+  { label: "Not interested", value: "NOT_INTERESTED" },
+  { label: "Meeting", value: "MEETING" },
+  { label: "After meeting followup", value: "AFTER_MEETING_FOLLOWUP" },
+  { label: "Wrong number", value: "WRONG_NUMBER" },
+  { label: "No answer", value: "NO_ANSWER" },
+  { label: "Deal", value: "DEAL" },
+];
+
 // Phone: 7–20 digits, allows +, spaces, hyphens, parentheses
 const PHONE_REGEX = /^[+\d][\d\s\-().]{5,19}$/;
 
@@ -64,9 +78,28 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
   const [leadName, setLeadName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [leadStatus, setLeadStatus] = useState("");
   const [leadSource, setLeadSource] = useState("");
+  const [nextFollowup, setNextFollowup] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [formErrors, setFormErrors] = useState<{ name?: string; phone?: string; source?: string }>({});
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState<{ name?: string; phone?: string; source?: string; status?: string; followup?: string }>({});
+
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDatePickerClick = () => {
+    try {
+      dateInputRef.current?.showPicker();
+    } catch (e) {
+      console.warn("showPicker is not supported or failed", e);
+    }
+  };
+
+  const formatDate = (iso: string) => {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  };
 
   const [createLead, { isLoading }] = useCreateLeadMutation();
 
@@ -75,10 +108,11 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
     companyName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
     leadSource.trim() !== "" &&
+    nextFollowup.trim() !== "" &&
     !isLoading;
 
   const validate = () => {
-    const errors: { name?: string; phone?: string; source?: string } = {};
+    const errors: { name?: string; phone?: string; source?: string; status?: string; followup?: string } = {};
     if (!leadName.trim()) errors.name = "Lead name is required.";
     if (!phoneNumber.trim()) {
       errors.phone = "Phone number is required.";
@@ -86,6 +120,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
       errors.phone = "Phone must be 7–20 digits and may include +, spaces, hyphens, or parentheses.";
     }
     if (!leadSource) errors.source = "Please choose a lead source.";
+    if (!nextFollowup) errors.followup = "Next followup date is required.";
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -100,12 +135,14 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         company_name: companyName,
         phone: phoneNumber,
         source: leadSource,
+        status: leadStatus || undefined,
+        next_follow_up: nextFollowup || null,
       }).unwrap();
 
       toast.success("Lead created successfully!");
 
       if (onSave) {
-        onSave({ leadName, companyName, phoneNumber, leadSource });
+        onSave({ leadName, companyName, phoneNumber, leadSource, status: leadStatus, nextFollowup });
       }
       if (onClose) onClose();
     } catch (err: any) {
@@ -148,7 +185,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
       className="leads-modal-root"
       style={{
         width: 462,
-        height: 580,
+        height: 730,
         opacity: 1,
         display: "flex",
         flexDirection: "column",
@@ -279,6 +316,121 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           {formErrors.phone && <span style={errorTextStyle}>{errorIcon}{formErrors.phone}</span>}
         </div>
 
+        {/* Status */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={labelStyle}>
+            Status
+          </label>
+          <div style={{ position: "relative", width: "100%" }}>
+            {/* Custom Select Box */}
+            <div
+              onClick={() => {
+                setIsStatusDropdownOpen(!isStatusDropdownOpen);
+                setIsDropdownOpen(false);
+              }}
+              style={{
+                ...inputStyle,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                color: leadStatus ? "#141414" : "#6B7280",
+                cursor: "pointer",
+                userSelect: "none",
+                borderColor: "rgba(212, 213, 216, 1)",
+              }}
+            >
+              <span>{STATUS_OPTIONS.find(o => o.value === leadStatus)?.label || "Choose a status"}</span>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  transform: isStatusDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s",
+                  flexShrink: 0,
+                }}
+              >
+                <path d="M6 9L12 15L18 9" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+
+            {/* Dropdown Menu */}
+            {isStatusDropdownOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  marginTop: 8,
+                  background: "#fff",
+                  border: "1px solid rgba(212, 213, 216, 1)",
+                  borderRadius: 8,
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)",
+                  zIndex: 10,
+                  padding: "8px 0",
+                  display: "flex",
+                  flexDirection: "column",
+                  maxHeight: 200,
+                  overflowY: "auto",
+                }}
+              >
+                {STATUS_OPTIONS.map(({ label, value }) => (
+                  <div
+                    key={value}
+                    onClick={() => {
+                      setLeadStatus(value);
+                      setIsStatusDropdownOpen(false);
+                    }}
+                    style={{
+                      padding: "12px 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      cursor: "pointer",
+                      background: leadStatus === value ? "var(--Foundation-neutral-neutral-25, #F5F6FA)" : "#fff",
+                      transition: "background 0.2s",
+                      boxSizing: "border-box",
+                      width: "100%",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--Foundation-neutral-neutral-25, #F5F6FA)")}
+                    onMouseLeave={(e) => {
+                      if (leadStatus !== value) {
+                        e.currentTarget.style.background = "#fff";
+                      }
+                    }}
+                  >
+                    {/* Radio Button */}
+                    <div
+                      style={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        border: leadStatus === value ? "5px solid #00236F" : "2px solid #8B909A",
+                        boxSizing: "border-box",
+                        flexShrink: 0,
+                        transition: "border 0.2s",
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 14,
+                        color: leadStatus === value ? "#00236F" : "#141414",
+                        fontWeight: leadStatus === value ? 500 : 400,
+                      }}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Lead Source */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
@@ -287,7 +439,10 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
           <div style={{ position: "relative", width: "100%" }}>
             {/* Custom Select Box */}
             <div
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => {
+                setIsDropdownOpen(!isDropdownOpen);
+                setIsStatusDropdownOpen(false);
+              }}
               style={{
                 ...inputStyle,
                 display: "flex",
@@ -388,6 +543,63 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
             )}
           </div>
           {formErrors.source && <span style={errorTextStyle}>{errorIcon}{formErrors.source}</span>}
+        </div>
+
+        {/* Next followup */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={labelStyle}>
+            Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+          </label>
+          <div 
+            onClick={handleDatePickerClick}
+            style={{ position: "relative", width: "100%", cursor: "pointer" }}
+          >
+            {/* Display formatted date as read-only overlay */}
+            <input
+              type="text"
+              readOnly
+              value={formatDate(nextFollowup)}
+              placeholder="DD/MM/YYYY"
+              style={{
+                ...inputStyle,
+                paddingRight: 48,
+                caretColor: "transparent",
+                cursor: "pointer",
+                borderColor: formErrors.followup ? "#E03131" : "rgba(212, 213, 216, 1)"
+              }}
+            />
+            {/* Hidden date picker */}
+            <input
+              ref={dateInputRef}
+              type="date"
+              value={nextFollowup}
+              onChange={(e) => { setNextFollowup(e.target.value); setFormErrors(prev => ({ ...prev, followup: undefined })); }}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0,
+                cursor: "pointer",
+                width: "100%",
+                height: "100%",
+                zIndex: -1,
+              }}
+            />
+            {/* Calendar icon */}
+            <img
+              src={calendarPlusIcon}
+              alt="Pick date"
+              width={22}
+              height={22}
+              style={{
+                position: "absolute",
+                right: 14,
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+              }}
+            />
+          </div>
+          {formErrors.followup && <span style={errorTextStyle}>{errorIcon}{formErrors.followup}</span>}
         </div>
 
         {/* Save button */}
