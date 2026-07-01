@@ -1,32 +1,34 @@
 import React from 'react';
+import { useTranslation } from '../context/LanguageContext';
 
 const Plans = () => {
+  const { t } = useTranslation();
 
   const plan1Features = [
-    "Unlimited leads.",
-    "Up to 5 sales account.",
-    "Company account.",
-    "Full access to the mobile application.",
-    "Whats-app integration",
-    "Higher AI features usage limits."
+    t("plans.unlimitedLeads"),
+    t("plans.salesAccounts5"),
+    t("plans.companyAccount"),
+    t("plans.fullMobileAccess"),
+    t("plans.whatsappIntegration"),
+    t("plans.higherAiLimits")
   ];
 
   const plan2Features = [
-    "Unlimited leads.",
-    "Up to 5 sales account.",
-    "Company account.",
-    "Full access to the mobile application.",
-    "Whats-app integration",
-    "Higher AI features usage limits."
+    t("plans.unlimitedLeads"),
+    t("plans.salesAccounts5"),
+    t("plans.companyAccount"),
+    t("plans.fullMobileAccess"),
+    t("plans.whatsappIntegration"),
+    t("plans.higherAiLimits")
   ];
 
   const customPlanFeatures = [
-    "Unlimited leads.",
-    "Custom sales account number.",
-    "Company account.",
-    "Full access to the mobile application.",
-    "Whats-app integration",
-    "Custom AI features usage limits."
+    t("plans.unlimitedLeads"),
+    t("plans.customSalesAccounts"),
+    t("plans.companyAccount"),
+    t("plans.fullMobileAccess"),
+    t("plans.whatsappIntegration"),
+    t("plans.customAiLimits")
   ];
 
   return (
@@ -44,7 +46,7 @@ const Plans = () => {
             marginBottom: 24,
           }}
         >
-          Plans
+          {t("plans.title")}
         </div>
 
         {/* ── Three Pricing Cards ── */}
@@ -76,7 +78,7 @@ const Plans = () => {
           >
             <div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#747474", display: "block", marginBottom: 8 }}>
-                Plan 1
+                {t("plans.plan1")}
               </span>
               <div style={{ display: "flex", alignItems: "baseline" }}>
                 <span style={{
@@ -91,13 +93,13 @@ const Plans = () => {
                 <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#747474", marginLeft: 4 }}>/yr</span>
               </div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#747474", display: "block", marginTop: 4 }}>
-                Billed per year
+                {t("plans.billedPerYear")}
               </span>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#141414" }}>
-                Features
+                {t("plans.features")}
               </span>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {plan1Features.map((feat, idx) => (
@@ -132,7 +134,7 @@ const Plans = () => {
           >
             <div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#747474", display: "block", marginBottom: 8 }}>
-                Plan 2
+                {t("plans.plan2")}
               </span>
               <div style={{ display: "flex", alignItems: "baseline" }}>
                 <span style={{
@@ -147,13 +149,13 @@ const Plans = () => {
                 <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#747474", marginLeft: 4 }}>/yr</span>
               </div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#747474", display: "block", marginTop: 4 }}>
-                Billed per year
+                {t("plans.billedPerYear")}
               </span>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#141414" }}>
-                Features
+                {t("plans.features")}
               </span>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {plan2Features.map((feat, idx) => (
@@ -188,7 +190,7 @@ const Plans = () => {
           >
             <div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#747474", display: "block", marginBottom: 8 }}>
-                Custom Plan
+                {t("plans.customPlan")}
               </span>
               <div style={{ display: "flex", alignItems: "baseline" }}>
                 <span style={{
@@ -203,13 +205,13 @@ const Plans = () => {
                 <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#747474", marginLeft: 4 }}>/yr</span>
               </div>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 12, color: "#747474", display: "block", marginTop: 4 }}>
-                Billed per year
+                {t("plans.billedPerYear")}
               </span>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#141414" }}>
-                Features
+                {t("plans.features")}
               </span>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {customPlanFeatures.map((feat, idx) => (

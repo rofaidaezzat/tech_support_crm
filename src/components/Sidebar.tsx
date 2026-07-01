@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Logout from "./Logout";
 import { getCookie } from "../app/service/baseQuery";
+import { useTranslation } from "../context/LanguageContext";
 
 interface SidebarProps {
   onNavigate?: (page: string) => void;
@@ -107,6 +108,7 @@ const LogoutIcon = ({ color }: { color: string }) => (
 // ── Sidebar Component ─────────────────────────────────────────────────────────
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage = "leads", onNavigate }) => {
+  const { t } = useTranslation();
   const [activeItem, setActiveItem] = useState(currentPage);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
@@ -123,11 +125,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage = "leads", onNavigate }) 
   const isSalesManager = userType?.toUpperCase() === "SALES_MANAGER";
 
   const navItems = [
-    { id: "leads",     label: "Leads",     Icon: LeadsIcon     },
-    { id: "companies", label: "Companies", Icon: CompaniesIcon },
-    { id: "plans",     label: "Plans",     Icon: PlansIcon     },
-    { id: "support",   label: "Support",   Icon: SupportIcon   },
-    { id: "settings",  label: "Settings",  Icon: SettingsIcon  }
+    { id: "leads",     label: t("sidebar.leads"),     Icon: LeadsIcon     },
+    { id: "companies", label: t("sidebar.companies"), Icon: CompaniesIcon },
+    { id: "plans",     label: t("sidebar.plans"),     Icon: PlansIcon     },
+    { id: "support",   label: t("sidebar.support"),   Icon: SupportIcon   },
+    { id: "settings",  label: t("sidebar.settings"),  Icon: SettingsIcon  }
   ];
 
   return (
@@ -283,7 +285,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage = "leads", onNavigate }) 
                 whiteSpace: "nowrap",
               }}
             >
-              Logout
+              {t("sidebar.logout")}
             </span>
           </div>
         </div>

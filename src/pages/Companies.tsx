@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, ChevronDown, ChevronUp, ArrowDownUp, Download, Info } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 import { toast } from 'sonner';
 import Pagination from '../components/Pagination';
 import editIcon from '../assets/edit-contained.svg';
@@ -55,16 +56,7 @@ const STATUS_OPTIONS = ["Active", "Expired", "Paused"];
 const RENEWAL_OPTIONS = ["All", "This Year", "Next Year"];
 const SALES_OPTIONS = ["All", "> 50M", "< 50M"];
 
-const COL_HEADERS = [
-  "Company name",
-  "Owner",
-  "Business sector",
-  "Plan",
-  "Subscription status",
-  "Renewal date",
-  "Sales count",
-  "Actions"
-];
+// COL_HEADERS will be built inside the component using t()
 
 const getStatusStyle = (status: string) => {
   const s = (status || "").toLowerCase();
@@ -230,6 +222,17 @@ const formatDateToInput = (displayStr: string) => {
 };
 
 const Companies = () => {
+  const { t } = useTranslation();
+  const COL_HEADERS = [
+    t("companies.colCompanyName"),
+    t("companies.colOwner"),
+    t("companies.colSector"),
+    t("companies.colPlan"),
+    t("companies.colStatus"),
+    t("companies.colRenewal"),
+    t("companies.colSalesCount"),
+    t("companies.colActions"),
+  ];
   const [companies, setCompanies] = useState(MOCK_COMPANIES);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -666,7 +669,7 @@ const Companies = () => {
             alignItems: "center",
           }}
         >
-          Companies
+          {t("companies.title")}
         </div>
 
         <div style={{ display: "flex", gap: 12 }}>
@@ -690,7 +693,7 @@ const Companies = () => {
             }}
           >
             <Plus size={20} color="#fff" />
-            Create Company
+            {t("companies.createCompany")}
           </button>
 
           <button
@@ -713,7 +716,7 @@ const Companies = () => {
             }}
           >
             <Download size={20} color="var(--Foundation-brand-brand-500, #00236F)" />
-            Export Companies
+            {t("companies.exportCompanies")}
           </button>
         </div>
       </div>
@@ -756,7 +759,7 @@ const Companies = () => {
             <img src={filterIcon} alt="filter" width={24} height={24} />
             <input
               type="text"
-              placeholder="Filter by company name, plan,..."
+              placeholder={t("companies.searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -799,7 +802,7 @@ const Companies = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              Sector
+              {t("companies.sectorFilter")}
               {selectedSectors.length > 0 ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   {selectedSectors.length}
@@ -862,7 +865,7 @@ const Companies = () => {
                 flexShrink: 0,
               }}
             >
-              Plan
+              {t("companies.planFilter")}
               {selectedPlans.length > 0 ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   {selectedPlans.length}
@@ -932,7 +935,7 @@ const Companies = () => {
                 flexShrink: 0,
               }}
             >
-              Status
+              {t("companies.statusFilter")}
               {selectedStatuses.length > 0 ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   {selectedStatuses.length}
@@ -1008,7 +1011,7 @@ const Companies = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              Renewal date
+              {t("companies.renewalFilter")}
               {(selectedRenewalPreset || selectedRenewalStart || selectedRenewalEnd) ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   1
@@ -1100,7 +1103,7 @@ const Companies = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              Sales count
+              {t("companies.salesFilter")}
               {(selectedSalesFrom !== null || selectedSalesTo !== null) ? (
                 <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: 2, boxSizing: "border-box", fontSize: 11, color: "#141414", fontWeight: 600 }}>
                   1
@@ -1153,7 +1156,7 @@ const Companies = () => {
               whiteSpace: "nowrap",
             }}
           >
-            Reset Filters
+            {t("companies.resetFilters")}
           </button>
         </div>
 
@@ -1183,7 +1186,7 @@ const Companies = () => {
                 boxSizing: "border-box",
               }}
             >
-              Sort by
+              {t("companies.sortBy")}
               <ArrowDownUp size={16} color="#4B5563" />
             </button>
             {activeFilter === 'sort' && (

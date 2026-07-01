@@ -5,6 +5,7 @@ import NotificationsDropdown from "./Navbar/NotificationsDropdown";
 import NotificationDrawer from "./Navbar/NotificationDrawer";
 import Report_Bug from "./Support/Support";
 import { useGetProfileDetailsQuery } from "../app/service/crudsetting";
+import { useTranslation } from "../context/LanguageContext";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -19,6 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onProfileClick,
   onMenuClick,
 }) => {
+  const { t } = useTranslation();
   const { data: profileData } = useGetProfileDetailsQuery();
   const profile = profileData?.data?.profile;
   const firstName = profile?.first_name || "";
@@ -128,7 +130,7 @@ const Navbar: React.FC<NavbarProps> = ({
             name="searchQuery"
             id="navbarSearchInput"
             autoComplete="off"
-            placeholder="Search..."
+            placeholder={t("navbar.searchPlaceholder")}
             value={searchQuery}
             onFocus={() => setShowSearch(true)}
             onChange={(e) => {
@@ -267,7 +269,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   cursor: "pointer",
                 }}
               >
-                Show more results for {searchQuery || "..."}
+                {t("navbar.showMoreResults")} {searchQuery || "..."}
               </span>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
   useUpdateProfileInfoMutation, 
   useChangePasswordMutation 
 } from '../app/service/crudsetting';
+import { useTranslation } from '../context/LanguageContext';
 // Icons
 import languageIcon from '../assets/language.svg';
 import lockOpen03Icon from '../assets/lock-open-03.svg';
@@ -36,6 +37,7 @@ const Settings = () => {
   const { data: profileResp } = useGetProfileDetailsQuery();
   const [updateProfile] = useUpdateProfileInfoMutation();
   const [changePassword] = useChangePasswordMutation();
+  const { t, changeLanguage } = useTranslation();
 
   const profile = profileResp?.data?.profile;
 
@@ -52,6 +54,8 @@ const Settings = () => {
       setPhoneNumber(profile.phone || "01122334455");
       setEmail(profile.email || "Mahmouadeldawly@email.com");
       setLanguage(profile.language === 'AR' ? 'Arabic' : 'English');
+      // Sync local/global context language with profile language
+      changeLanguage(profile.language === 'AR' ? 'ar' : 'en');
     }
   }, [profile]);
 
@@ -105,7 +109,7 @@ const Settings = () => {
             marginBottom: 24,
           }}
         >
-          Settings
+          {t('settings.title')}
         </div>
 
         {/* Main Stack Container */}
@@ -133,7 +137,7 @@ const Settings = () => {
               }}
             >
               <img src={userProfileCircleIcon} alt="Profile" style={{ width: 24, height: 24 }} />
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>Profile</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>{t('settings.profileSection')}</span>
             </div>
 
             <div style={{ background: "rgba(255, 255, 255, 1)", width: "100%", borderBottomLeftRadius: 12, borderBottomRightRadius: 12, boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.2)", display: "flex", flexDirection: "column" }}>
@@ -210,7 +214,7 @@ const Settings = () => {
                       onClick={() => setIsEditProfileOpen(true)}
                     >
                       <img src={edit03Icon} alt="Edit" style={{ width: 16, height: 16 }} />
-                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500 }}>Edit Profile</span>
+                      <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500 }}>{t('settings.editProfile')}</span>
                     </div>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
@@ -251,13 +255,13 @@ const Settings = () => {
               }}
             >
               <img src={lockOpen03Icon} alt="Security" style={{ width: 24, height: 24 }} />
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>Security</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>{t('settings.securitySection')}</span>
             </div>
             <div
               style={{ padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
               onClick={() => setIsChangePasswordOpen(true)}
             >
-              <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 16, color: "rgba(20, 20, 20, 1)" }}>Change Password</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 16, color: "rgba(20, 20, 20, 1)" }}>{t('settings.changePassword')}</span>
               <ChevronRight size={20} color="#6B7280" />
             </div>
           </div>
@@ -283,12 +287,13 @@ const Settings = () => {
               }}
             >
               <img src={languageIcon} alt="Language" style={{ width: 24, height: 24 }} />
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>Language</span>
+              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>{t('settings.languageSection')}</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div
                 onClick={async () => {
                   setLanguage('English');
+                  changeLanguage('en');
                   try {
                     await updateProfile({ language: 'EN' }).unwrap();
                     toast.success("Language updated to English!");
@@ -302,7 +307,7 @@ const Settings = () => {
                   borderBottom: "1px solid rgba(237, 239, 242, 1)", cursor: "pointer",
                 }}
               >
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500, color: "#141414" }}>English</span>
+                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500, color: "#141414" }}>{t('settings.english')}</span>
                 {language === 'English' ? (
                   <div style={{
                     width: 20,
@@ -336,6 +341,7 @@ const Settings = () => {
               <div
                 onClick={async () => {
                   setLanguage('Arabic');
+                  changeLanguage('ar');
                   try {
                     await updateProfile({ language: 'AR' }).unwrap();
                     toast.success("Language updated to Arabic!");
@@ -349,7 +355,7 @@ const Settings = () => {
                   cursor: "pointer", borderBottomLeftRadius: 12, borderBottomRightRadius: 12
                 }}
               >
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500, color: "#141414" }}>Arabic</span>
+                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500, color: "#141414" }}>{t('settings.arabic')}</span>
                 {language === 'Arabic' ? (
                   <div style={{
                     width: 20,

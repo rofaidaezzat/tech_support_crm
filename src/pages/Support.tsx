@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, ArrowDownUp } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 import Pagination from '../components/Pagination';
 import mail04Icon from '../assets/mail-04.svg';
 import StatusTicket from '../components/Filteration/staus_ticket';
@@ -55,6 +56,7 @@ const getStatusStyle = (status: string) => {
 type ActiveFilter = "date" | "status" | "sort" | null;
 
 const Support = () => {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState(MOCK_TICKETS);
   const [openStatusDropdownIndex, setOpenStatusDropdownIndex] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
@@ -226,16 +228,25 @@ const Support = () => {
     flexShrink: 0,
   });
 
-  const COL_HEADERS = ["Date", "Ticket ID", "Company name", "Reporter", "Phone number", "Ticket's status", "Message", "Actions"];
+  const COL_HEADERS = [
+    t("support.colDate"),
+    t("support.colTicketId"),
+    t("support.colCompanyName"),
+    t("support.colReporter"),
+    t("support.colPhone"),
+    t("support.colTicketStatus"),
+    t("support.colMessage"),
+    t("support.colActions"),
+  ];
   const widthMap: Record<string, number | string> = {
-    "Date": 90,
-    "Ticket ID": 80,
-    "Company name": 180,
-    "Reporter": 160,
-    "Phone number": 120,
-    "Ticket's status": 120,
-    "Message": 80,
-    "Actions": 70,
+    [t("support.colDate")]: 90,
+    [t("support.colTicketId")]: 80,
+    [t("support.colCompanyName")]: 180,
+    [t("support.colReporter")]: 160,
+    [t("support.colPhone")]: 120,
+    [t("support.colTicketStatus")]: 120,
+    [t("support.colMessage")]: 80,
+    [t("support.colActions")]: 70,
   };
 
   return (
@@ -257,7 +268,7 @@ const Support = () => {
             lineHeight: "100%",
             color: "rgba(0, 35, 111, 1)",
           }}>
-            Support
+            {t("support.title")}
           </div>
         </div>
 
@@ -298,7 +309,7 @@ const Support = () => {
               <input
                 type="text"
                 id="support-search"
-                placeholder="Filter by date, company name,..."
+                placeholder={t("support.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 style={{
@@ -322,7 +333,7 @@ const Support = () => {
                 onMouseLeave={() => setHoveredFilter(null)}
                 style={filterBtnStyle("date")}
               >
-                Date
+                {t("support.dateFilter")}
                 {dateFilter ? (
                   <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#141414", fontWeight: 600 }}>1</div>
                 ) : activeFilter === "date" ? (
@@ -362,7 +373,7 @@ const Support = () => {
                 onMouseLeave={() => setHoveredFilter(null)}
                 style={filterBtnStyle("status")}
               >
-                Status
+                {t("support.statusFilter")}
                 {selectedStatuses.length > 0 ? (
                   <div style={{ background: "#B0BBD2", width: 20, height: 22, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#141414", fontWeight: 600 }}>{selectedStatuses.length}</div>
                 ) : activeFilter === "status" ? (
@@ -389,7 +400,7 @@ const Support = () => {
               onClick={() => { setSearchQuery(""); setDateFilter(null); setSelectedStatuses([]); setSortOrder("newest"); setCurrentPage(1); setActiveFilter(null); }}
               style={{ background: "transparent", border: "none", cursor: "pointer", color: "#00236F", fontFamily: "Inter", fontSize: 16, fontWeight: 400, lineHeight: "normal", padding: 0, whiteSpace: "nowrap" }}
             >
-              Reset Filters
+              {t("support.resetFilters")}
             </button>
           </div>
 
@@ -403,7 +414,7 @@ const Support = () => {
                 onMouseLeave={() => setHoveredFilter(null)}
                 style={{ ...filterBtnStyle("sort"), width: 108 }}
               >
-                Sort by
+                {t("support.sortBy")}
                 <ArrowDownUp size={16} color="#4B5563" />
               </button>
               {activeFilter === "sort" && (

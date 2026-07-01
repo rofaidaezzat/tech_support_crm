@@ -10,32 +10,7 @@ import {
   SupportMessage,
 } from '../../app/service/crudSupport ticket';
 
-// Mock/local translation hook since LanguageContext context is not present in the workspace
-const useTranslation = () => {
-  const language = "en"; // Default to English
-  const translations: Record<string, string> = {
-    "modal.supportTitle": "Support",
-    "modal.ticketStatusOpen": "Open",
-    "modal.ticketStatusClosed": "Closed",
-    "modal.loadingTickets": "Loading tickets...",
-    "modal.ticketStatusInProgress": "In Progress",
-    "modal.noTicketsFound": "No tickets found",
-    "modal.newTicketButton": "New Ticket",
-    "modal.newSupportTicketTitle": "New Support Ticket",
-    "modal.ticketTitleLabel": "Ticket Title",
-    "modal.ticketTitlePlaceholder": "Enter ticket title...",
-    "modal.ticketDescLabel": "Description",
-    "modal.ticketDescPlaceholder": "Enter description details...",
-    "modal.sending": "Sending...",
-    "modal.sendButton": "Send",
-    "modal.replyPlaceholder": "Type your message...",
-    "modal.ticketClosedMessage": "This ticket is closed.",
-    "modal.ticketInProgressMessage": "This ticket is in progress.",
-    "modal.ticketOpenMessage": "This ticket is open.",
-  };
-  const t = (key: string) => translations[key] || key;
-  return { t, language };
-};
+import { useTranslation } from '../../context/LanguageContext';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

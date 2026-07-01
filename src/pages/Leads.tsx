@@ -3,6 +3,7 @@ import { Plus, Filter, Sparkles, ChevronDown, ChevronUp, ArrowDownUp } from 'luc
 import { useGetLeadsQuery, useUpdateLeadMutation, useGetLeadStatsQuery, useDeleteLeadMutation } from '../app/service/crudleads';
 import { toast } from 'sonner';
 import { getCookie } from '../app/service/baseQuery';
+import { useTranslation } from '../context/LanguageContext';
 import '../styles/tables-mobile.css';
 import TableSkeleton from '../components/TableSkeleton';
 import whatsappIcon from '../assets/ic_baseline-whatsapp.svg';
@@ -256,7 +257,18 @@ const getFollowUpDateRange = (preset: string) => {
 };
 
 const Leads = () => {
-  const COL_HEADERS = BASE_COL_HEADERS;
+  const { t } = useTranslation();
+  const COL_HEADERS = [
+    t("leads.colDate"),
+    t("leads.colLeadInfo"),
+    t("leads.colStatus"),
+    t("leads.colPhoneNumber"),
+    t("leads.colMessage"),
+    t("leads.colPriority"),
+    t("leads.colLeadSource"),
+    t("leads.colNextFollowup"),
+    t("leads.colActions"),
+  ];
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<{ preset: any; startDate: string; endDate: string } | null>(null);
@@ -486,20 +498,20 @@ const Leads = () => {
             fontSize: 33,
             lineHeight: "100%",
             color: "rgba(0, 35, 111, 1)",
-            width: 98,
+            width: 150,
             height: 40,
             display: "flex",
             alignItems: "center",
           }}
         >
-          Leads
+          {t("leads.title")}
         </div>
 
         <button
           onClick={() => setIsAddLeadOpen(true)}
           style={{
             background: "rgba(0, 35, 111, 1)",
-            width: 154,
+            minWidth: 154,
             height: 48,
             borderRadius: 12,
             padding: "8px 24px",
@@ -516,7 +528,7 @@ const Leads = () => {
           }}
         >
           <Plus size={20} color="#fff" />
-          Add Lead
+          {t("leads.addLead")}
         </button>
       </div>
 

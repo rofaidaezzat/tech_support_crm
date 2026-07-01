@@ -184,3 +184,60 @@ input:placeholder-shown, textarea:placeholder-shown {
   background-color: transparent !important;
   background: transparent !important;
 }
+
+/* ═══════════════════════════════════════════════════
+   RTL (Arabic) – Modal & Dropdown Direction Fixes
+   ═══════════════════════════════════════════════════ */
+
+/* Every filter/modal panel rendered inside an RTL document */
+html[dir="rtl"] .filter-modal,
+html[dir="rtl"] [class*="modal"],
+html[dir="rtl"] [class*="drawer"],
+html[dir="rtl"] [class*="dropdown"],
+html[dir="rtl"] [class*="Dropdown"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Fixed / absolute overlay modals (e.g. ModalOverlay) */
+html[dir="rtl"] [style*="position: fixed"],
+html[dir="rtl"] [style*="position:fixed"] {
+  direction: rtl;
+}
+
+/* Inner modal content containers */
+html[dir="rtl"] .filter-modal *,
+html[dir="rtl"] [class*="modal"] *,
+html[dir="rtl"] [class*="drawer"] * {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Flip inline-flex rows so icons appear on the correct side */
+html[dir="rtl"] .filter-modal .filter-split {
+  flex-direction: row-reverse;
+}
+
+/* Checkbox / radio rows inside filters */
+html[dir="rtl"] .filter-checkbox-row {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="rtl"] .filter-checkbox-row > span {
+  text-align: right !important;
+}
+
+/* Action-button rows (Apply / Clear) */
+html[dir="rtl"] .filter-buttons {
+  flex-direction: row-reverse;
+}
+
+/* Date-filter split panel divider: remove right border, add left border */
+html[dir="rtl"] .filter-split-item {
+  border-right: none !important;
+  border-left: 1px solid rgba(212, 213, 216, 1);
+  padding-right: 0 !important;
+  padding-left: 12px;
+}
+
+
