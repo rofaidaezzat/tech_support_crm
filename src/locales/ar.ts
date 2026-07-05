@@ -65,6 +65,22 @@ export const ar = {
     passwordFail: "فشل تغيير كلمة المرور",
     passwordMismatch: "كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقين",
     passwordLength: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+    // Profile card
+    profilePictureTitle: "الصورة الشخصية",
+    profilePictureDesc: "قم بتحديث صورة ملفك الشخصي.",
+    uploadPicture: "رفع صورة",
+    basicProfileTitle: "تفاصيل الملف الشخصي",
+    basicProfileDesc: "قم بتحديث معلوماتك الشخصية أدناه.",
+    fullNameLabel: "الاسم الكامل",
+    emailLabel: "البريد الإلكتروني",
+    phoneLabel: "رقم الهاتف",
+    addressLabel: "العنوان",
+    saveButton: "حفظ التغييرات",
+    saving: "جاري الحفظ...",
+    profileUpdated: "تم تحديث الملف الشخصي بنجاح!",
+    // Devices card
+    devicesSection: "الأجهزة المتصلة",
+    manageDevices: "إدارة الأجهزة المتصلة",
   },
   modal: {
     changePasswordTitle: "تغيير كلمة المرور",

@@ -17,7 +17,7 @@ export const deleteCookie = (name: string) => {
 };
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: 'https://crm-v1-otu8.vercel.app/',
+  baseUrl: 'https://backend-crm-test.el-shayeb.cloud/',
   prepareHeaders: (headers) => {
     if (headers.has('X-Skip-Authorization') || headers.has('x-skip-authorization')) {
       headers.delete('X-Skip-Authorization');

@@ -65,6 +65,22 @@ export const en = {
     passwordFail: "Failed to change password",
     passwordMismatch: "New password and confirm password do not match",
     passwordLength: "Password must be at least 8 characters long",
+    // Profile card
+    profilePictureTitle: "Profile Picture",
+    profilePictureDesc: "Update your profile photo.",
+    uploadPicture: "Upload Picture",
+    basicProfileTitle: "Basic Profile Details",
+    basicProfileDesc: "Update your personal information below.",
+    fullNameLabel: "Full Name",
+    emailLabel: "Email Address",
+    phoneLabel: "Phone Number",
+    addressLabel: "Address",
+    saveButton: "Save Changes",
+    saving: "Saving...",
+    profileUpdated: "Profile updated successfully!",
+    // Devices card
+    devicesSection: "Connected Devices",
+    manageDevices: "Manage Connected Devices",
   },
   modal: {
     changePasswordTitle: "Change Password",
