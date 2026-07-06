@@ -134,3 +134,23 @@ export const {
   useChangePasswordMutation,
   useUploadProfilePictureMutation,
 } = settingsApi;
+
+export const getAvatarUrl = (avatarPath?: string | null) => {
+  if (!avatarPath) return undefined;
+  let path = avatarPath;
+  const newBaseUrl = 'https://backend-crm-test.el-shayeb.cloud';
+
+  // Replace old backend url or localhost/127.0.0.1 with new ngrok url
+  if (path.includes('backend-crm-test.el-shayeb.cloud')) {
+    path = path.replace(/^https?:\/\/backend-crm-test\.el-shayeb\.cloud/, newBaseUrl);
+  } else if (path.includes('localhost') || path.includes('127.0.0.1')) {
+    path = path.replace(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, newBaseUrl);
+  }
+
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:') || path.startsWith('blob:')) {
+    return path;
+  }
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${newBaseUrl}${cleanPath}`;
+};
+

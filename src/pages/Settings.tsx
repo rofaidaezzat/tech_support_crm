@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronRight, Laptop } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import Change_password from '../components/Setting/Change_password';
 import { toast } from 'sonner';
 import '../styles/settings-mobile.css';
@@ -9,6 +9,7 @@ import {
   useUploadProfilePictureMutation,
 } from '../app/service/crudsetting';
 import { useTranslation } from '../context/LanguageContext';
+import { useAuthenticatedImage } from '../hooks/useAuthenticatedImage';
 // Icons
 import languageIcon from '../assets/language.svg';
 import lockOpen03Icon from '../assets/lock-open-03.svg';
@@ -42,8 +43,9 @@ const Settings = () => {
   const [address, setAddress] = useState("");
   const [language, setLanguage] = useState<'English' | 'Arabic'>('English');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
+  const displayImageSrc = useAuthenticatedImage(avatarPreview);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,11 +67,27 @@ const Settings = () => {
 
   const handleUploadClick = () => fileInputRef.current?.click();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setPendingFile(file);
+
+    // Local preview feedback
     setAvatarPreview(URL.createObjectURL(file));
+
+    try {
+      const formData = new FormData();
+      formData.append("photo", file);
+      await uploadPhoto(formData).unwrap();
+      toast.success(t('settings.profilePictureUpdated') || "Profile picture updated successfully!");
+    } catch (err: any) {
+      const msg =
+        err?.data?.message ||
+        (Array.isArray(err?.data?.message) ? err.data.message.join(", ") : null) ||
+        "Failed to upload profile picture.";
+      toast.error(msg);
+      // Revert preview back to database path
+      setAvatarPreview(profile?.avatar || null);
+    }
   };
 
   const handleSave = async () => {
@@ -82,13 +100,6 @@ const Settings = () => {
     const last_name = parts.slice(1).join(" ") || "";
 
     try {
-      // Upload photo first if changed
-      if (pendingFile) {
-        const formData = new FormData();
-        formData.append("photo", pendingFile);
-        await uploadPhoto(formData).unwrap();
-        setPendingFile(null);
-      }
       // Update profile info
       await updateProfile({
         first_name: first_name.trim(),
@@ -104,10 +115,6 @@ const Settings = () => {
         "Failed to update profile.";
       toast.error(msg);
     }
-  };
-
-  const handleManageDevices = () => {
-    toast.info("Manage Connected Devices feature is coming soon!");
   };
 
   const getInitials = () => {
@@ -218,9 +225,9 @@ const Settings = () => {
 
                 <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                   {/* Avatar */}
-                  {avatarPreview ? (
+                  {displayImageSrc ? (
                     <img
-                      src={avatarPreview}
+                      src={displayImageSrc}
                       alt={fullName}
                       style={{
                         width: 72,
@@ -383,38 +390,6 @@ const Settings = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* ── Devices Card ── */}
-          <div style={{ width: "100%", borderRadius: 12, boxShadow: "0px 0px 4px 0px rgba(0, 0, 0, 0.2)", background: "rgba(255, 255, 255, 1)", display: "flex", flexDirection: "column" }}>
-            <div
-              style={{
-                background: "rgba(237, 239, 242, 1)",
-                width: "100%",
-                height: 72,
-                paddingLeft: 32,
-                paddingRight: 32,
-                boxSizing: "border-box",
-                borderTopLeftRadius: 12,
-                borderTopRightRadius: 12,
-                borderTopWidth: 1,
-                borderStyle: "solid",
-                borderColor: "rgba(212, 213, 216, 0.5)",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-              }}
-            >
-              <Laptop size={24} color="#4B5563" />
-              <span style={{ fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 500, color: "#4B5563" }}>{t('settings.devicesSection')}</span>
-            </div>
-            <div
-              style={{ padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
-              onClick={handleManageDevices}
-            >
-              <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: 16, color: "rgba(20, 20, 20, 1)" }}>{t('settings.manageDevices')}</span>
-              <ChevronRight size={20} color="#6B7280" style={{ transform: currentLang === 'ar' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </div>
           </div>
 
