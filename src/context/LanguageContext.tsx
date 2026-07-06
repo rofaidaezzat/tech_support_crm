@@ -28,13 +28,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Read initial language from local storage, fallback to 'en'
   const [language, setLanguageState] = useState<Language>(() => {
     const stored = localStorage.getItem('language');
-    if (stored === 'en' || stored === 'ar') return stored;
-    return 'en';
+    const lang = (stored === 'en' || stored === 'ar') ? stored : 'en';
+    // Sync cookies on load
+    document.cookie = `language=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `i18next=${lang === 'ar' ? 'ar' : 'en-US'}; path=/; max-age=31536000; SameSite=Lax`;
+    return lang;
   });
 
   const changeLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('language', lang);
+    document.cookie = `language=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `i18next=${lang === 'ar' ? 'ar' : 'en-US'}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   const t = (key: string) => {

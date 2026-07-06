@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTranslation } from "../../context/LanguageContext";
 import { useCreateLeadMutation } from "../../app/service/crudleads";
 import { toast } from "sonner";
 import plusIcon from "../../assets/plus-02.svg";
@@ -75,6 +76,7 @@ const STATUS_OPTIONS: { label: string; value: string }[] = [
 const PHONE_REGEX = /^[+\d][\d\s\-().]{5,19}$/;
 
 const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
+  const { t } = useTranslation();
   const [leadName, setLeadName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -113,14 +115,14 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
 
   const validate = () => {
     const errors: { name?: string; phone?: string; source?: string; status?: string; followup?: string } = {};
-    if (!leadName.trim()) errors.name = "Lead name is required.";
+    if (!leadName.trim()) errors.name = t('modal.nameRequired') || "Lead name is required.";
     if (!phoneNumber.trim()) {
-      errors.phone = "Phone number is required.";
+      errors.phone = t('modal.phoneRequired') || "Phone number is required.";
     } else if (!PHONE_REGEX.test(phoneNumber.trim())) {
-      errors.phone = "Phone must be 7–20 digits and may include +, spaces, hyphens, or parentheses.";
+      errors.phone = t('modal.validPhoneRequired') || "Phone must be 7–20 digits and may include +, spaces, hyphens, or parentheses.";
     }
-    if (!leadSource) errors.source = "Please choose a lead source.";
-    if (!nextFollowup) errors.followup = "Next followup date is required.";
+    if (!leadSource) errors.source = t('modal.sourceRequired') || "Please choose a lead source.";
+    if (!nextFollowup) errors.followup = t('modal.followupRequired') || "Next followup date is required.";
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -139,7 +141,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         next_follow_up: nextFollowup || null,
       }).unwrap();
 
-      toast.success("Lead created successfully!");
+      toast.success(t('modal.leadCreatedSuccess') || "Lead created successfully!");
 
       if (onSave) {
         onSave({ leadName, companyName, phoneNumber, leadSource, status: leadStatus, nextFollowup });
@@ -179,6 +181,22 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
       <path d="M7.66667 5V7.66667M7.66667 10.3333H7.67333M14.3333 7.66667C14.3333 11.3486 11.3486 14.3333 7.66667 14.3333C3.98477 14.3333 1 11.3486 1 7.66667C1 3.98477 3.98477 1 7.66667 1C11.3486 1 14.3333 3.98477 14.3333 7.66667Z" stroke="var(--Foundation-error-red-700, #A80D0B)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
+
+  const getStatusLabel = (val: string) => {
+    if (!val) return "";
+    const key = val.toLowerCase();
+    if (key === 'not_interested') return t('leadStatuses.notInterested');
+    if (key === 'after_meeting_followup') return t('leadStatuses.afterMeetingFollowup');
+    if (key === 'wrong_number') return t('leadStatuses.wrongNumber');
+    if (key === 'no_answer') return t('leadStatuses.noAnswer');
+    return t(`leadStatuses.${key}`) || val;
+  };
+
+  const getSourceLabel = (val: string) => {
+    if (!val) return "";
+    const key = val.toLowerCase();
+    return t(`filteration.${key}`) || val;
+  };
 
   return (
     <div
@@ -224,7 +242,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
               lineHeight: "100%",
             }}
           >
-            Add New Lead
+            {t('modal.addLeadTitle')}
           </span>
         </div>
 
@@ -269,11 +287,11 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Lead name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+            {t('modal.leadName')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
-            placeholder=" "
+            placeholder={t('modal.enterLeadName') || "Enter lead name"}
             value={leadName}
             onChange={(e) => { setLeadName(e.target.value); setFormErrors(prev => ({ ...prev, name: undefined })); }}
             style={{ ...inputStyle, borderColor: formErrors.name ? "#E03131" : undefined }}
@@ -286,11 +304,11 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Company name */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+            {t('modal.companyName')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="text"
-            placeholder=" "
+            placeholder={t('modal.enterCompanyName') || "Enter company name"}
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             style={inputStyle}
@@ -302,12 +320,12 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Phone number */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+            {t('modal.phoneNumberLabel')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <input
             type="tel"
             value={phoneNumber}
-            placeholder="e.g. +20 123 456 7890"
+            placeholder={t('modal.enterPhoneNumber') || "e.g. +20 123 456 7890"}
             onChange={(e) => { setPhoneNumber(e.target.value); setFormErrors(prev => ({ ...prev, phone: undefined })); }}
             style={{ ...inputStyle, borderColor: formErrors.phone ? "#E03131" : undefined }}
             onFocus={handleFocus}
@@ -319,7 +337,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Status */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Status
+            {t('filteration.status')}
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             {/* Custom Select Box */}
@@ -339,7 +357,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                 borderColor: "rgba(212, 213, 216, 1)",
               }}
             >
-              <span>{STATUS_OPTIONS.find(o => o.value === leadStatus)?.label || "Choose a status"}</span>
+              <span>{getStatusLabel(leadStatus) || t('modal.chooseStatus') || "Choose a status"}</span>
               <svg
                 width="20"
                 height="20"
@@ -422,7 +440,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                         fontWeight: leadStatus === value ? 500 : 400,
                       }}
                     >
-                      {label}
+                      {getStatusLabel(value)}
                     </span>
                   </div>
                 ))}
@@ -434,7 +452,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Lead Source */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Lead Source<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+            {t('modal.leadSource')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <div style={{ position: "relative", width: "100%" }}>
             {/* Custom Select Box */}
@@ -454,7 +472,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                 borderColor: "var(--Foundation-brand-brand-500, #00236F)",
               }}
             >
-              <span>{SOURCE_OPTIONS.find(o => o.value === leadSource)?.label || "Choose a lead source"}</span>
+              <span>{getSourceLabel(leadSource) || t('modal.chooseSource') || "Choose a lead source"}</span>
               <svg
                 width="20"
                 height="20"
@@ -535,7 +553,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
                         fontWeight: leadSource === value ? 500 : 400,
                       }}
                     >
-                      {label}
+                      {getSourceLabel(value)}
                     </span>
                   </div>
                 ))}
@@ -548,7 +566,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
         {/* Next followup */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label style={labelStyle}>
-            Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+            {t('modal.nextFollowup')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
           </label>
           <div 
             onClick={handleDatePickerClick}
@@ -633,7 +651,7 @@ const Add_new_lead: React.FC<AddNewLeadProps> = ({ onClose, onSave }) => {
             boxSizing: "border-box",
           }}
         >
-          {isLoading ? "Saving..." : "Save"}
+          {isLoading ? t('modal.saving') || "Saving..." : t('common.save') || "Save"}
         </button>
       </div>
     </div>

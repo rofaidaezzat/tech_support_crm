@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "../../context/LanguageContext";
 import { useGetLeadQuery, useUpdateLeadMutation } from "../../app/service/crudleads";
 import { toast } from "sonner";
 import editIcon from "../../assets/edit-contained.svg";
@@ -61,6 +62,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
   onSave,
   slot = "Modified",
 }) => {
+  const { t } = useTranslation();
   const { data: leadResponse, isLoading: isGetLoading } = useGetLeadQuery(leadId, { skip: !leadId });
   const [updateLead, { isLoading: isUpdateLoading }] = useUpdateLeadMutation();
 
@@ -116,7 +118,13 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
 
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
-      toast.error(firstError);
+      let translatedError = firstError;
+      if (firstError === 'Phone number is required') {
+        translatedError = t('modal.phoneRequired') || firstError;
+      } else if (firstError.includes('Phone must be')) {
+        translatedError = t('modal.validPhoneRequired') || firstError;
+      }
+      toast.error(translatedError);
       return;
     }
 
@@ -132,7 +140,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         },
       }).unwrap();
 
-      toast.success("Lead updated successfully!");
+      toast.success(t('modal.leadUpdatedSuccess') || "Lead updated successfully!");
       if (onSave) onSave();
       if (onClose) onClose();
     } catch (err: any) {
@@ -155,13 +163,18 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
     const [y, m, d] = iso.split("-");
     return `${d}/${m}/${y}`;
   };
+  const getSourceLabel = (val: string) => {
+    if (!val) return "";
+    const key = val.toLowerCase();
+    return t(`filteration.${key}`) || val;
+  };
 
   return (
     <div
       className="leads-modal-root"
       style={{
         width: 462,
-        height: 650,
+        height: 651,
         opacity: 1,
         display: "flex",
         flexDirection: "column",
@@ -173,10 +186,9 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
       {/* ── Header ── */}
       <div
         className="leads-modal-header"
-        slot={slot}
         style={{
           width: 462,
-          height: 91,
+          height: 92,
           background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
           borderBottom: "1px solid rgba(212, 213, 216, 1)",
           borderTopLeftRadius: 12,
@@ -202,7 +214,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                 lineHeight: "100%",
               }}
             >
-              Edit Lead Info
+              {t('modal.editLeadTitle')}
             </span>
           </div>
           <span
@@ -215,7 +227,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               paddingLeft: 2,
             }}
           >
-            for &quot;{leadResponse?.data?.name || "leads name"}&quot;
+            {t('modal.forLead') || "for"} &quot;{leadResponse?.data?.name || "leads name"}&quot;
           </span>
         </div>
 
@@ -263,7 +275,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
       >
         {isGetLoading ? (
           <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
-            Loading lead info...
+            {t('modal.loadingLeadInfo') || "Loading lead info..."}
           </div>
         ) : (
           <div
@@ -278,13 +290,13 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
             {/* Lead name */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={labelStyle}>
-                Lead name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+                {t('modal.leadName')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
               <input
                 type="text"
                 value={leadName}
                 onChange={(e) => setLeadName(e.target.value)}
-                placeholder="Enter lead name"
+                placeholder={t('modal.enterLeadName') || "Enter lead name"}
                 style={inputStyle}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
@@ -294,13 +306,13 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
             {/* Company name */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={labelStyle}>
-                Company name<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+                {t('modal.companyName')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
               <input
                 type="text"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                placeholder="Enter company name"
+                placeholder={t('modal.enterCompanyName') || "Enter company name"}
                 style={inputStyle}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
@@ -310,13 +322,13 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
             {/* Phone number */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={labelStyle}>
-                Phone number<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+                {t('modal.phoneNumberLabel')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
               <input
                 type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+20xxxxxxxxxx"
+                placeholder={t('modal.enterPhoneNumber') || "+20xxxxxxxxxx"}
                 style={inputStyle}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
@@ -326,7 +338,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
             {/* Lead Source */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={labelStyle}>
-                Lead Source<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+                {t('modal.leadSource')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
               <div style={{ position: "relative", width: "100%" }}>
                 {/* Custom Select Box */}
@@ -343,7 +355,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                     borderColor: "rgba(212, 213, 216, 1)",
                   }}
                 >
-                  <span>{SOURCE_OPTIONS.find(o => o.value === leadSource)?.label || "Choose a lead source"}</span>
+                  <span>{getSourceLabel(leadSource) || t('modal.chooseSource') || "Choose a lead source"}</span>
                   <svg
                     width="20"
                     height="20"
@@ -426,7 +438,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                             fontWeight: leadSource === value ? 500 : 400,
                           }}
                         >
-                          {label}
+                          {getSourceLabel(value)}
                         </span>
                       </div>
                     ))}
@@ -438,7 +450,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
             {/* Next followup */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={labelStyle}>
-                Next followup<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
+                {t('modal.nextFollowup')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
               <div 
                 onClick={handleDatePickerClick}
@@ -521,7 +533,7 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
                 boxSizing: "border-box",
               }}
             >
-              {isUpdateLoading ? "Saving..." : "Save"}
+              {isUpdateLoading ? t('modal.saving') || "Saving..." : t('common.save') || "Save"}
             </button>
           </div>
         )}

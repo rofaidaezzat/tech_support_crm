@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { useLogoutMutation } from "../app/service/crudauth";
 import { toast } from "sonner";
+import { useTranslation } from "../context/LanguageContext";
 import "../styles/leads-modal-mobile.css";
 
 interface LogoutProps {
@@ -12,6 +13,7 @@ interface LogoutProps {
 const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
   const navigate = useNavigate();
   const [logout, { isLoading }] = useLogoutMutation();
+  const { t } = useTranslation();
 
   const handleLogoutClick = async () => {
     try {
@@ -55,13 +57,12 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
       >
         <span
           style={{
-            fontFamily: "Inter, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             color: "#141414",
           }}
         >
-          Logout
+          {t("modal.logoutTitle")}
         </span>
         <button
           onClick={onClose}
@@ -121,20 +122,18 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
             style={{
               color: "var(--Foundation-neutral-neutral-950, #141414)",
               textAlign: "center",
-              fontFamily: "Inter, sans-serif",
               fontSize: 19,
               fontStyle: "normal",
               fontWeight: 500,
               lineHeight: "normal",
             }}
           >
-            You are about to logout.
+            {t("modal.aboutToLogout")}
           </span>
           <span
             style={{
               color: "var(--Foundation-neutral-neutral-800, #464646)",
               textAlign: "center",
-              fontFamily: "Inter, sans-serif",
               fontSize: 16,
               fontStyle: "normal",
               fontWeight: 400,
@@ -142,7 +141,7 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
               alignSelf: "stretch",
             }}
           >
-            Are you Sure you want to logout ?
+            {t("modal.confirmLogout")}
           </span>
         </div>
       </div>
@@ -170,13 +169,16 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
               border: "1px solid rgba(212, 213, 216, 1)",
               background: "#FFFFFF",
               color: "#141414",
-              fontFamily: "Inter, sans-serif",
               fontSize: 16,
               fontWeight: 500,
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
             }}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           {/* Logout Button */}
           <button
@@ -190,13 +192,16 @@ const Logout: React.FC<LogoutProps> = ({ onClose, onLogout }) => {
               background: isLoading ? "rgba(0, 35, 111, 0.6)" : "rgba(0, 35, 111, 1)",
               padding: "8px 24px",
               color: "#FFFFFF",
-              fontFamily: "Inter, sans-serif",
               fontSize: 16,
               fontWeight: 500,
               cursor: isLoading ? "not-allowed" : "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
             }}
           >
-            {isLoading ? "Logging out..." : "Logout"}
+            {isLoading ? t("modal.loggingOut") : t("common.logout")}
           </button>
         </div>
       </div>

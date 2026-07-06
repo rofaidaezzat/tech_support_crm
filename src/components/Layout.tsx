@@ -7,8 +7,11 @@ import Task_drawer from "./Navbar/Task_drawer";
 import Add_New_Task from "./Navbar/Add_New_Task";
 import Edit_Task from "./Navbar/Edit_Task";
 import { getCookie } from "../app/service/baseQuery";
+import { useTranslation } from "../context/LanguageContext";
 
 const Layout: React.FC = () => {
+  const { language } = useTranslation();
+  const isAr = language === "ar";
   const navigate = useNavigate();
   const location = useLocation();
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
@@ -73,15 +76,18 @@ const Layout: React.FC = () => {
         />
       )}
 
-      {/* ── Task Drawer (slides in from right) ── */}
+      {/* ── Task Drawer (slides in from right in LTR, left in RTL) ── */}
       <div
         style={{
           position: "fixed",
           top: 0,
-          right: 0,
+          right: isAr ? "auto" : 0,
+          left: isAr ? 0 : "auto",
           height: "100vh",
           zIndex: 101,
-          transform: isTaskDrawerOpen ? "translateX(0)" : "translateX(100%)",
+          transform: isTaskDrawerOpen 
+            ? "translateX(0)" 
+            : (isAr ? "translateX(-100%)" : "translateX(100%)"),
           transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           willChange: "transform",
         }}
