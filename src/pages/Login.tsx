@@ -8,7 +8,7 @@ import { useTranslation } from '../context/LanguageContext';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,9 +19,16 @@ const Login: React.FC = () => {
     
     const validation = validateLogin({ email, password });
     if (!validation.isValid) {
-      // Display the first validation error
       const firstError = Object.values(validation.errors)[0];
-      toast.error(firstError);
+      let translatedErr = firstError;
+      if (firstError === 'Email is required') {
+        translatedErr = t('auth.emailRequired');
+      } else if (firstError === 'Invalid email address') {
+        translatedErr = t('auth.invalidEmail');
+      } else if (firstError === 'Password is required') {
+        translatedErr = t('auth.passwordRequired');
+      }
+      toast.error(translatedErr);
       return;
     }
 
@@ -35,7 +42,7 @@ const Login: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      const errMsg = err?.data?.message || err?.message || 'Login failed. Please check your credentials.';
+      const errMsg = err?.data?.message || err?.message || t('auth.loginFailed');
       toast.error(errMsg);
     }
   };
@@ -194,7 +201,7 @@ const Login: React.FC = () => {
                         border: password ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
                         display: "flex",
                         height: 36,
-                        padding: "12px 40px 12px 12px",
+                        padding: language === 'ar' ? "12px 12px 12px 40px" : "12px 40px 12px 12px",
                         justifyContent: "space-between",
                         alignItems: "center",
                         alignSelf: "stretch",
@@ -208,7 +215,16 @@ const Login: React.FC = () => {
                     {password && (
                       <div 
                         onClick={() => setShowPassword(!showPassword)}
-                        style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", cursor: "pointer", display: "flex", alignItems: "center" }}
+                        style={{
+                          position: "absolute",
+                          right: language === 'ar' ? "auto" : 12,
+                          left: language === 'ar' ? 12 : "auto",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center"
+                        }}
                       >
                         {showPassword ? (
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--Foundation-neutral-neutral-800, #464646)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

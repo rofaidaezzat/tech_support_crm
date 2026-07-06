@@ -9,8 +9,8 @@ import { useTranslation } from '../context/LanguageContext';
 const OTP_Verification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
-  const email = location.state?.email || '';
+  const { t, language } = useTranslation();
+  const email = location.state?.email || location.state?.phone || '';
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
@@ -35,11 +35,11 @@ const OTP_Verification: React.FC = () => {
     if (!email) return;
     try {
       await resendOtp({ email, type: 'VERIFICATION' }).unwrap();
-      toast.success("Verification code resent successfully!");
+      toast.success(t("auth.otpResendSuccess"));
       setTimer(30);
     } catch (err: any) {
       console.error('Failed to resend OTP:', err);
-      const errMsg = err?.data?.message || err?.message || 'Failed to resend verification code.';
+      const errMsg = err?.data?.message || err?.message || t("auth.failedSendOtp");
       toast.error(errMsg);
     }
   };
@@ -77,11 +77,19 @@ const OTP_Verification: React.FC = () => {
     const validation = validateOtp(otpCode);
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
-      toast.error(firstError);
+      let translatedErr = firstError;
+      if (firstError === 'OTP is required') {
+        translatedErr = t('auth.otpRequired');
+      } else if (firstError === 'OTP must be exactly 6 characters') {
+        translatedErr = t('auth.otpLength');
+      } else if (firstError === 'OTP must contain only numbers') {
+        translatedErr = t('auth.otpNumbersOnly');
+      }
+      toast.error(translatedErr);
       return;
     }
     if (!email) {
-      toast.error("Email is required for verification.");
+      toast.error(t("auth.phoneOrEmailRequired"));
       return;
     }
 
@@ -90,7 +98,7 @@ const OTP_Verification: React.FC = () => {
       navigate('/update-password', { state: { email } });
     } catch (err: any) {
       console.error('OTP verification error:', err);
-      const errMsg = err?.data?.message || err?.message || 'Invalid or expired OTP.';
+      const errMsg = err?.data?.message || err?.message || t("auth.invalidOtp");
       toast.error(errMsg);
     }
   };
@@ -185,7 +193,8 @@ const OTP_Verification: React.FC = () => {
             style={{
               position: "absolute",
               top: 32,
-              left: 32,
+              left: language === 'ar' ? 'auto' : 32,
+              right: language === 'ar' ? 32 : 'auto',
               borderRadius: 12,
               border: "1px solid var(--Foundation-neutral-neutral-800, #464646)",
               display: "inline-flex",
@@ -206,7 +215,8 @@ const OTP_Verification: React.FC = () => {
               style={{
                 width: 10,
                 height: 8.75,
-                flexShrink: 0
+                flexShrink: 0,
+                transform: language === 'ar' ? 'rotate(180deg)' : 'none'
               }}
             >
               <path 

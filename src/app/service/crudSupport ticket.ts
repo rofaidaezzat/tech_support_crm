@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { baseQueryWithReauth } from './baseQuery';
+import { baseQueryWithReauth, getCookie } from './baseQuery';
+import { getSocket } from '../../socket/socket';
+import { toast } from 'sonner';
 
 // ─── Shared Sub-types ────────────────────────────────────────────────────────
 
@@ -155,6 +157,97 @@ export const supportApi = createApi({
               { type: 'SupportTicket', id: 'LIST' },
             ]
           : [{ type: 'SupportTicket', id: 'LIST' }],
+      async onCacheEntryAdded(
+        arg,
+        { cacheDataLoaded, cacheEntryRemoved, dispatch, updateCachedData }
+      ) {
+        try {
+          await cacheDataLoaded;
+          const token = getCookie('token');
+          if (!token) return;
+          const socket = getSocket(token);
+ 
+          const handleTicketCreated = (ticket: any) => {
+            // Update cached list instantly
+            updateCachedData((draft) => {
+              const newTicket: SupportTicket = {
+                id: ticket.id,
+                tenant_id: ticket.tenant_id,
+                title: ticket.subject || ticket.title || '',
+                description: ticket.description || '',
+                status: ticket.status || 'OPEN',
+                created_at: ticket.created_at || new Date().toISOString(),
+                updated_at: ticket.updated_at || new Date().toISOString(),
+                created_by: {
+                  id: ticket.created_by_id || '',
+                  first_name: 'User',
+                  last_name: '',
+                  email: ''
+                }
+              };
+              const exists = draft.data.some((t) => t.id === newTicket.id);
+              if (!exists) {
+                draft.data.unshift(newTicket);
+                if (draft.pagination) {
+                  draft.pagination.totalItems += 1;
+                }
+              }
+            });
+
+            // Show toast notification if created by someone else
+            const myUserId = getCookie('user_id');
+            if (ticket.created_by_id !== myUserId) {
+              toast.info(`New ticket: ${ticket.subject || ticket.title || ''}`);
+            }
+
+            // Sync full details from server
+            dispatch(supportApi.util.invalidateTags([{ type: 'SupportTicket', id: 'LIST' }]));
+          };
+ 
+          const handleTicketUpdated = (ticket: any) => {
+            // Update cached list instantly
+            updateCachedData((draft) => {
+              const index = draft.data.findIndex((t) => t.id === ticket.id);
+              if (index !== -1) {
+                draft.data[index] = {
+                  ...draft.data[index],
+                  title: ticket.subject || ticket.title || draft.data[index].title,
+                  status: ticket.status || draft.data[index].status,
+                  updated_at: ticket.updated_at || new Date().toISOString(),
+                };
+              }
+            });
+
+            // Show toast notification
+            toast.info(`Ticket updated: ${ticket.subject || ticket.title || ''}`);
+
+            // Sync full details from server
+            dispatch(
+              supportApi.util.invalidateTags([
+                { type: 'SupportTicket', id: ticket.id },
+                { type: 'SupportTicket', id: 'LIST' },
+              ])
+            );
+          };
+ 
+          const handleLeadAssigned = (data: any) => {
+            const assignedSalesId = data?.assignment?.sales_id || data?.lead?.assigned_to_id;
+            const myUserId = getCookie('user_id');
+            if (myUserId && assignedSalesId === myUserId) {
+              toast.info("You have been assigned a new lead!");
+            }
+          };
+ 
+          socket.on('ticket:created', handleTicketCreated);
+          socket.on('ticket:updated', handleTicketUpdated);
+          socket.on('lead:assigned', handleLeadAssigned);
+ 
+          await cacheEntryRemoved;
+          socket.off('ticket:created', handleTicketCreated);
+          socket.off('ticket:updated', handleTicketUpdated);
+          socket.off('lead:assigned', handleLeadAssigned);
+        } catch {}
+      },
     }),
 
     // GET /api/v1/support/:id  — single ticket
@@ -209,6 +302,48 @@ export const supportApi = createApi({
               { type: 'SupportMessage', id: `LIST_${ticketId}` },
             ]
           : [{ type: 'SupportMessage', id: `LIST_${ticketId}` }],
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        try {
+          await cacheDataLoaded;
+          const token = getCookie('token');
+          if (!token) return;
+          const socket = getSocket(token);
+
+          // Join the ticket room so we receive support_message:created events
+          socket.emit('join_ticket', arg.ticketId);
+
+          const handleSupportMessageCreated = (eventPayload: { message: SupportMessage; ticket: any }) => {
+            const { message, ticket } = eventPayload;
+            updateCachedData((draft) => {
+              if (message.ticket_id === arg.ticketId) {
+                const exists = draft.data.some((m) => m.id === message.id);
+                if (!exists) {
+                  draft.data.push(message);
+                  if (draft.pagination) {
+                    draft.pagination.totalItems += 1;
+                  }
+                }
+              }
+            });
+
+            // Show toast notification if we did not send it
+            const myUserId = getCookie('user_id');
+            if (message.sender_id !== myUserId) {
+              toast.info(`New reply on "${ticket?.subject || ticket?.title || 'Ticket'}": ${message.message}`);
+            }
+          };
+
+          socket.on('support_message:created', handleSupportMessageCreated);
+
+          await cacheEntryRemoved;
+          // Leave the ticket room on cache cleanup
+          socket.emit('leave_ticket', arg.ticketId);
+          socket.off('support_message:created', handleSupportMessageCreated);
+        } catch {}
+      },
     }),
 
     // POST /api/v1/support/:ticketId/messages — create message

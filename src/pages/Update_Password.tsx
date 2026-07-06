@@ -9,8 +9,8 @@ import { useTranslation } from '../context/LanguageContext';
 const Update_Password: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
-  const email = location.state?.email || '';
+  const { t, language } = useTranslation();
+  const email = location.state?.email || location.state?.phone || '';
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -35,17 +35,29 @@ const Update_Password: React.FC = () => {
     });
     if (!validation.isValid) {
       const firstError = Object.values(validation.errors)[0];
-      toast.error(firstError);
+      let translatedErr = firstError;
+      if (firstError === 'Email or phone number is required') {
+        translatedErr = t('auth.phoneOrEmailRequired');
+      } else if (firstError === 'Invalid email or phone number') {
+        translatedErr = t('auth.invalidEmailOrPhone');
+      } else if (firstError === 'Password is required') {
+        translatedErr = t('auth.passwordRequired');
+      } else if (firstError === 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number') {
+        translatedErr = t('settings.passwordLength');
+      } else if (firstError === 'Passwords do not match') {
+        translatedErr = t('auth.passwordsMismatch');
+      }
+      toast.error(translatedErr);
       return;
     }
 
     try {
       await resetPassword({ email, password: newPassword }).unwrap();
-      toast.success("Password updated successfully!");
+      toast.success(t("auth.passwordUpdateSuccess"));
       navigate('/login');
     } catch (err: any) {
       console.error('Reset password error:', err);
-      const errMsg = err?.data?.message || err?.message || 'Failed to update password. Please try again.';
+      const errMsg = err?.data?.message || err?.message || t("auth.passwordUpdateFailed");
       toast.error(errMsg);
     }
   };
@@ -129,7 +141,8 @@ const Update_Password: React.FC = () => {
             style={{
               position: "absolute",
               top: 32,
-              left: 32,
+              left: language === 'ar' ? 'auto' : 32,
+              right: language === 'ar' ? 32 : 'auto',
               borderRadius: 12,
               border: "1px solid var(--Foundation-neutral-neutral-800, #464646)",
               display: "inline-flex",
@@ -150,7 +163,8 @@ const Update_Password: React.FC = () => {
               style={{
                 width: 10,
                 height: 8.75,
-                flexShrink: 0
+                flexShrink: 0,
+                transform: language === 'ar' ? 'rotate(180deg)' : 'none'
               }}
             >
               <path 
@@ -238,7 +252,7 @@ const Update_Password: React.FC = () => {
                         border: newPassword ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
                         display: "flex",
                         height: 36,
-                        padding: "12px 40px 12px 12px",
+                        padding: language === 'ar' ? "12px 12px 12px 40px" : "12px 40px 12px 12px",
                         alignItems: "center",
                         boxSizing: "border-box",
                         width: "100%",
@@ -250,7 +264,16 @@ const Update_Password: React.FC = () => {
                     {newPassword && (
                       <div 
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", cursor: "pointer", display: "flex", alignItems: "center" }}
+                        style={{
+                          position: "absolute",
+                          right: language === 'ar' ? "auto" : 12,
+                          left: language === 'ar' ? 12 : "auto",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center"
+                        }}
                       >
                         {showNewPassword ? (
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--Foundation-neutral-neutral-800, #464646)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -283,7 +306,7 @@ const Update_Password: React.FC = () => {
                         border: confirmPassword ? "1px solid var(--Foundation-neutral-neutral-500, #808080)" : "1px solid #D4D5D8",
                         display: "flex",
                         height: 36,
-                        padding: "12px 40px 12px 12px",
+                        padding: language === 'ar' ? "12px 12px 12px 40px" : "12px 40px 12px 12px",
                         alignItems: "center",
                         boxSizing: "border-box",
                         width: "100%",
@@ -295,7 +318,16 @@ const Update_Password: React.FC = () => {
                     {confirmPassword && (
                       <div 
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", cursor: "pointer", display: "flex", alignItems: "center" }}
+                        style={{
+                          position: "absolute",
+                          right: language === 'ar' ? "auto" : 12,
+                          left: language === 'ar' ? 12 : "auto",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center"
+                        }}
                       >
                         {showConfirmPassword ? (
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--Foundation-neutral-neutral-800, #464646)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

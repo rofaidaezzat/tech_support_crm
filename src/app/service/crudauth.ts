@@ -41,21 +41,25 @@ export interface LoginRequest {
 }
 
 export interface ForgotPasswordRequest {
-  email: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface VerifyOtpRequest {
-  email: string;
+  email?: string;
+  phone?: string;
   otp: string;
 }
 
 export interface ResetPasswordRequest {
-  email: string;
+  email?: string;
+  phone?: string;
   password?: string;
 }
 
 export interface ResendOtpRequest {
-  email: string;
+  email?: string;
+  phone?: string;
   type: 'VERIFICATION' | string;
 }
 

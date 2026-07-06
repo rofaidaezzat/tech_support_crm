@@ -76,9 +76,9 @@ export function validateResetPassword(data: ResetPasswordData): ValidationError 
   const confirmPassword = data.confirmPassword || '';
 
   if (!email) {
-    errors.email = 'Email is required';
-  } else if (!isValidEmail(email)) {
-    errors.email = 'Invalid email address';
+    errors.email = 'Email or phone number is required';
+  } else if (!isValidEmail(email) && !/^\+?\d{8,15}$/.test(email.replace(/[\s\-()]/g, ''))) {
+    errors.email = 'Invalid email or phone number';
   }
 
   if (!password) {

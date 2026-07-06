@@ -1,5 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/support-drawer-mobile.css';
+import { useTranslation } from '../../context/LanguageContext';
+import { useSocket } from '../../socket/SocketProvider';
+import { getCookie } from '../../app/service/baseQuery';
+import { toast } from 'sonner';
 import {
   useGetTicketsQuery,
   useCreateTicketMutation,
@@ -9,8 +13,6 @@ import {
   useCreateSupportMessageMutation,
   SupportMessage,
 } from '../../app/service/crudSupport ticket';
-
-import { useTranslation } from '../../context/LanguageContext';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -74,19 +76,51 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
 
   // ── API hooks ──────────────────────────────────────────────────────────────
 
-  const { data: ticketsData, isLoading, isFetching } = useGetTicketsQuery(
+  const { data: ticketsData, isLoading, isFetching, refetch: refetchTickets } = useGetTicketsQuery(
     undefined,
     { skip: !isOpen, refetchOnMountOrArgChange: true }
   );
 
   const [createTicket, { isLoading: isCreating }] = useCreateTicketMutation();
 
-  const { data: messagesData } = useGetSupportMessagesQuery(
+  const { data: messagesData, refetch: refetchMessages } = useGetSupportMessagesQuery(
     { ticketId: selectedTicket?.id ?? '' },
     { skip: !selectedTicket || view !== 'DETAILS', refetchOnMountOrArgChange: true }
   );
 
   const [createSupportMessage] = useCreateSupportMessageMutation();
+
+  const { socket } = useSocket();
+
+  // Listen to global lead assignments
+  useEffect(() => {
+    if (!socket || !isOpen) return;
+
+    const handleLeadAssigned = (data: any) => {
+      const assignedSalesId = data?.assignment?.sales_id || data?.lead?.assigned_to_id;
+      const myUserId = getCookie('user_id');
+      if (myUserId && assignedSalesId === myUserId) {
+        toast.info("You have been assigned a new lead!");
+      }
+    };
+
+    socket.on('lead:assigned', handleLeadAssigned);
+
+    return () => {
+      socket.off('lead:assigned', handleLeadAssigned);
+    };
+  }, [socket, isOpen]);
+
+  // Join the selected ticket room
+  useEffect(() => {
+    if (!socket || !selectedTicket?.id || view !== 'DETAILS' || !isOpen) return;
+
+    socket.emit('join_ticket', selectedTicket.id);
+
+    return () => {
+      socket.emit('leave_ticket', selectedTicket.id);
+    };
+  }, [socket, selectedTicket?.id, view, isOpen]);
 
   // All tickets from API
   const allTickets: SupportTicket[] = ticketsData?.data ?? [];
@@ -325,99 +359,8 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
               >
                 {/* Loading state */}
                 {(isLoading || isFetching) && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                    <style>{`
-                      @keyframes skeletonPulse {
-                        0% {
-                          background-position: 200% 0;
-                        }
-                        100% {
-                          background-position: -200% 0;
-                        }
-                      }
-                    `}</style>
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          background: 'var(--Foundation-brand-brand-50, #E6E9F1)',
-                          display: 'flex',
-                          width: '100%',
-                          padding: '8px 12px',
-                          alignItems: 'flex-start',
-                          gap: '12px',
-                          borderRadius: '12px',
-                          boxSizing: 'border-box',
-                          opacity: 0.7,
-                        }}
-                      >
-                        {/* User silhouette icon placeholder */}
-                        <div
-                          style={{
-                            borderRadius: '99px',
-                            background: 'linear-gradient(90deg, #f0f2f6 25%, #dfe3ec 50%, #f0f2f6 75%)',
-                            backgroundSize: '200% 100%',
-                            animation: 'skeletonPulse 1.5s infinite ease-in-out',
-                            width: '32px',
-                            height: '32px',
-                            flexShrink: 0,
-                          }}
-                        />
-
-                        {/* Ticket Card Details placeholder */}
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                            {/* Title bar */}
-                            <div
-                              style={{
-                                height: 14,
-                                width: index % 2 === 0 ? '120px' : '150px',
-                                borderRadius: 4,
-                                background: 'linear-gradient(90deg, #f0f2f6 25%, #dfe3ec 50%, #f0f2f6 75%)',
-                                backgroundSize: '200% 100%',
-                                animation: 'skeletonPulse 1.5s infinite ease-in-out',
-                              }}
-                            />
-                            {/* Badge */}
-                            <div
-                              style={{
-                                height: 16,
-                                width: '45px',
-                                borderRadius: 99,
-                                background: 'linear-gradient(90deg, #f0f2f6 25%, #dfe3ec 50%, #f0f2f6 75%)',
-                                backgroundSize: '200% 100%',
-                                animation: 'skeletonPulse 1.5s infinite ease-in-out',
-                              }}
-                            />
-                          </div>
-
-                          {/* Description bar */}
-                          <div
-                            style={{
-                              height: 12,
-                              width: index % 2 === 0 ? '80%' : '70%',
-                              borderRadius: 4,
-                              background: 'linear-gradient(90deg, #f0f2f6 25%, #dfe3ec 50%, #f0f2f6 75%)',
-                              backgroundSize: '200% 100%',
-                              animation: 'skeletonPulse 1.5s infinite ease-in-out',
-                            }}
-                          />
-
-                          {/* Time bar */}
-                          <div
-                            style={{
-                              height: 10,
-                              width: '60px',
-                              borderRadius: 4,
-                              background: 'linear-gradient(90deg, #f0f2f6 25%, #dfe3ec 50%, #f0f2f6 75%)',
-                              backgroundSize: '200% 100%',
-                              animation: 'skeletonPulse 1.5s infinite ease-in-out',
-                              marginTop: 2,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '40px', color: '#808080', fontSize: '14px' }}>
+                    {t('modal.loadingTickets')}
                   </div>
                 )}
 
@@ -506,8 +449,8 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                             {ticket.status === 'OPEN'
                               ? t('modal.ticketStatusOpen')
                               : ticket.status === 'IN_PROGRESS'
-                              ? t('modal.ticketStatusInProgress')
-                              : t('modal.ticketStatusClosed')}
+                                ? t('modal.ticketStatusInProgress')
+                                : t('modal.ticketStatusClosed')}
                           </span>
                         </div>
 
@@ -862,8 +805,8 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                 {selectedTicket.status === 'OPEN'
                   ? t('modal.ticketStatusOpen')
                   : selectedTicket.status === 'IN_PROGRESS'
-                  ? t('modal.ticketStatusInProgress')
-                  : t('modal.ticketStatusClosed')}
+                    ? t('modal.ticketStatusInProgress')
+                    : t('modal.ticketStatusClosed')}
               </span>
             </div>
 
@@ -1095,8 +1038,8 @@ const Report_Bug: React.FC<Report_BugProps> = ({ isOpen, onClose }) => {
                 {selectedTicket.status === 'CLOSED'
                   ? t('modal.ticketClosedMessage')
                   : selectedTicket.status === 'IN_PROGRESS'
-                  ? t('modal.ticketInProgressMessage')
-                  : t('modal.ticketOpenMessage')}
+                    ? t('modal.ticketInProgressMessage')
+                    : t('modal.ticketOpenMessage')}
               </div>
             )}
           </div>
