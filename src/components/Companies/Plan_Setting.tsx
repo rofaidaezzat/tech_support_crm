@@ -9,6 +9,9 @@ interface Company {
   status: string;
   renewalDate: string;
   salesCount: number;
+  accountsNumber?: string;
+  aiUsage?: string;
+  price?: string;
 }
 
 interface PlanSettingProps {
@@ -19,14 +22,28 @@ interface PlanSettingProps {
 
 const PLAN_OPTIONS = ["Plan 1", "Plan 2", "Custom plan"];
 
+const AI_USAGE_OPTIONS = [
+  { label: "Low AI Usage", description: "50 lead searches + 100 generated questions" },
+  { label: "Medium AI Usage", description: "50 lead searches + 100 generated questions" },
+  { label: "High AI Usage", description: "50 lead searches + 100 generated questions" },
+  { label: "Extra high AI Usage", description: "50 lead searches + 100 generated questions" },
+];
+
 const PlanSetting: React.FC<PlanSettingProps> = ({
   company,
   onClose,
   onSave,
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<string>(company.plan);
+  const [accountsNumber, setAccountsNumber] = useState<string>(company.accountsNumber || "");
+  const [aiUsage, setAiUsage] = useState<string>(company.aiUsage || "");
+  const [price, setPrice] = useState<string>(company.price || "");
+
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [aiDropdownOpen, setAiDropdownOpen] = useState<boolean>(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const aiDropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on click outside
@@ -38,6 +55,12 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
       ) {
         setDropdownOpen(false);
       }
+      if (
+        aiDropdownRef.current &&
+        !aiDropdownRef.current.contains(e.target as Node)
+      ) {
+        setAiDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -47,6 +70,9 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
     const updatedCompany: Company = {
       ...company,
       plan: selectedPlan,
+      accountsNumber: selectedPlan === "Custom plan" ? accountsNumber : undefined,
+      aiUsage: selectedPlan === "Custom plan" ? aiUsage : undefined,
+      price: selectedPlan === "Custom plan" ? price : undefined,
     };
     onSave(updatedCompany);
   };
@@ -69,12 +95,34 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
       plan: selectedPlan,
       renewalDate: newRenewalDate,
       status: "Active", // renewing makes it active again
+      accountsNumber: selectedPlan === "Custom plan" ? accountsNumber : undefined,
+      aiUsage: selectedPlan === "Custom plan" ? aiUsage : undefined,
+      price: selectedPlan === "Custom plan" ? price : undefined,
     };
     onSave(updatedCompany);
   };
 
+  const isValid = selectedPlan !== "Custom plan" || (
+    accountsNumber.trim() !== "" &&
+    aiUsage !== "" &&
+    price.trim() !== ""
+  );
+
+  const upgradeBtnStyle = {
+    ...styles.upgradeBtn,
+    ...(isValid ? {} : { background: "#D4D5D8", cursor: "not-allowed" }),
+  };
+
+  const renewBtnStyle = {
+    ...styles.renewBtn,
+    ...(isValid ? {} : { borderColor: "#D4D5D8", color: "#8B909A", cursor: "not-allowed" }),
+  };
+
   return (
-    <div ref={containerRef} style={styles.container}>
+    <div ref={containerRef} style={{
+      ...styles.container,
+      height: selectedPlan === "Custom plan" ? "auto" : "341px"
+    }}>
       {/* Header (First part in modal) */}
       <div style={styles.header}>
         <div style={styles.headerTitleCol}>
@@ -97,7 +145,7 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
             </svg>
             <span style={styles.titleText}>Plan Settings</span>
           </div>
-          <span style={styles.subtitleText}>for “{company.name}”</span>
+          <span style={styles.subtitleText}>for "{company.name}"</span>
         </div>
         <button style={styles.closeBtn} onClick={onClose} aria-label="Close">
           ✕
@@ -109,7 +157,7 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
         {/* Select Plan field */}
         <div style={styles.selectPlanCol}>
           <label style={styles.labelStyle}>
-            Select Plan<span style={styles.requiredStar}>*</span>
+            Plan<span style={styles.requiredStar}>*</span>
           </label>
           <div
             ref={dropdownRef}
@@ -166,6 +214,125 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
           </div>
         </div>
 
+        {/* Custom fields rendered conditionally */}
+        {selectedPlan === "Custom plan" && (
+          <>
+            {/* Accounts Number */}
+            <div style={{ display: "flex", flexDirection: "column", alignSelf: "stretch" }}>
+              <div style={styles.accountsCol}>
+                <label style={styles.labelStyle}>
+                  Accounts Number<span style={styles.requiredStar}>*</span>
+                </label>
+                <input
+                  type="text"
+                  style={styles.textInputStyle}
+                  value={accountsNumber}
+                  onChange={(e) => setAccountsNumber(e.target.value)}
+                />
+              </div>
+              <div style={styles.infoContainer}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span style={styles.infoText}>
+                  Maximum allowed: 100 accounts.
+                </span>
+              </div>
+            </div>
+
+            {/* AI Usage */}
+            <div style={styles.aiCol}>
+              <label style={styles.labelStyle}>
+                AI Usage<span style={styles.requiredStar}>*</span>
+              </label>
+              <div
+                ref={aiDropdownRef}
+                style={{ position: "relative", width: "100%" }}
+              >
+                {/* Trigger */}
+                <div
+                  style={{
+                    ...styles.inputStyle,
+                    color: aiUsage ? "#1A1A2E" : "#9CA3AF",
+                  }}
+                  onClick={() => setAiDropdownOpen((o) => !o)}
+                >
+                  <span>{aiUsage || "Select AI usage limit"}</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#6B7280"
+                    strokeWidth="2"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+
+                {/* Dropdown panel */}
+                {aiDropdownOpen && (
+                  <div style={styles.aiDropdown}>
+                    {AI_USAGE_OPTIONS.map((option) => {
+                      const isSelected = aiUsage === option.label;
+                      return (
+                        <div
+                          key={option.label}
+                          style={{
+                            ...styles.aiOptionRow,
+                            background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
+                          }}
+                          onClick={() => {
+                            setAiUsage(option.label);
+                            setAiDropdownOpen(false);
+                          }}
+                        >
+                          {/* Radio */}
+                          <div style={{
+                            ...styles.radioOuter,
+                            borderColor: isSelected ? "var(--Foundation-brand-brand-500, #00236F)" : "#8B909A"
+                          }}>
+                            {isSelected && <div style={styles.radioInner} />}
+                          </div>
+                          {/* Text stack */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                            <span style={{ fontSize: "14px", fontWeight: 500, fontFamily: "Inter, sans-serif", color: "#1A1A2E" }}>
+                              {option.label}
+                            </span>
+                            <span style={{ fontSize: "12px", fontFamily: "Inter, sans-serif", color: "#6B7280" }}>
+                              {option.description}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Price */}
+            <div style={styles.priceCol}>
+              <label style={styles.labelStyle}>
+                Price<span style={styles.requiredStar}>*</span>
+              </label>
+              <div style={{ position: "relative", width: "100%" }}>
+                <input
+                  style={{ ...styles.textInputStyle, paddingRight: "45px" }}
+                  placeholder="Recommended 10,000"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                <span style={styles.priceTrailingText}>
+                  / yr
+                </span>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Next renewal date */}
         <div style={styles.renewalRow}>
           <span style={styles.renewalLabel}>Next renewal date</span>
@@ -175,17 +342,16 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
 
       {/* Buttons footer */}
       <div style={styles.footer}>
-        <button style={styles.renewBtn} onClick={handleRenew}>
+        <button style={renewBtnStyle} onClick={handleRenew} disabled={!isValid}>
           Renew
         </button>
-        <button style={styles.upgradeBtn} onClick={handleUpgradeOnly}>
+        <button style={upgradeBtnStyle} onClick={handleUpgradeOnly} disabled={!isValid}>
           Upgrade Only
         </button>
       </div>
     </div>
   );
 };
-
 const styles: Record<string, React.CSSProperties> = {
   container: {
     display: "flex",
@@ -278,7 +444,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "8px 12px",
     borderRadius: "8px",
     border: "1px solid #D4D5D8",
-    background: "#FFF",
+    background: "transparent",
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
     color: "#1A1A2E",
@@ -352,7 +518,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: "12px",
     background: "var(--Foundation-neutral-neutral-50, #EDEFF2)",
     display: "flex",
-    height: "35px",
+    height: "44px",
     padding: "8px 12px",
     justifyContent: "space-between",
     alignItems: "center",
@@ -416,6 +582,96 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "14px",
     fontWeight: 600,
     cursor: "pointer",
+  },
+  accountsCol: {
+    display: "flex",
+    height: "75px",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "8px",
+    alignSelf: "stretch",
+    boxSizing: "border-box",
+  },
+  textInputStyle: {
+    width: "100%",
+    height: "40px",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid #D4D5D8",
+    background: "transparent",
+    fontSize: "14px",
+    fontFamily: "Inter, sans-serif",
+    color: "#1A1A2E",
+    outline: "none",
+    boxSizing: "border-box",
+  },
+  infoContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    marginTop: "4px",
+    alignSelf: "stretch",
+  },
+  infoText: {
+    fontSize: "12px",
+    fontFamily: "Inter, sans-serif",
+    color: "#6B7280",
+  },
+  aiCol: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    gap: "8px",
+    alignSelf: "stretch",
+    boxSizing: "border-box",
+  },
+  aiDropdown: {
+    position: "absolute",
+    top: "calc(100% + 4px)",
+    left: 0,
+    zIndex: 100,
+    borderRadius: "12px",
+    background: "var(--Foundation-neutral-white, #FFF)",
+    boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.17)",
+    display: "flex",
+    width: "100%",
+    padding: "12px",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "4px",
+    boxSizing: "border-box",
+  },
+  aiOptionRow: {
+    display: "flex",
+    width: "100%",
+    padding: "8px",
+    borderRadius: "8px",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "12px",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    transition: "background 0.15s ease",
+  },
+  priceCol: {
+    display: "flex",
+    height: "75px",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "8px",
+    alignSelf: "stretch",
+    boxSizing: "border-box",
+  },
+  priceTrailingText: {
+    position: "absolute",
+    right: "12px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    fontSize: "14px",
+    color: "#6B7280",
+    fontFamily: "Inter, sans-serif",
+    pointerEvents: "none",
   },
 };
 
