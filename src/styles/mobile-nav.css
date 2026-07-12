@@ -46,7 +46,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 94px; /* match Sidebar width */
+    width: 94px;
+    /* match Sidebar width */
     height: 100vh;
     background: transparent;
     z-index: 500;
@@ -93,11 +94,13 @@
   .layout-navbar {
     padding: 0 16px !important;
   }
+
   .navbar-search {
     width: auto !important;
     flex: 1 !important;
     margin: 0 12px !important;
   }
+
   .navbar-right {
     gap: 12px !important;
   }
@@ -107,9 +110,11 @@
     width: calc(100vw - 32px) !important;
     right: 16px !important;
   }
+
   .navbar-notifications-box {
     width: 100% !important;
   }
+
   .navbar-notifications-pointer {
     left: auto !important;
     right: 74px !important;

@@ -3,7 +3,6 @@ import checkSquareIcon from "../assets/check-square-broken.svg";
 import notificationIcon from "../assets/icon btn.svg";
 import NotificationsDropdown from "./Navbar/NotificationsDropdown";
 import NotificationDrawer from "./Navbar/NotificationDrawer";
-import Report_Bug from "./Support/Support";
 import { useTranslation } from "../context/LanguageContext";
 import { useGetProfileDetailsQuery, getAvatarUrl } from "../app/service/crudsetting";
 import { useAuthenticatedImage } from "../hooks/useAuthenticatedImage";
@@ -26,7 +25,6 @@ const Navbar: React.FC<NavbarProps> = ({
   const [showDrawer, setShowDrawer] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showBugReport, setShowBugReport] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -376,29 +374,7 @@ const Navbar: React.FC<NavbarProps> = ({
             style={{ cursor: "pointer" }}
           />
 
-          {/* Info / Feedback bubble SVG */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            onClick={() => setShowBugReport(true)}
-            style={{
-              width: 24,
-              height: 24,
-              flexShrink: 0,
-              cursor: "pointer"
-            }}
-          >
-            <path
-              d="M11.9991 15.375V12M11.9991 8.625V8.70959M20.9983 12C20.9983 13.2938 20.7253 14.5238 20.2338 15.6356L21 20.9991L16.4039 19.85C15.1019 20.5823 13.5993 21 11.9991 21C7.02906 21 3 16.9706 3 12C3 7.02944 7.02906 3 11.9991 3C16.9692 3 20.9983 7.02944 20.9983 12Z"
-              stroke="#464646"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+
 
           {/* Vertical Divider */}
           <div style={{ width: 1, height: 32, background: "rgba(212, 213, 216, 0.5)" }} />
@@ -443,11 +419,6 @@ const Navbar: React.FC<NavbarProps> = ({
         onClose={() => setShowDrawer(false)}
       />
 
-      {/* ── Report Bug Modal ── */}
-      <Report_Bug
-        isOpen={showBugReport}
-        onClose={() => setShowBugReport(false)}
-      />
     </>
   );
 };
