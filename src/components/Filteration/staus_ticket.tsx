@@ -79,7 +79,7 @@ const StatusTicket: React.FC<StatusTicketProps> = ({ selected, onSelect, onClose
                 <div style={styles.innerRow}>
                   <RadioIcon selected={isSelected} />
                   <span style={styles.optionText}>
-                    {option} <span style={styles.countText}>(200)</span>
+                    {option}
                   </span>
                 </div>
               </div>
@@ -156,10 +156,7 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: "normal",
     userSelect: "none",
   },
-  countText: {
-    color: "#6B7280",
-    marginLeft: "4px",
-  },
+
   divider: {
     width: "100%",
     height: "1px",
