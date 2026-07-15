@@ -18,6 +18,7 @@ import SendNotification from '../components/Companies/Send_Notification';
 import PauseCompany from '../components/Companies/Pause_Company';
 import Deactivate from '../components/Companies/Deactivate';
 import PlanInfo from '../components/Companies/Plan_info';
+import '../styles/tables-mobile.css';
 
 // Reusable overlay for modals
 const ModalOverlay = ({ children, onClose }: { children: React.ReactNode; onClose: () => void }) => (
@@ -1306,7 +1307,7 @@ const Companies = () => {
         </div>
 
         {/* Table Body */}
-        <div style={{ width: "100%", background: "#fff" }}>
+        <div style={{ minWidth: "max-content", width: "100%", background: "#fff" }}>
           {paginatedCompanies.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center", fontFamily: "Inter, sans-serif", color: "#4B5563" }}>
               No companies match your filters.

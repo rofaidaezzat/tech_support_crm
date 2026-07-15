@@ -1207,7 +1207,7 @@ const Leads = () => {
         </div>
 
         {/* Table Body */}
-        <div style={{ width: "100%", background: "#fff" }}>
+        <div style={{ minWidth: "max-content", width: "100%", background: "#fff" }}>
           {isLoading ? (
             <TableSkeleton rowCount={5} columnCount={COL_HEADERS.length} />
           ) : leads.length === 0 ? (
@@ -1228,6 +1228,7 @@ const Leads = () => {
                 justifyContent: "space-between",
                 borderBottomLeftRadius: i === leads.length - 1 ? 12 : 0,
                 borderBottomRightRadius: i === leads.length - 1 ? 12 : 0,
+                backgroundColor: "#fff",
               }}
             >
               {/* Date */}

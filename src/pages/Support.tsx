@@ -10,6 +10,7 @@ import { Sort } from '../components/Filteration/Sort';
 import { toast } from 'sonner';
 import TicketMessage from '../components/Support_com_Page/Ticket_Message';
 import SendNotification from '../components/Companies/Send_Notification';
+import '../styles/tables-mobile.css';
 
 import filterIcon from '../assets/filter.svg';
 
@@ -229,24 +230,24 @@ const Support = () => {
   });
 
   const COL_HEADERS = [
-    t("support.colDate"),
-    t("support.colTicketId"),
-    t("support.colCompanyName"),
-    t("support.colReporter"),
-    t("support.colPhone"),
-    t("support.colTicketStatus"),
-    t("support.colMessage"),
-    t("support.colActions"),
+    { key: "date", label: t("support.colDate") },
+    { key: "ticketId", label: t("support.colTicketId") },
+    { key: "company", label: t("support.colCompanyName") },
+    { key: "reporter", label: t("support.colReporter") },
+    { key: "phone", label: t("support.colPhone") },
+    { key: "status", label: t("support.colTicketStatus") },
+    { key: "message", label: t("support.colMessage") },
+    { key: "actions", label: t("support.colActions") },
   ];
-  const widthMap: Record<string, number | string> = {
-    [t("support.colDate")]: 90,
-    [t("support.colTicketId")]: 80,
-    [t("support.colCompanyName")]: 180,
-    [t("support.colReporter")]: 160,
-    [t("support.colPhone")]: 120,
-    [t("support.colTicketStatus")]: 120,
-    [t("support.colMessage")]: 80,
-    [t("support.colActions")]: 70,
+  const widthMap: Record<string, number> = {
+    date: 90,
+    ticketId: 80,
+    company: 180,
+    reporter: 160,
+    phone: 120,
+    status: 120,
+    message: 80,
+    actions: 70,
   };
 
   return (
@@ -447,14 +448,39 @@ const Support = () => {
         </div>
 
         {/* ── TICKET TABLE ── */}
-        <div style={{ marginTop: 16, width: "100%", display: "flex", flexDirection: "column", borderRadius: 12, border: "1px solid rgba(212, 213, 216, 1)", overflow: "visible" }}>
+        <div
+          className="responsive-table-container"
+          style={{
+            marginTop: 16,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            borderRadius: 12,
+            border: "1px solid rgba(212, 213, 216, 1)",
+            overflow: "visible",
+          }}
+        >
             {/* Header */}
-            <div style={{ width: "100%", height: 48, background: "rgba(212, 213, 216, 1)", display: "flex", alignItems: "center", padding: "0 16px", boxSizing: "border-box", borderTopLeftRadius: 12, borderTopRightRadius: 12, justifyContent: "space-between" }}>
+            <div
+              className="responsive-table-row"
+              style={{
+                width: "100%",
+                height: 48,
+                background: "rgba(212, 213, 216, 1)",
+                display: "flex",
+                alignItems: "center",
+                padding: "0 16px",
+                boxSizing: "border-box",
+                borderTopLeftRadius: 12,
+                borderTopRightRadius: 12,
+                justifyContent: "space-between",
+              }}
+            >
               {COL_HEADERS.map((col) => (
                 <div
-                  key={col}
+                  key={col.key}
                   style={{
-                    width: widthMap[col],
+                    width: widthMap[col.key],
                     flexShrink: 0,
                     fontFamily: "Inter, sans-serif",
                     fontSize: 13,
@@ -463,22 +489,23 @@ const Support = () => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    display: (col === "Message" || col === "Actions") ? "flex" : "block",
-                    justifyContent: (col === "Message" || col === "Actions") ? "center" : "flex-start",
+                    display: (col.key === "message" || col.key === "actions") ? "flex" : "block",
+                    justifyContent: (col.key === "message" || col.key === "actions") ? "center" : "flex-start",
                   }}
                 >
-                  {col}
+                  {col.label}
                 </div>
               ))}
             </div>
 
             {/* Body */}
-            <div style={{ width: "100%", background: "#fff", borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+            <div style={{ minWidth: "max-content", width: "100%", background: "#fff", borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
               {displayTickets.map((ticket, i) => {
                 const statusStyle = getStatusStyle(ticket.status);
                 return (
                   <div
                     key={i}
+                    className="responsive-table-row"
                     style={{
                       width: "100%",
                       display: "flex",
@@ -490,30 +517,31 @@ const Support = () => {
                       justifyContent: "space-between",
                       borderBottomLeftRadius: i === displayTickets.length - 1 ? 12 : 0,
                       borderBottomRightRadius: i === displayTickets.length - 1 ? 12 : 0,
+                      backgroundColor: "#fff",
                     }}
                   >
                     {/* Date */}
-                    <div style={{ width: widthMap["Date"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
+                    <div style={{ width: widthMap["date"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>
                       {ticket.date}
                     </div>
                     {/* Ticket ID */}
-                    <div style={{ width: widthMap["Ticket ID"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#141414" }}>
+                    <div style={{ width: widthMap["ticketId"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "#141414" }}>
                       {ticket.ticketId}
                     </div>
                     {/* Company name */}
-                    <div style={{ width: widthMap["Company name"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div style={{ width: widthMap["company"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {ticket.company}
                     </div>
                     {/* Reporter */}
-                    <div style={{ width: widthMap["Reporter"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div style={{ width: widthMap["reporter"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {ticket.reporter}
                     </div>
                     {/* Phone number */}
-                    <div style={{ width: widthMap["Phone number"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
+                    <div style={{ width: widthMap["phone"], flexShrink: 0, fontFamily: "Inter, sans-serif", fontSize: 13, color: "#464646" }}>
                       {ticket.phone}
                     </div>
                     {/* Status */}
-                    <div style={{ width: widthMap["Ticket's status"], flexShrink: 0, position: "relative" }}>
+                    <div style={{ width: widthMap["status"], flexShrink: 0, position: "relative" }}>
                       <span
                         onClick={(e) => {
                           e.stopPropagation();
@@ -546,7 +574,7 @@ const Support = () => {
                       )}
                     </div>
                     {/* Message */}
-                    <div style={{ width: widthMap["Message"], flexShrink: 0, display: "flex", justifyContent: "center" }}>
+                    <div style={{ width: widthMap["message"], flexShrink: 0, display: "flex", justifyContent: "center" }}>
                       <img
                         src={mail04Icon}
                         alt="Message"
@@ -558,7 +586,7 @@ const Support = () => {
                     </div>
                     {/* Actions */}
                     <div
-                      style={{ width: widthMap["Actions"], flexShrink: 0, display: "flex", justifyContent: "center", position: "relative" }}
+                      style={{ width: widthMap["actions"], flexShrink: 0, display: "flex", justifyContent: "center", position: "relative" }}
                       ref={(el) => { actionMenuRefs.current[i] = el; }}
                     >
                       <div
