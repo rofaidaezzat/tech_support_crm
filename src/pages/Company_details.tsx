@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/company-modal-mobile.css';
 import { Edit3, Trash2, ChevronDown } from 'lucide-react';
 import defaultCompanyLogo from '../assets/e05b9827c703ebae7eecb4a5cb3d31a12982d2db.png';
 import Deactivate from '../components/Companies/Deactivate';
@@ -179,9 +180,9 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
   const [isSalesFunnelOpen, setIsSalesFunnelOpen] = React.useState(false);
 
   return (
-    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
+    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }} className="company-details-page">
       {/* Breadcrumbs & Export */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }} className="cd-breadcrumbs-row">
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <button
             onClick={onBack}
@@ -288,7 +289,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
       </div>
 
       {/* Row 1: Profile Card & Subscription Card */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }} className="cd-row1-grid">
         {/* Profile Card */}
         <div style={{
           background: "#fff",
@@ -301,7 +302,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
           boxSizing: "border-box",
         }}>
           {/* Header and Details section aligned horizontally */}
-          <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }} className="cd-profile-header">
             {/* Circular Logo with cover image */}
             <div style={{
               borderRadius: "99px",
@@ -394,7 +395,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
               </span>
 
               {/* Info grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 8 }} className="cd-info-grid">
                 <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#464646", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -515,7 +516,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
         </div>
 
         {/* Right side container with two separate cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }} className="cd-right-col">
           {/* First Card: Subscription Info */}
           <div style={{
             borderRadius: "12px",
@@ -551,7 +552,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
             </div>
 
             {/* Content grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", rowGap: 16, columnGap: 24, width: "100%" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", rowGap: 16, columnGap: 24, width: "100%" }} className="cd-subscription-grid">
               {/* Row 1 */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#747474" }}>Current Plan:</span>
@@ -650,7 +651,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
             </div>
 
             {/* Progress bars in a side-by-side grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 24, rowGap: 16, width: "100%" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 24, rowGap: 16, width: "100%" }} className="cd-ai-progress-grid">
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                   <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#4B5563" }}>Lead search</span>
@@ -676,7 +677,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
       </div>
 
       {/* Row 2: Activity Change vs Last Week (%) & AI Usage Trend (%) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }} className="cd-row2-grid">
         {/* Card 1 */}
         <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)", padding: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -789,7 +790,7 @@ const CompanyDetails = ({ company, onBack, onEdit, onDelete, onExport }: Company
       </div>
 
       {/* Row 3: Avg Users Trend & Sales Funnel Performance */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }} className="cd-row3-grid">
         {/* Card 3 */}
         <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.11)", padding: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>

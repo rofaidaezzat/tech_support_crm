@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface Company {
   id: string;
@@ -122,7 +123,7 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
     <div ref={containerRef} style={{
       ...styles.container,
       height: selectedPlan === "Custom plan" ? "auto" : "341px"
-    }}>
+    }} className="plan-setting-modal">
       {/* Header (First part in modal) */}
       <div style={styles.header}>
         <div style={styles.headerTitleCol}>
@@ -145,7 +146,7 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
             </svg>
             <span style={styles.titleText}>Plan Settings</span>
           </div>
-          <span style={styles.subtitleText}>for "{company.name}"</span>
+          <span style={styles.subtitleText}>for “{company.name}”</span>
         </div>
         <button style={styles.closeBtn} onClick={onClose} aria-label="Close">
           ✕
@@ -153,7 +154,7 @@ const PlanSetting: React.FC<PlanSettingProps> = ({
       </div>
 
       {/* Body */}
-      <div style={styles.body}>
+      <div style={styles.body} className="plan-setting-body">
         {/* Select Plan field */}
         <div style={styles.selectPlanCol}>
           <label style={styles.labelStyle}>

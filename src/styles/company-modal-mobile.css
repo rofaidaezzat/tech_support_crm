@@ -1,0 +1,365 @@
+/* =============================================
+   Companies Modals Mobile Responsive Styles
+   Only applies on screens <= 768px
+   ============================================= */
+
+@media (max-width: 768px) {
+
+  /* ─── Create Company Modal ─── */
+  .create-company-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 536px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+  }
+
+  .create-company-body {
+    flex: none !important;
+    height: auto !important;
+    max-height: calc(90vh - 65px) !important;
+    overflow-y: auto !important;
+    padding: 16px 12px !important;
+  }
+
+  .create-company-form-area {
+    max-height: none !important;
+    overflow-y: visible !important;
+    padding-right: 0 !important;
+  }
+
+  .create-company-name-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .create-company-field-col {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  .create-company-plan-dropdown,
+  .create-company-ai-dropdown {
+    width: 100% !important;
+  }
+
+  .create-company-plan-row {
+    width: 100% !important;
+  }
+
+  .create-company-ai-row {
+    width: 100% !important;
+  }
+
+  /* ─── Deactivate Modal ─── */
+  .deactivate-modal-container {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    padding: 24px 16px !important;
+    gap: 24px !important;
+  }
+
+  .deactivate-title {
+    width: 100% !important;
+    font-size: 17px !important;
+  }
+
+  /* ─── Edit Info Modal ─── */
+  .edit-company-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 536px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+  }
+
+  .edit-company-body {
+    flex: none !important;
+    height: auto !important;
+    max-height: calc(90vh - 110px) !important;
+    /* Header (~65px) + Tab bar (~48px) */
+    overflow-y: auto !important;
+    padding: 16px 12px !important;
+  }
+
+  .edit-company-form-area {
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+
+  .edit-company-name-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .edit-company-field-col {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* ─── Pause Company Modal ─── */
+  .pause-modal-container {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    padding: 24px 16px !important;
+    gap: 24px !important;
+  }
+
+  .pause-title {
+    width: 100% !important;
+    font-size: 17px !important;
+  }
+
+  /* ─── Plan Setting Modal ─── */
+  .plan-setting-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  .plan-setting-body {
+    flex: none !important;
+    height: auto !important;
+    padding: 16px 12px !important;
+  }
+
+  /* ─── Plan Info Modal ─── */
+  .plan-info-container {
+    width: calc(100vw - 32px) !important;
+    max-width: 417px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 24px 16px !important;
+    gap: 16px !important;
+  }
+
+  .plan-info-features-header,
+  .plan-info-features-list {
+    width: 100% !important;
+  }
+
+  /* ─── Send Notification Modal ─── */
+  .send-notification-container {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  .send-notification-details-col {
+    width: 100% !important;
+  }
+
+  /* ─── Company Details Page ─── */
+
+  /* Root wrapper: clamp to viewport width, no overflow */
+  .company-details-page {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Breadcrumbs row: stack Back button + breadcrumb above Export button */
+  .cd-breadcrumbs-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Row 1 (Profile + Subscription): single column stack */
+  .cd-row1-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Profile card header: stack avatar above text */
+  .cd-profile-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+  }
+
+  /* Profile info grid: single column */
+  .cd-info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Subscription info grid: single column */
+  .cd-subscription-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* AI progress bars: single column */
+  .cd-ai-progress-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Row 2 chart cards: single column */
+  .cd-row2-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Row 3 chart cards: single column */
+  .cd-row3-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Plans Page ─── */
+
+  /* Root page wrapper: prevent horizontal overflow */
+  .plans-page {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Pricing cards: stack vertically */
+  .plans-cards-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+
+  /* Each pricing card: auto height (no fixed 421px) */
+  .plans-cards-row>div {
+    height: auto !important;
+    flex: none !important;
+    width: 100% !important;
+  }
+
+  /* Graph cards row: stack vertically */
+  .plans-graphs-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  /* Each graph card: auto height */
+  .plans-graphs-row>div {
+    height: auto !important;
+    flex: none !important;
+    width: 100% !important;
+    min-height: 340px !important;
+  }
+
+  /* Donut + legend: stack vertically, center aligned */
+  .plans-donut-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+
+  /* Donut chart wrapper: scale down on small screens */
+  .plans-donut-wrapper {
+    width: 220px !important;
+    height: 220px !important;
+  }
+
+  .plans-donut-wrapper svg {
+    width: 220px !important;
+    height: 220px !important;
+  }
+
+  /* Revenue panel: full width */
+  .plans-donut-row>div:last-child {
+    width: 100% !important;
+  }
+
+  /* ─── Manage Connected Devices Modal ─── */
+
+  /* Override fixed width 462px & height 428px on the modal container */
+  .manage-devices-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Override fixed width 462px on the header row */
+  .manage-devices-header {
+    width: 100% !important;
+  }
+
+  /* ─── Support Page ─── */
+
+  .support-page-container {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .support-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    height: auto !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .support-header-row button {
+    width: 100% !important;
+  }
+
+  .support-tabs-row {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .support-search-wrapper {
+    width: 100% !important;
+  }
+
+  /* ─── Ticket Message Modal ─── */
+
+  .ticket-msg-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+  }
+
+  .ticket-msg-bubble {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 100px !important;
+  }
+
+  .ticket-msg-input-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ─── Support Pause & Deactivate Modals ─── */
+
+  .support-pause-modal-container,
+  .support-deactivate-modal-container {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    padding: 24px 16px !important;
+    gap: 24px !important;
+  }
+
+  .support-pause-modal-title,
+  .support-deactivate-modal-title {
+    width: 100% !important;
+    font-size: 18px !important;
+  }
+
+  /* ─── Support New Agent Modal ─── */
+
+  .new-agent-modal {
+    width: calc(100vw - 32px) !important;
+    max-width: 462px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+  }
+
+  .new-agent-name-row,
+  .new-agent-loc-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}

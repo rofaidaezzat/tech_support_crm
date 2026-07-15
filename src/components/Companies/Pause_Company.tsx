@@ -1,4 +1,5 @@
 import React from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface Company {
   id: string;
@@ -51,9 +52,9 @@ const PauseCompany: React.FC<PauseCompanyProps> = ({
   const statusStyle = getStatusStyle(company.status);
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="pause-modal-container">
       {/* Title */}
-      <span style={styles.titleText}>
+      <span style={styles.titleText} className="pause-title">
         Are you sure you want to pause this company current plan ?
       </span>
 

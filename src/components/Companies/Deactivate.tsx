@@ -1,4 +1,5 @@
 import React from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface Company {
     id: string;
@@ -50,9 +51,9 @@ const Deactivate: React.FC<DeactivateProps> = ({
     const statusStyle = getStatusStyle(company.status);
 
     return (
-        <div style={styles.container}>
+        <div style={styles.container} className="deactivate-modal-container">
             {/* Title */}
-            <span style={styles.titleText}>
+            <span style={styles.titleText} className="deactivate-title">
                 Are you sure you want to deactivate this company account ?
             </span>
 

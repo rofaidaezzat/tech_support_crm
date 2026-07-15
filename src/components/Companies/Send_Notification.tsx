@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface Company {
   id: string;
@@ -29,7 +30,7 @@ const SendNotification: React.FC<SendNotificationProps> = ({
   const isFormValid = title.trim() !== "" && details.trim() !== "";
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="send-notification-container">
       {/* Header (First part in modal) */}
       <div style={styles.header}>
         <div style={styles.headerTitleCol}>
@@ -76,7 +77,7 @@ const SendNotification: React.FC<SendNotificationProps> = ({
         </div>
 
         {/* Details textarea field */}
-        <div style={styles.detailsCol}>
+        <div style={styles.detailsCol} className="send-notification-details-col">
           <label style={styles.labelStyle}>
             Details<span style={styles.requiredStar}>*</span>
           </label>
@@ -234,7 +235,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: "var(--Foundation-neutral-neutral-25, #F5F6FA)",
     display: "flex",
     height: "76px",
-    padding: "8px 17px 20px 242px",
+    padding: "8px 20px 20px 20px",
     justifyContent: "flex-end",
     alignItems: "center",
     alignSelf: "stretch",
@@ -254,6 +255,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "Inter, sans-serif",
     fontSize: "14px",
     fontWeight: 600,
+    whiteSpace: "nowrap",
     transition: "background 0.2s ease",
   },
 };

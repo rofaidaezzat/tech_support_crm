@@ -1,4 +1,5 @@
 import React from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface PlanInfoProps {
     planName: string;
@@ -56,7 +57,7 @@ const PlanInfo: React.FC<PlanInfoProps> = ({ planName, onClose }) => {
     const details = getPlanDetails(planName);
 
     return (
-        <div style={styles.container}>
+        <div style={styles.container} className="plan-info-container">
             {/* Header with Title and Close Icon */}
             <div style={styles.header}>
                 <span style={styles.planTitle}>{details.title}</span>
@@ -89,8 +90,8 @@ const PlanInfo: React.FC<PlanInfoProps> = ({ planName, onClose }) => {
 
             {/* Features section */}
             <div style={styles.featuresSection}>
-                <span style={styles.featuresHeader}>Features</span>
-                <div style={styles.featuresList}>
+                <span style={styles.featuresHeader} className="plan-info-features-header">Features</span>
+                <div style={styles.featuresList} className="plan-info-features-list">
                     {details.features.map((feature, index) => (
                         <div key={index} style={styles.featureItem}>
                             <svg
@@ -172,7 +173,7 @@ const styles: Record<string, React.CSSProperties> = {
     },
     priceText: {
         fontFamily: "Inter",
-        fontSize: "28px",
+        fontSize: "23px",
         fontWeight: 700,
         color: "var(--Foundation-neutral-neutral-950, #141414)",
     },

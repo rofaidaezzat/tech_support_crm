@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import '../../styles/company-modal-mobile.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface CreateCompanyProps {
@@ -209,7 +210,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
   const s = styles;
 
   return (
-    <div style={s.wrapper}>
+    <div style={s.wrapper} className="create-company-modal">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={s.header}>
         <div style={s.headerTitle}>
@@ -222,7 +223,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
       </div>
 
       {/* ── Body ───────────────────────────────────────────────────────────── */}
-      <div style={s.body}>
+      <div style={s.body} className="create-company-body">
 
         {/* Progress bars */}
         <div style={s.progressRow}>
@@ -239,13 +240,13 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
 
         {/* ────────── STEP 1 – Owner Info ─────────────────────────────────── */}
         {step === 1 && (
-          <div style={s.formArea}>
+          <div style={s.formArea} className="create-company-form-area">
             <p style={s.sectionTitle}>Owner Info</p>
 
             {/* First name + Last name row */}
-            <div style={s.nameRow}>
+            <div style={s.nameRow} className="create-company-name-row">
               {/* Owner First Name */}
-              <div style={{ ...fieldColStyle, flex: 1, height: "75px" }}>
+              <div style={{ ...fieldColStyle, flex: 1, height: "75px" }} className="create-company-field-col">
                 <label style={labelStyle}>
                   Owner First Name<span style={requiredStar}>*</span>
                 </label>
@@ -257,7 +258,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                 />
               </div>
               {/* Owner Last Name */}
-              <div style={{ ...fieldColStyle, flex: 1, height: "75px" }}>
+              <div style={{ ...fieldColStyle, flex: 1, height: "75px" }} className="create-company-field-col">
                 <label style={labelStyle}>
                   Owner Last Name<span style={requiredStar}>*</span>
                 </label>
@@ -271,7 +272,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Email Address */}
-            <div style={{ ...fieldColStyle, height: "75px" }}>
+            <div style={{ ...fieldColStyle, height: "75px" }} className="create-company-field-col">
               <label style={labelStyle}>
                 Email Address<span style={requiredStar}>*</span>
               </label>
@@ -285,7 +286,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Gender */}
-            <div style={{ ...fieldColStyle }}>
+            <div style={{ ...fieldColStyle }} className="create-company-field-col">
               <label style={labelStyle}>
                 Gender<span style={requiredStar}>*</span>
               </label>
@@ -304,7 +305,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Password */}
-            <div style={{ ...fieldColStyle, height: "75px" }}>
+            <div style={{ ...fieldColStyle, height: "75px" }} className="create-company-field-col">
               <label style={labelStyle}>
                 Password<span style={requiredStar}>*</span>
               </label>
@@ -321,11 +322,11 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
 
         {/* ────────── STEP 2 – Company Info ───────────────────────────────── */}
         {step === 2 && (
-          <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "460px" }}>
+          <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "460px" }} className="create-company-form-area step2-form-area">
             <p style={s.sectionTitle}>Company Info</p>
 
             {/* Company Name */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Company Name<span style={requiredStar}>*</span>
               </label>
@@ -333,7 +334,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Company Email */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Company Email<span style={requiredStar}>*</span>
               </label>
@@ -341,7 +342,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Phone Number */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Phone Number<span style={requiredStar}>*</span>
               </label>
@@ -349,13 +350,13 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Company Website */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>Company Website</label>
               <input style={inputStyle} placeholder="Input text" value={form.companyWebsite} onChange={set("companyWebsite")} />
             </div>
 
             {/* Industry */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Industry<span style={requiredStar}>*</span>
               </label>
@@ -366,7 +367,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Company Size */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Company Size<span style={requiredStar}>*</span>
               </label>
@@ -377,7 +378,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Address */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Address<span style={requiredStar}>*</span>
               </label>
@@ -390,7 +391,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
             </div>
 
             {/* Description */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Description<span style={requiredStar}>*</span>
               </label>
@@ -406,11 +407,11 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
 
         {/* ────────── STEP 3 – Subscription ───────────────────────────────── */}
         {step === 3 && (
-          <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "460px", paddingRight: "4px" }}>
+          <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "460px", paddingRight: "4px" }} className="create-company-form-area step3-form-area">
             <p style={s.sectionTitle}>Subscription</p>
 
             {/* Plan field */}
-            <div style={fieldColStyle}>
+            <div style={fieldColStyle} className="create-company-field-col">
               <label style={labelStyle}>
                 Plan<span style={requiredStar}>*</span>
               </label>
@@ -440,7 +441,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
 
                 {/* Dropdown panel */}
                 {planOpen && (
-                  <div style={s.planDropdown}>
+                  <div style={s.planDropdown} className="create-company-plan-dropdown">
                     {PLAN_OPTIONS.map((plan) => {
                       const isSelected = form.plan === plan;
                       return (
@@ -450,6 +451,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                             ...s.planRow,
                             ...(isSelected ? s.planRowSelected : {}),
                           }}
+                          className="create-company-plan-row"
                           onClick={() => {
                             setForm((prev) => ({ ...prev, plan, accountsNumber: "", aiUsage: "", price: "" }));
                             setPlanOpen(false);
@@ -484,6 +486,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                     gap: "8px",
                     alignSelf: "stretch",
                   }}
+                  className="create-company-field-col"
                 >
                   <label style={labelStyle}>
                     Accounts Number<span style={requiredStar}>*</span>
@@ -516,6 +519,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                     gap: "8px",
                     alignSelf: "stretch",
                   }}
+                  className="create-company-field-col"
                 >
                   <label style={labelStyle}>
                     AI Usage<span style={requiredStar}>*</span>
@@ -544,7 +548,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
 
                     {/* Dropdown panel */}
                     {aiDropdownOpen && (
-                      <div style={s.aiDropdown}>
+                      <div style={s.aiDropdown} className="create-company-ai-dropdown">
                         {AI_USAGE_OPTIONS.map((option) => {
                           const isSelected = form.aiUsage === option.label;
                           return (
@@ -562,6 +566,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                                 boxSizing: "border-box",
                                 background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
                               }}
+                              className="create-company-ai-row"
                               onClick={() => {
                                 setForm((prev) => ({ ...prev, aiUsage: option.label }));
                                 setAiDropdownOpen(false);
@@ -598,6 +603,7 @@ const CreateCompany: React.FC<CreateCompanyProps> = ({ onClose, onSubmit }) => {
                     gap: "8px",
                     alignSelf: "stretch",
                   }}
+                  className="create-company-field-col"
                 >
                   <label style={labelStyle}>
                     Price<span style={requiredStar}>*</span>

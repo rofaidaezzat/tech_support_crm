@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../../styles/company-modal-mobile.css";
 
 interface EditInfoProps {
     company: any;
@@ -101,7 +102,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
     const s = styles;
 
     return (
-        <div style={s.wrapper}>
+        <div style={s.wrapper} className="edit-company-modal">
             {/* ── Header ── */}
             <div style={s.header}>
                 <div style={s.headerTitle}>
@@ -146,12 +147,12 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
             </div>
 
             {/* ── Body ── */}
-            <div style={s.body}>
+            <div style={s.body} className="edit-company-body">
                 {activeTab === "owner" && (
-                    <div style={s.formArea}>
+                    <div style={s.formArea} className="edit-company-form-area">
                         {/* First name + Last name row */}
-                        <div style={s.nameRow}>
-                            <div style={{ ...s.fieldCol, flex: 1 }}>
+                        <div style={s.nameRow} className="edit-company-name-row">
+                            <div style={{ ...s.fieldCol, flex: 1 }} className="edit-company-field-col">
                                 <label style={s.label}>
                                     Owner First Name<span style={s.requiredStar}>*</span>
                                 </label>
@@ -165,7 +166,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                                     onChange={(e) => setOwnerFirstName(e.target.value)}
                                 />
                             </div>
-                            <div style={{ ...s.fieldCol, flex: 1 }}>
+                            <div style={{ ...s.fieldCol, flex: 1 }} className="edit-company-field-col">
                                 <label style={s.label}>
                                     Owner Last Name<span style={s.requiredStar}>*</span>
                                 </label>
@@ -182,7 +183,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Email Address */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Email Address<span style={s.requiredStar}>*</span>
                             </label>
@@ -199,7 +200,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Gender */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Gender<span style={s.requiredStar}>*</span>
                             </label>
@@ -221,7 +222,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Password */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Password<span style={s.requiredStar}>*</span>
                             </label>
@@ -240,9 +241,9 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                 )}
 
                 {activeTab === "company" && (
-                    <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "360px", paddingRight: "4px" }}>
+                    <div style={{ ...s.formArea, overflowY: "auto", maxHeight: "360px", paddingRight: "4px" }} className="edit-company-form-area step2-form-area">
                         {/* Company Name */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Company Name<span style={s.requiredStar}>*</span>
                             </label>
@@ -258,7 +259,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Company Email */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Company Email<span style={s.requiredStar}>*</span>
                             </label>
@@ -275,7 +276,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Phone Number */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Phone Number<span style={s.requiredStar}>*</span>
                             </label>
@@ -292,7 +293,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Company Website */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>Company Website</label>
                             <input
                                 style={{
@@ -306,7 +307,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Industry */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Industry<span style={s.requiredStar}>*</span>
                             </label>
@@ -324,7 +325,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Company Size */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Company Size<span style={s.requiredStar}>*</span>
                             </label>
@@ -342,7 +343,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Address */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Address<span style={s.requiredStar}>*</span>
                             </label>
@@ -358,7 +359,7 @@ const EditInfo: React.FC<EditInfoProps> = ({ company, onClose, onSave }) => {
                         </div>
 
                         {/* Description */}
-                        <div style={s.fieldCol}>
+                        <div style={s.fieldCol} className="edit-company-field-col">
                             <label style={s.label}>
                                 Description<span style={s.requiredStar}>*</span>
                             </label>

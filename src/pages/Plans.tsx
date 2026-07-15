@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../context/LanguageContext';
+import '../styles/company-modal-mobile.css';
 
 const Plans = () => {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ const Plans = () => {
   ];
 
   return (
-    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }}>
+    <div style={{ width: "100%", paddingBottom: 24, paddingTop: 8 }} className="plans-page">
       <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
         
         {/* ── Header ── */}
@@ -59,6 +60,7 @@ const Plans = () => {
             width: "100%",
             marginBottom: 24,
           }}
+          className="plans-cards-row"
         >
           {/* Card 1: Plan 1 */}
           <div

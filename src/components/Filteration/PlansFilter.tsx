@@ -1,8 +1,8 @@
 import React from "react";
 
 interface PlansFilterProps {
-  selected: string;
-  onSelect: (option: string) => void;
+  selected: string[];
+  onSelect: (options: string[]) => void;
   onClose: () => void;
 }
 
@@ -13,23 +13,31 @@ const OPTIONS = [
   "Plan 3",
 ];
 
-const RadioIcon = ({ selected }: { selected: boolean }) => {
+const CheckboxIcon = ({ selected }: { selected: boolean }) => {
   if (selected) {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
-        <circle cx="10" cy="10" r="9" stroke="#00236F" strokeWidth="2"/>
-        <circle cx="10" cy="10" r="5" fill="#00236F"/>
+        <rect width="20" height="20" rx="4" fill="#00236F"/>
+        <path d="M5 10.5L8.5 14L15 7" stroke="#FFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     );
   }
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
-      <circle cx="10" cy="10" r="9" stroke="#8B909A" strokeWidth="2"/>
+      <rect x="1" y="1" width="18" height="18" rx="3" stroke="#8B909A" strokeWidth="2"/>
     </svg>
   );
 };
 
 const PlansFilter: React.FC<PlansFilterProps> = ({ selected, onSelect, onClose }) => {
+  const handleToggle = (option: string) => {
+    if (selected.includes(option)) {
+      onSelect(selected.filter((o) => o !== option));
+    } else {
+      onSelect([...selected, option]);
+    }
+  };
+
   return (
     <>
       {/* Click outside overlay */}
@@ -52,21 +60,18 @@ const PlansFilter: React.FC<PlansFilterProps> = ({ selected, onSelect, onClose }
         left: document.documentElement.dir === 'rtl' ? 0 : 'auto',
       }}>
         {OPTIONS.map((option) => {
-          const isSelected = selected.toLowerCase() === option.toLowerCase();
+          const isSelected = selected.includes(option);
           return (
             <div
               key={option}
-              onClick={() => {
-                onSelect(option);
-                onClose();
-              }}
+              onClick={() => handleToggle(option)}
               style={{
                 ...styles.optionRow,
                 background: isSelected ? "var(--Foundation-brand-brand-50, #E6E9F1)" : "transparent",
               }}
             >
               <div style={styles.innerRow}>
-                <RadioIcon selected={isSelected} />
+                <CheckboxIcon selected={isSelected} />
                 <span style={styles.optionText}>{option}</span>
               </div>
             </div>
