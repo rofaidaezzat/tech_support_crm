@@ -106,6 +106,7 @@ export const en = {
     leadSource: "Lead Source",
     chooseSource: "Choose a lead source",
     nextFollowup: "Next followup",
+    chooseStatus: "Choose a status",
     loadingLeadInfo: "Loading lead info...",
     saving: "Saving...",
     addLeadTitle: "Add New Lead",

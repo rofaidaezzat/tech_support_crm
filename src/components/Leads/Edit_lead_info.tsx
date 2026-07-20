@@ -7,6 +7,9 @@ import closeIcon from "../../assets/x-02.svg";
 import calendarPlusIcon from "../../assets/calendar-plus.svg";
 import "../../styles/leads-modal-mobile.css";
 import { validateLead } from "../../validation";
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+
 
 interface EditLeadInfoProps {
   leadId: string;
@@ -107,6 +110,15 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
 
   const handleSave = async () => {
     if (isUpdateLoading || isGetLoading) return;
+
+    if (!phoneNumber) {
+      toast.error(t('modal.phoneRequired') || 'Phone number is required');
+      return;
+    }
+    if (!isValidPhoneNumber(phoneNumber)) {
+      toast.error(t('modal.validPhoneRequired') || 'Please provide a valid phone number');
+      return;
+    }
     
     // Perform robust backend-compatible validation
     const validation = validateLead({
@@ -183,6 +195,47 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
         boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.12)",
       }}
     >
+      <style>{`
+        .PhoneInput {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 48px;
+          border-radius: 8px;
+          border: 1px solid rgba(212, 213, 216, 1);
+          padding: 0 14px;
+          box-sizing: border-box;
+          background: transparent;
+          transition: border 0.2s ease;
+          direction: ltr !important;
+        }
+        .PhoneInput--focus {
+          border: 1px solid var(--Foundation-brand-brand-500, #00236F);
+          background: #fff;
+        }
+        .PhoneInputInput {
+          flex: 1;
+          height: 100%;
+          border: none !important;
+          background: transparent !important;
+          outline: none !important;
+          font-family: Inter, sans-serif;
+          font-size: 14px;
+          color: #141414;
+          padding: 0 8px !important;
+          box-sizing: border-box;
+        }
+        .PhoneInputCountry {
+          display: flex;
+          align-items: center;
+          border-right: 1px solid rgba(212, 213, 216, 1);
+          padding-right: 8px;
+          margin-right: 8px;
+        }
+        .PhoneInputCountrySelect {
+          cursor: pointer;
+        }
+      `}</style>
       {/* ── Header ── */}
       <div
         className="leads-modal-header"
@@ -324,14 +377,12 @@ const Edit_lead_info: React.FC<EditLeadInfoProps> = ({
               <label style={labelStyle}>
                 {t('modal.phoneNumberLabel')}<span style={{ color: "var(--Foundation-brand-brand-500, #00236F)" }}>*</span>
               </label>
-              <input
-                type="tel"
+              <PhoneInput
+                international
+                defaultCountry="EG"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder={t('modal.enterPhoneNumber') || "+20xxxxxxxxxx"}
-                style={inputStyle}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                placeholder={t('modal.enterPhoneNumber') || "e.g. +20 123 456 7890"}
+                onChange={(val) => setPhoneNumber(val || "")}
               />
             </div>
 

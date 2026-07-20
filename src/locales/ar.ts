@@ -106,6 +106,7 @@ export const ar = {
     leadSource: "مصدر العميل",
     chooseSource: "اختر مصدر العميل",
     nextFollowup: "المتابعة القادمة",
+    chooseStatus: "اختر الحالة",
     loadingLeadInfo: "جاري تحميل تفاصيل العميل...",
     saving: "جاري الحفظ...",
     addLeadTitle: "إضافة عميل محتمل جديد",
