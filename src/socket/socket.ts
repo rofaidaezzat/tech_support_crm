@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
 
-const SOCKET_URL = 'https://backend-crm-test.el-shayeb.cloud';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export function getSocket(token: string): Socket {
   // If socket connection exists but the token changed, update auth and reconnect

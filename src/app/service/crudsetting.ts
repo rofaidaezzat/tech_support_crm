@@ -138,7 +138,7 @@ export const {
 export const getAvatarUrl = (avatarPath?: string | null) => {
   if (!avatarPath) return undefined;
   let path = avatarPath;
-  const newBaseUrl = 'https://backend-crm-test.el-shayeb.cloud';
+  const newBaseUrl = import.meta.env.VITE_BASE_URL;
 
   // Replace old backend url or localhost/127.0.0.1 with new ngrok url
   if (path.includes('backend-crm-test.el-shayeb.cloud')) {

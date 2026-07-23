@@ -17,7 +17,7 @@ export const deleteCookie = (name: string) => {
 };
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: 'https://backend-crm-test.el-shayeb.cloud/',
+  baseUrl: import.meta.env.VITE_BASE_URL,
   prepareHeaders: (headers) => {
     if (headers.has('X-Skip-Authorization') || headers.has('x-skip-authorization')) {
       headers.delete('X-Skip-Authorization');
