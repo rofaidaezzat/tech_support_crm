@@ -6,6 +6,7 @@ import NotificationDrawer from "./Navbar/NotificationDrawer";
 import { useTranslation } from "../context/LanguageContext";
 import { useGetProfileDetailsQuery, getAvatarUrl } from "../app/service/crudsetting";
 import { useAuthenticatedImage } from "../hooks/useAuthenticatedImage";
+import { useGetUnreadCountQuery, extractUnreadCount } from "../app/service/crudnotifications";
 
 interface NavbarProps {
   onSearch?: (query: string) => void;
@@ -27,6 +28,10 @@ const Navbar: React.FC<NavbarProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const notifRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Unread notifications count
+  const { data: unreadResponse } = useGetUnreadCountQuery();
+  const unreadCount = extractUnreadCount(unreadResponse);
 
   // Profile data — shared RTK Query cache, auto-updates after upload
   const { data: profileResponse } = useGetProfileDetailsQuery();
@@ -302,6 +307,31 @@ const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setShowNotifications((prev) => !prev)}
               style={{ cursor: "pointer", display: "block", borderRadius: 99 }}
             />
+            {unreadCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  right: 2,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 99,
+                  background: "#EF4444",
+                  color: "#FFFFFF",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 4px",
+                  boxSizing: "border-box",
+                  pointerEvents: "none",
+                  border: "2px solid #FFFFFF",
+                }}
+              >
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
 
             {showNotifications && (
               <div

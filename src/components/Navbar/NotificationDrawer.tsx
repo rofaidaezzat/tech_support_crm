@@ -1,8 +1,26 @@
 import React, { useState } from "react";
 import "../../styles/notification-drawer-mobile.css";
+import {
+  useGetNotificationsQuery,
+  useMarkAllAsReadMutation,
+  useMarkAsReadMutation,
+  extractNotifications,
+  Notification,
+} from "../../app/service/crudnotifications";
 
 // ── Icon config per type ─────────────────────────────────────────────────────
 const iconConfig: Record<string, { bg: string; svg: React.ReactNode }> = {
+  SUPPORT_TICKET: {
+    bg: "#76AFC5",
+    svg: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 17 17" fill="none">
+        <path
+          d="M10.5428 11.625L12.5104 9.41146L10.5428 7.19792M12.5104 9.41146H4.54167M4.54167 4.09939H11.9201M15.1667 3.65625V12.5104C15.1667 13.9774 13.9774 15.1667 12.5104 15.1667H3.65625C2.18924 15.1667 1 13.9774 1 12.5104V3.65625C1 2.18924 2.18924 1 3.65625 1H12.5104C13.9774 1 15.1667 2.18924 15.1667 3.65625Z"
+          stroke="#F5F6FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
   task: {
     bg: "#546C9F",
     svg: (
@@ -14,71 +32,55 @@ const iconConfig: Record<string, { bg: string; svg: React.ReactNode }> = {
       </svg>
     ),
   },
-  followup: {
-    bg: "#76AFC5",
-    svg: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="14.167" height="14.167" viewBox="0 0 17 17" fill="none">
-        <path
-          d="M10.5428 11.625L12.5104 9.41146L10.5428 7.19792M12.5104 9.41146H4.54167M4.54167 4.09939H11.9201M15.1667 3.65625V12.5104C15.1667 13.9774 13.9774 15.1667 12.5104 15.1667H3.65625C2.18924 15.1667 1 13.9774 1 12.5104V3.65625C1 2.18924 2.18924 1 3.65625 1H12.5104C13.9774 1 15.1667 2.18924 15.1667 3.65625Z"
-          stroke="#F5F6FA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
 };
 
-// ── Data ─────────────────────────────────────────────────────────────────────
-const allNotifications = [
-  {
-    id: 1,
-    iconType: "task",
-    title: "New task assigned",
-    description: "Call client Ahmed at 3:00 PM.",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    iconType: "followup",
-    title: "Followup with Yasser Fathalla",
-    description: "Call client Ahmed at 3:00 PM.",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    iconType: "task",
-    title: "New lead assigned",
-    description: "Call client Ahmed at 3:00 PM.",
-    time: "1 hour ago",
-    unread: false,
-  },
-  {
-    id: 4,
-    iconType: "followup",
-    title: "Daily report not yet submitted",
-    description: "Call client Ahmed at 3:00 PM.",
-    time: "1 hour ago",
-    unread: false,
-  },
-];
+function formatRelativeTime(dateString: string): string {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSec = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (diffInSec < 60) return "Just now";
+  const mins = Math.floor(diffInSec / 60);
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hr ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days} d ago`;
+  return date.toLocaleDateString();
+}
 
-// ── Props ─────────────────────────────────────────────────────────────────────
 interface NotificationDrawerProps {
   open: boolean;
   onClose: () => void;
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
 const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
   open,
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState<"Unread" | "Read">("Unread");
-
-  const filtered = allNotifications.filter((n) =>
-    activeTab === "Unread" ? n.unread : !n.unread
+  const { data: response, isLoading } = useGetNotificationsQuery(
+    open ? { is_read: activeTab === "Read" } : undefined,
+    { skip: !open }
   );
+  const [markAllAsRead] = useMarkAllAsReadMutation();
+  const [markAsRead] = useMarkAsReadMutation();
+
+  const notifications = extractNotifications(response);
+
+  const handleMarkAll = async () => {
+    try {
+      await markAllAsRead().unwrap();
+    } catch {
+      // no-op
+    }
+  };
+
+  const handleItemClick = (notif: Notification) => {
+    if (!notif.is_read) {
+      markAsRead(notif.id);
+    }
+  };
 
   return (
     <>
@@ -90,7 +92,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             position: "fixed",
             inset: 0,
             zIndex: 1100,
-            background: "transparent",
+            background: "rgba(0, 0, 0, 0.2)",
           }}
         />
       )}
@@ -104,18 +106,17 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
           right: 0,
           height: "100vh",
           zIndex: 1200,
-          // Exact styles from spec
           background: "var(--Foundation-neutral-white, #FFF)",
           boxShadow: "-1px 0 4px 0 rgba(0, 0, 0, 0.10)",
           display: "flex",
           width: 521,
-          padding: "34px 24px 218px 24px",
+          maxWidth: "100vw",
+          padding: "34px 24px 34px 24px",
           flexDirection: "column",
           alignItems: "flex-start",
           gap: 24,
           boxSizing: "border-box",
           overflowY: "auto",
-          // Slide animation
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
@@ -246,6 +247,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
 
           {/* Mark all as read */}
           <span
+            onClick={handleMarkAll}
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 400,
@@ -265,107 +267,122 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
             flexDirection: "column",
             alignSelf: "stretch",
             gap: 0,
+            flex: 1,
           }}
         >
-          {filtered.map((notif) => (
-            <div
-              key={notif.id}
-              className="notification-drawer-item"
-              style={{
-                background: notif.unread
-                  ? "var(--Foundation-brand-brand-50, #E6E9F1)"
-                  : "transparent",
-                display: "flex",
-                width: notif.unread ? 473 : "100%",
-                padding: "8px 12px",
-                alignItems: "flex-start",
-                gap: 12,
-                borderRadius: 8,
-                marginBottom: 8,
-                cursor: "pointer",
-                boxSizing: "border-box",
-                transition: "opacity 0.15s",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.opacity = "0.85";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.opacity = "1";
-              }}
-            >
-              {/* Icon */}
-              <div
-                style={{
-                  borderRadius: 99,
-                  background: iconConfig[notif.iconType]?.bg ?? "#546C9F",
-                  display: "flex",
-                  width: 32,
-                  height: 32,
-                  padding: 6,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexShrink: 0,
-                  boxSizing: "border-box",
-                }}
-              >
-                {iconConfig[notif.iconType]?.svg}
-              </div>
-
-              {/* Text */}
-              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    color: "#141414",
-                  }}
-                >
-                  {notif.title}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 13,
-                    color: "#464646",
-                  }}
-                >
-                  {notif.description}
-                </span>
+          {isLoading ? (
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontFamily: "Inter" }}>
+              Loading...
+            </div>
+          ) : notifications.length === 0 ? (
+            <div style={{ padding: 32, textAlign: "center", color: "#6B7280", fontFamily: "Inter", fontSize: 14 }}>
+              No {activeTab.toLowerCase()} notifications.
+            </div>
+          ) : (
+            notifications.map((notif) => {
+              const iconObj = iconConfig[notif.type] || iconConfig.task;
+              return (
                 <div
+                  key={notif.id}
+                  onClick={() => handleItemClick(notif)}
+                  className="notification-drawer-item"
                   style={{
+                    background: !notif.is_read
+                      ? "var(--Foundation-brand-brand-50, #E6E9F1)"
+                      : "transparent",
                     display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginTop: 2,
+                    width: "100%",
+                    padding: "12px 14px",
+                    alignItems: "flex-start",
+                    gap: 12,
+                    borderRadius: 8,
+                    marginBottom: 8,
+                    cursor: "pointer",
+                    boxSizing: "border-box",
+                    transition: "opacity 0.15s",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.opacity = "0.85";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.opacity = "1";
                   }}
                 >
-                  <span
+                  {/* Icon */}
+                  <div
                     style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 400,
-                      fontSize: 11,
-                      color: "#9CA3AF",
+                      borderRadius: 99,
+                      background: iconObj.bg,
+                      display: "flex",
+                      width: 32,
+                      height: 32,
+                      padding: 6,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexShrink: 0,
+                      boxSizing: "border-box",
                     }}
                   >
-                    {notif.time}
-                  </span>
-                  {notif.unread && (
+                    {iconObj.svg}
+                  </div>
+
+                  {/* Text */}
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
                     <span
                       style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: "50%",
-                        background: "#00236F",
-                        display: "inline-block",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: notif.is_read ? 500 : 600,
+                        fontSize: 14,
+                        color: "#141414",
                       }}
-                    />
-                  )}
+                    >
+                      {notif.title}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 400,
+                        fontSize: 13,
+                        color: "#464646",
+                      }}
+                    >
+                      {notif.body}
+                    </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 4,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 400,
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                        }}
+                      >
+                        {formatRelativeTime(notif.created_at)}
+                      </span>
+                      {!notif.is_read && (
+                        <span
+                          style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            background: "#00236F",
+                            display: "inline-block",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </div>
     </>

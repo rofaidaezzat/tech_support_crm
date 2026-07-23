@@ -7,6 +7,8 @@ import { tasksApi } from './service/crudtasks';
 import { settingsApi } from './service/crudsetting';
 import { supportApi } from './service/crudSupport ticket';
 import { messagesApi } from './service/message_Lead';
+import { notificationsApi } from './service/crudnotifications';
+import { devicesApi } from './service/cruddevices';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,8 @@ export const store = configureStore({
     [settingsApi.reducerPath]: settingsApi.reducer,
     [supportApi.reducerPath]: supportApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
+    [devicesApi.reducerPath]: devicesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -29,6 +33,8 @@ export const store = configureStore({
       settingsApi.middleware,
       supportApi.middleware,
       messagesApi.middleware,
+      notificationsApi.middleware,
+      devicesApi.middleware,
     ),
 });
 
